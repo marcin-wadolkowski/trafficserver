@@ -31,6 +31,10 @@
 #include "HdrToken.h"
 #include "tscore/Diags.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /***********************************************************************
  *                                                                     *
  *                    C O M P I L E    O P T I O N S                   *
@@ -315,7 +319,7 @@ http_hdr_copy_onto(HTTPHdrImpl *s_hh, HdrHeap *s_heap, HTTPHdrImpl *d_hh, HdrHea
   ink_assert(s_mh != nullptr);
   ink_assert(d_mh != nullptr);
 
-  memcpy(d_hh, s_hh, sizeof(HTTPHdrImpl));
+  DSA_memcpy::memcpy(d_hh, s_hh, sizeof(HTTPHdrImpl));
   d_hh->m_fields_impl = d_mh; // restore pre-memcpy mime impl
 
   if (s_hh->m_polarity == HTTP_TYPE_REQUEST) {
@@ -417,7 +421,7 @@ http_hdr_print(HdrHeap *heap, HTTPHdrImpl *hdr, char *buf, int bufsize, int *buf
     if ((buf != nullptr) && (*dumpoffset == 0) && (bufsize - *bufindex >= hdr->u.req.m_len_method + 1)) { // fastpath
 
       p = buf + *bufindex;
-      memcpy(p, hdr->u.req.m_ptr_method, hdr->u.req.m_len_method);
+      DSA_memcpy::memcpy(p, hdr->u.req.m_ptr_method, hdr->u.req.m_len_method);
       p += hdr->u.req.m_len_method;
       *p++ = ' ';
       *bufindex += hdr->u.req.m_len_method + 1;
@@ -703,7 +707,7 @@ http_hdr_url_set(HdrHeap *heap, HTTPHdrImpl *hh, URLImpl *url)
     // Clone into new heap if the URL was allocated against a different heap
     if (reinterpret_cast<char *>(url) < heap->m_data_start || reinterpret_cast<char *>(url) >= heap->m_free_start) {
       hh->u.req.m_url_impl = static_cast<URLImpl *>(heap->allocate_obj(url->m_length, url->m_type));
-      memcpy(hh->u.req.m_url_impl, url, url->m_length);
+      DSA_memcpy::memcpy(hh->u.req.m_url_impl, url, url->m_length);
       // Make sure there is a read_write heap
       if (heap->m_read_write_heap.get() == nullptr) {
         int url_string_length   = url->strings_length();
@@ -1966,7 +1970,7 @@ HTTPCacheAlt::copy(HTTPCacheAlt *to_copy)
   m_unmarshal_len = to_copy->m_unmarshal_len;
   m_id            = to_copy->m_id;
   m_rid           = to_copy->m_rid;
-  memcpy(&m_object_key[0], &to_copy->m_object_key[0], CRYPTO_HASH_SIZE);
+  DSA_memcpy::memcpy(&m_object_key[0], &to_copy->m_object_key[0], CRYPTO_HASH_SIZE);
   m_object_size[0] = to_copy->m_object_size[0];
   m_object_size[1] = to_copy->m_object_size[1];
 
@@ -2002,7 +2006,7 @@ HTTPCacheAlt::copy_frag_offsets_from(HTTPCacheAlt *src)
     } else {
       m_frag_offsets = m_integral_frag_offsets;
     }
-    memcpy(m_frag_offsets, src->m_frag_offsets, sizeof(FragOffset) * m_frag_offset_count);
+    DSA_memcpy::memcpy(m_frag_offsets, src->m_frag_offsets, sizeof(FragOffset) * m_frag_offset_count);
   }
 }
 
@@ -2070,7 +2074,7 @@ HTTPInfo::marshal(char *buf, int len)
   //   live later.  This involves copying a few
   //   extra bytes now but will save copying any
   //   bytes on the way out of the cache
-  memcpy(buf, m_alt, sizeof(HTTPCacheAlt));
+  DSA_memcpy::memcpy(buf, m_alt, sizeof(HTTPCacheAlt));
   marshal_alt->m_magic         = CACHE_ALT_MAGIC_MARSHALED;
   marshal_alt->m_writeable     = 0;
   marshal_alt->m_unmarshal_len = -1;
@@ -2080,7 +2084,7 @@ HTTPInfo::marshal(char *buf, int len)
 
   if (m_alt->m_frag_offset_count > HTTPCacheAlt::N_INTEGRAL_FRAG_OFFSETS) {
     marshal_alt->m_frag_offsets = static_cast<FragOffset *>(reinterpret_cast<void *>(used));
-    memcpy(buf, m_alt->m_frag_offsets, m_alt->m_frag_offset_count * sizeof(FragOffset));
+    DSA_memcpy::memcpy(buf, m_alt->m_frag_offsets, m_alt->m_frag_offset_count * sizeof(FragOffset));
     buf += m_alt->m_frag_offset_count * sizeof(FragOffset);
     used += m_alt->m_frag_offset_count * sizeof(FragOffset);
   } else {
@@ -2222,8 +2226,8 @@ HTTPInfo::unmarshal_v24_1(char *buf, int len, RefCountObj *block_ref)
     }
     alt->m_frag_offsets =
       static_cast<FragOffset *>(ats_malloc(bcount * sizeof(FragOffset))); // WRONG - must round up to next power of 2.
-    memcpy(alt->m_frag_offsets, alt->m_integral_frag_offsets, sizeof(alt->m_integral_frag_offsets));
-    memcpy(alt->m_frag_offsets + HTTPCacheAlt::N_INTEGRAL_FRAG_OFFSETS, extra_src, extra);
+    DSA_memcpy::memcpy(alt->m_frag_offsets, alt->m_integral_frag_offsets, sizeof(alt->m_integral_frag_offsets));
+    DSA_memcpy::memcpy(alt->m_frag_offsets + HTTPCacheAlt::N_INTEGRAL_FRAG_OFFSETS, extra_src, extra);
     len -= extra;
   } else if (alt->m_frag_offset_count > 0) {
     alt->m_frag_offsets = alt->m_integral_frag_offsets;
@@ -2378,7 +2382,7 @@ HTTPInfo::push_frag_offset(FragOffset offset)
     // need more space than in integral storage and we're at an upgrade
     // size (power of 2).
     FragOffset *nf = static_cast<FragOffset *>(ats_malloc(sizeof(FragOffset) * (m_alt->m_frag_offset_count * 2)));
-    memcpy(nf, m_alt->m_frag_offsets, sizeof(FragOffset) * m_alt->m_frag_offset_count);
+    DSA_memcpy::memcpy(nf, m_alt->m_frag_offsets, sizeof(FragOffset) * m_alt->m_frag_offset_count);
     if (m_alt->m_frag_offsets != m_alt->m_integral_frag_offsets) {
       ats_free(m_alt->m_frag_offsets);
     }

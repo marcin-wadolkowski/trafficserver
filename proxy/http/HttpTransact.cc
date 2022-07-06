@@ -48,6 +48,10 @@
 #include "../IPAllow.h"
 #include "I_Machine.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 namespace
 {
 char const Dns_error_body[] = "connect#dns_failed";
@@ -1396,7 +1400,7 @@ HttpTransact::ModifyRequest(State *s)
   // Copy out buf to a hostname just in case its heap header memory is freed during coalescing
   // due to later HdrHeap operations
   char *hostname = static_cast<char *>(alloca(hostname_len + PORT_PADDING));
-  memcpy(hostname, buf, hostname_len);
+  DSA_memcpy::memcpy(hostname, buf, hostname_len);
 
   // Make clang analyzer happy. hostname is non-null iff request.is_target_in_url().
   ink_assert(hostname || s->hdr_info.client_req_is_server_style);
@@ -7797,7 +7801,7 @@ HttpTransact::build_request(State *s, HTTPHdr *base_request, HTTPHdr *outgoing_r
     int port = url->port_get();
     if (port != url_canonicalize_port(URL_TYPE_HTTP, 0)) {
       char *buf = static_cast<char *>(alloca(host_len + 15));
-      memcpy(buf, host, host_len);
+      DSA_memcpy::memcpy(buf, host, host_len);
       host_len += snprintf(buf + host_len, 15, ":%d", port);
       outgoing_request->value_set(MIME_FIELD_HOST, MIME_LEN_HOST, buf, host_len);
     } else {

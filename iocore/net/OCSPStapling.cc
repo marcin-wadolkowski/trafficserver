@@ -37,6 +37,10 @@
 #include "P_SSLUtils.h"
 #include "SSLStats.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // Maximum OCSP stapling response size.
 // This should be the response for a single certificate and will typically include the responder certificate chain,
 // so 10K should be more than enough.
@@ -174,7 +178,7 @@ stapling_cache_response(OCSP_RESPONSE *rsp, certinfo *cinf)
   }
 
   ink_mutex_acquire(&cinf->stapling_mutex);
-  memcpy(cinf->resp_der, resp_der, resp_derlen);
+  DSA_memcpy::memcpy(cinf->resp_der, resp_der, resp_derlen);
   cinf->resp_derlen = resp_derlen;
   cinf->is_expire   = false;
   cinf->expire_time = time(nullptr) + SSLConfigParams::ssl_ocsp_cache_timeout;
@@ -607,7 +611,7 @@ ssl_callback_ocsp_stapling(SSL *ssl, void *)
     return SSL_TLSEXT_ERR_NOACK;
   } else {
     unsigned char *p = static_cast<unsigned char *>(OPENSSL_malloc(cinf->resp_derlen));
-    memcpy(p, cinf->resp_der, cinf->resp_derlen);
+    DSA_memcpy::memcpy(p, cinf->resp_der, cinf->resp_derlen);
     ink_mutex_release(&cinf->stapling_mutex);
     SSL_set_tlsext_status_ocsp_resp(ssl, p, cinf->resp_derlen);
     Debug("ssl_ocsp", "ssl_callback_ocsp_stapling: successfully got certificate status for %s", cinf->certname);

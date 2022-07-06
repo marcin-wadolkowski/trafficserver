@@ -42,6 +42,10 @@
 #include <cstring>
 #include <sys/time.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 char *
 int64_to_str(char *buf, unsigned int buf_size, int64_t val, unsigned int *total_chars, unsigned int req_width, char pad_char)
 {
@@ -133,7 +137,7 @@ int64_to_str(char *buf, unsigned int buf_size, int64_t val, unsigned int *total_
 
   if (using_local_buffer) {
     if (num_chars <= buf_size) {
-      memcpy(buf, working_buf, num_chars);
+      DSA_memcpy::memcpy(buf, working_buf, num_chars);
       // out_buf is already pointing to buf
     } else {
       // data does not fit return nullptr
@@ -170,7 +174,7 @@ squid_timestamp_to_buf(char *buf, unsigned int buf_size, long timestamp_sec, lon
   unsigned int chars_to_write = num_chars_s + 3; // no eos
 
   if (buf_size >= chars_to_write) {
-    memcpy(buf, ts_s, chars_to_write);
+    DSA_memcpy::memcpy(buf, ts_s, chars_to_write);
     res = chars_to_write;
   } else {
     res = -(static_cast<int>(chars_to_write));

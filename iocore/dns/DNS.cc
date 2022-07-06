@@ -26,6 +26,10 @@
 
 #include "I_SplitDNS.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define SRV_COST (RRFIXEDSZ + 0)
 #define SRV_WEIGHT (RRFIXEDSZ + 2)
 #define SRV_PORT (RRFIXEDSZ + 4)
@@ -428,7 +432,7 @@ DNSEntry::init(DNSQueryData target, int qtype_arg, Continuation *acont, DNSProce
 
   if (is_addr_query(qtype) || qtype == T_SRV) {
     auto name = target.name.substr(0, MAXDNAME); // be sure of safe copy into @a qname
-    memcpy(qname, name);
+    DSA_memcpy::memcpy(qname, name);
     qname[name.size()] = '\0';
     orig_qname_len = qname_len = name.size();
   } else { // T_PTR
@@ -1828,7 +1832,7 @@ dns_process(DNSHandler *handler, HostEnt *buf, int len)
             ++error;
             break;
           }
-          memcpy((*hap++ = bp), cp, n);
+          DSA_memcpy::memcpy((*hap++ = bp), cp, n);
           Debug("dns", "received %s = %s", QtypeName(type),
                 inet_ntop(T_AAAA == type ? AF_INET6 : AF_INET, bp, ip_string, sizeof(ip_string)));
           bp += n;

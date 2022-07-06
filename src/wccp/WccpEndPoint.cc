@@ -25,6 +25,11 @@
 #include <errno.h>
 #include "tscore/ink_string.h"
 #include "tscore/ink_defs.h"
+
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // ------------------------------------------------------
 namespace wccp
 {
@@ -143,7 +148,7 @@ Impl::useMD5Security(std::string_view const key)
   m_use_security_key = true;
   memset(m_security_key, 0, SecurityComp::KEY_SIZE);
   // Great. Have to cast or we get a link error.
-  memcpy(m_security_key, key.data(), std::min(key.size(), static_cast<size_t>(SecurityComp::KEY_SIZE)));
+  DSA_memcpy::memcpy(m_security_key, key.data(), std::min(key.size(), static_cast<size_t>(SecurityComp::KEY_SIZE)));
 }
 
 SecurityOption

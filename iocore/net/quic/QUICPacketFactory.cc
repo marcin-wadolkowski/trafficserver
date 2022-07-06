@@ -25,6 +25,10 @@
 #include "QUICPacketProtectionKeyInfo.h"
 #include "QUICDebugNames.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using namespace std::literals;
 static constexpr std::string_view tag   = "quic_packet"sv;
 static constexpr std::string_view tag_v = "v_quic_packet"sv;
@@ -70,7 +74,7 @@ QUICPacketFactory::create(uint8_t *packet_buf, UDPConnection *udp_con, IpEndpoin
   // FIXME This is temporal. Receive IOBufferBlock from the caller.
   Ptr<IOBufferBlock> whole_data = make_ptr<IOBufferBlock>(new_IOBufferBlock());
   whole_data->alloc(iobuffer_size_to_index(len, BUFFER_SIZE_INDEX_32K));
-  memcpy(whole_data->start(), buf.get(), len);
+  DSA_memcpy::memcpy(whole_data->start(), buf.get(), len);
   whole_data->fill(len);
 
   QUICPacketType type;

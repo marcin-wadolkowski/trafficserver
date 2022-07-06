@@ -46,6 +46,10 @@
 #include "CacheDefs.h"
 #include "CacheScan.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using ts::Bytes;
 using ts::Megabytes;
 using ts::CacheStoreBlocks;
@@ -744,7 +748,7 @@ Span::loadDevice()
           span_hdr_size = round_up(sizeof(ts::SpanHeader) + (nspb - 1) * sizeof(ts::CacheStripeDescriptor));
           _header.reset(new (malloc(span_hdr_size)) ts::SpanHeader);
           if (span_hdr_size <= BUFF_SIZE) {
-            memcpy(static_cast<void *>(_header.get()), buff, span_hdr_size);
+            DSA_memcpy::memcpy(static_cast<void *>(_header.get()), buff, span_hdr_size);
           } else {
             // TODO - check the pread return
             ssize_t n = pread(fd, _header.get(), span_hdr_size, offset);

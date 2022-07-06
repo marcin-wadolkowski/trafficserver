@@ -27,6 +27,10 @@
 #include "P_Net.h"
 #include "P_SSLNetVConnection.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 void
 SSLProxySession::init(SSLNetVConnection const &new_vc)
 {
@@ -34,7 +38,7 @@ SSLProxySession::init(SSLNetVConnection const &new_vc)
   int length       = std::strlen(name) + 1;
   if (length > 1) {
     char *n = new char[length];
-    std::memcpy(n, name, length);
+    DSA_memcpy::memcpy(n, name, length);
     _client_sni_server_name.reset(n);
   }
   _client_provided_cert = new_vc.peer_provided_cert();

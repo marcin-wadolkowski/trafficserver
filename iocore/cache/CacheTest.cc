@@ -29,6 +29,10 @@
 #include <cmath>
 #include <cstdlib>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 CacheTestSM::CacheTestSM(RegressionTest *t, const char *name) : RegressionSM(t), cache_test_name(name)
 {
   SET_HANDLER(&CacheTestSM::event_handler);
@@ -38,7 +42,7 @@ CacheTestSM::CacheTestSM(const CacheTestSM &ao) : RegressionSM(ao)
 {
   int o = static_cast<int>((reinterpret_cast<char *>(&start_memcpy_on_clone)) - (reinterpret_cast<char *>(this)));
   int s = static_cast<int>((reinterpret_cast<char *>(&end_memcpy_on_clone)) - (reinterpret_cast<char *>(&start_memcpy_on_clone)));
-  memcpy((reinterpret_cast<char *>(this)) + o, ((char *)&ao) + o, s);
+  DSA_memcpy::memcpy((reinterpret_cast<char *>(this)) + o, ((char *)&ao) + o, s);
   SET_HANDLER(&CacheTestSM::event_handler);
 }
 

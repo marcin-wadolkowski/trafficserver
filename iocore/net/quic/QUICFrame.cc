@@ -30,6 +30,10 @@
 #include "QUICDebugNames.h"
 #include "QUICPacket.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define LEFT_SPACE(pos) ((size_t)(buf + len - pos))
 #define FRAME_SIZE(pos) (pos - buf)
 
@@ -201,7 +205,7 @@ QUICStreamFrame::parse(const uint8_t *buf, size_t len, const QUICPacketR *packet
   this->_block = make_ptr<IOBufferBlock>(new_IOBufferBlock());
   this->_block->alloc(BUFFER_SIZE_INDEX_32K);
   ink_assert(static_cast<uint64_t>(this->_block->write_avail()) > data_len);
-  memcpy(this->_block->start(), pos, data_len);
+  DSA_memcpy::memcpy(this->_block->start(), pos, data_len);
   this->_block->fill(data_len);
   pos += data_len;
   this->_size = FRAME_SIZE(pos);
@@ -428,7 +432,7 @@ QUICCryptoFrame::parse(const uint8_t *buf, size_t len, const QUICPacketR *packet
   this->_block = make_ptr<IOBufferBlock>(new_IOBufferBlock());
   this->_block->alloc(BUFFER_SIZE_INDEX_32K);
   ink_assert(static_cast<uint64_t>(this->_block->write_avail()) > data_len);
-  memcpy(this->_block->start(), pos, data_len);
+  DSA_memcpy::memcpy(this->_block->start(), pos, data_len);
   this->_block->fill(data_len);
   pos += data_len;
   this->_size = FRAME_SIZE(pos);
@@ -1423,7 +1427,7 @@ QUICConnectionCloseFrame::to_io_buffer_block(size_t limit) const
     // Reason Phrase (*)
     Ptr<IOBufferBlock> reason_block = make_ptr<IOBufferBlock>(new_IOBufferBlock());
     reason_block->alloc(iobuffer_size_to_index(this->_reason_phrase_length, BUFFER_SIZE_INDEX_32K));
-    memcpy(reinterpret_cast<uint8_t *>(reason_block->start()), this->_reason_phrase, this->_reason_phrase_length);
+    DSA_memcpy::memcpy(reinterpret_cast<uint8_t *>(reason_block->start()), this->_reason_phrase, this->_reason_phrase_length);
     reason_block->fill(this->_reason_phrase_length);
 
     // Append reason block to the first block
@@ -1448,11 +1452,11 @@ QUICConnectionCloseFrame::debug_msg(char *msg, size_t msg_len) const
   }
 
   if (this->reason_phrase_length() != 0 && this->reason_phrase() != nullptr) {
-    memcpy(msg + len, " reason=", 8);
+    DSA_memcpy::memcpy(msg + len, " reason=", 8);
     len += 8;
 
     int phrase_len = std::min(msg_len - len, static_cast<size_t>(this->reason_phrase_length()));
-    memcpy(msg + len, this->reason_phrase(), phrase_len);
+    DSA_memcpy::memcpy(msg + len, this->reason_phrase(), phrase_len);
     len += phrase_len;
     msg[len] = '\0';
     ++len;
@@ -2197,7 +2201,7 @@ QUICNewConnectionIdFrame::to_io_buffer_block(size_t limit) const
   n += written_len;
 
   // Stateless Reset Token (128)
-  memcpy(block_start + n, this->_stateless_reset_token.buf(), QUICStatelessResetToken::LEN);
+  DSA_memcpy::memcpy(block_start + n, this->_stateless_reset_token.buf(), QUICStatelessResetToken::LEN);
   n += QUICStatelessResetToken::LEN;
 
   block->fill(n);
@@ -2382,7 +2386,7 @@ QUICPathChallengeFrame::parse(const uint8_t *buf, size_t len, const QUICPacketR 
   }
 
   this->_data = ats_unique_malloc(QUICPathChallengeFrame::DATA_LEN);
-  memcpy(this->_data.get(), pos, QUICPathChallengeFrame::DATA_LEN);
+  DSA_memcpy::memcpy(this->_data.get(), pos, QUICPathChallengeFrame::DATA_LEN);
   this->_valid = true;
   this->_size  = FRAME_SIZE(pos) + QUICPathChallengeFrame::DATA_LEN;
 }
@@ -2428,7 +2432,7 @@ QUICPathChallengeFrame::to_io_buffer_block(size_t limit) const
   n += 1;
 
   // Data (64)
-  memcpy(block_start + n, this->data(), QUICPathChallengeFrame::DATA_LEN);
+  DSA_memcpy::memcpy(block_start + n, this->data(), QUICPathChallengeFrame::DATA_LEN);
   n += QUICPathChallengeFrame::DATA_LEN;
 
   block->fill(n);
@@ -2487,7 +2491,7 @@ QUICPathResponseFrame::to_io_buffer_block(size_t limit) const
   n += 1;
 
   // Data (64)
-  memcpy(block_start + n, this->data(), QUICPathChallengeFrame::DATA_LEN);
+  DSA_memcpy::memcpy(block_start + n, this->data(), QUICPathChallengeFrame::DATA_LEN);
   n += QUICPathChallengeFrame::DATA_LEN;
 
   block->fill(n);
@@ -2507,7 +2511,7 @@ QUICPathResponseFrame::parse(const uint8_t *buf, size_t len, const QUICPacketR *
   }
 
   this->_data = ats_unique_malloc(QUICPathChallengeFrame::DATA_LEN);
-  memcpy(this->_data.get(), pos, QUICPathChallengeFrame::DATA_LEN);
+  DSA_memcpy::memcpy(this->_data.get(), pos, QUICPathChallengeFrame::DATA_LEN);
   this->_valid = true;
   this->_size  = FRAME_SIZE(pos) + QUICPathChallengeFrame::DATA_LEN;
 }
@@ -2582,7 +2586,7 @@ QUICNewTokenFrame::parse(const uint8_t *buf, size_t len, const QUICPacketR *pack
   }
 
   this->_token = ats_unique_malloc(this->_token_length);
-  memcpy(this->_token.get(), pos, this->_token_length);
+  DSA_memcpy::memcpy(this->_token.get(), pos, this->_token_length);
   this->_valid = true;
   this->_size  = FRAME_SIZE(pos) + this->_token_length;
 }
@@ -2627,7 +2631,7 @@ QUICNewTokenFrame::to_io_buffer_block(size_t limit) const
   n += written_len;
 
   // Token (*)
-  memcpy(block_start + n, this->token(), this->token_length());
+  DSA_memcpy::memcpy(block_start + n, this->token(), this->token_length());
   n += this->token_length();
 
   block->fill(n);
@@ -3011,7 +3015,7 @@ QUICPathChallengeFrame *
 QUICFrameFactory::create_path_challenge_frame(uint8_t *buf, const uint8_t *data, QUICFrameId id, QUICFrameGenerator *owner)
 {
   ats_unique_buf challenge_data = ats_unique_malloc(QUICPathChallengeFrame::DATA_LEN);
-  memcpy(challenge_data.get(), data, QUICPathChallengeFrame::DATA_LEN);
+  DSA_memcpy::memcpy(challenge_data.get(), data, QUICPathChallengeFrame::DATA_LEN);
 
   new (buf) QUICPathChallengeFrame(std::move(challenge_data), id, owner);
   return reinterpret_cast<QUICPathChallengeFrame *>(buf);
@@ -3021,7 +3025,7 @@ QUICPathResponseFrame *
 QUICFrameFactory::create_path_response_frame(uint8_t *buf, const uint8_t *data, QUICFrameId id, QUICFrameGenerator *owner)
 {
   ats_unique_buf response_data = ats_unique_malloc(QUICPathResponseFrame::DATA_LEN);
-  memcpy(response_data.get(), data, QUICPathResponseFrame::DATA_LEN);
+  DSA_memcpy::memcpy(response_data.get(), data, QUICPathResponseFrame::DATA_LEN);
 
   new (buf) QUICPathResponseFrame(std::move(response_data), id, owner);
   return reinterpret_cast<QUICPathResponseFrame *>(buf);
@@ -3085,7 +3089,7 @@ QUICFrameFactory::create_new_token_frame(uint8_t *buf, const QUICResumptionToken
 {
   uint64_t token_len       = token.length();
   ats_unique_buf token_buf = ats_unique_malloc(token_len);
-  memcpy(token_buf.get(), token.buf(), token_len);
+  DSA_memcpy::memcpy(token_buf.get(), token.buf(), token_len);
 
   new (buf) QUICNewTokenFrame(std::move(token_buf), token_len, id, owner);
   return reinterpret_cast<QUICNewTokenFrame *>(buf);

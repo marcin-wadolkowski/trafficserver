@@ -82,6 +82,10 @@
 #include "tscore/ink_error.h"
 #include "tscore/ink_resolver.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define SPRINTF(x) (sprintf x)
 
 /*%
@@ -171,7 +175,7 @@ ink_res_mkquery(ink_res_state statp, int op,               /*!< opcode of query 
     NS_PUT32(0, cp);
     NS_PUT16(datalen, cp);
     if (datalen) {
-      memcpy(cp, data, datalen);
+      DSA_memcpy::memcpy(cp, data, datalen);
       cp += datalen;
     }
     hp->ancount = htons(1);

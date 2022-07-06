@@ -54,6 +54,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 void *low_load_addr  = NULL;
 void *high_load_addr = NULL;
 int heap_load_size   = 0;
@@ -82,7 +86,7 @@ load_string(const char *s, int len, int offset)
     len       = strlen(copy_from);
   }
   char *r = (char *)ats_malloc(len + 1);
-  memcpy(r, copy_from, len);
+  DSA_memcpy::memcpy(r, copy_from, len);
   r[len] = '\0';
   return r;
 }

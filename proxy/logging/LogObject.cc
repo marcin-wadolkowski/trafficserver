@@ -41,6 +41,10 @@
 #include <vector>
 #include <thread>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 static bool
 should_roll_on_time(Log::RollingEnabledValues roll)
 {
@@ -222,14 +226,14 @@ LogObject::generate_filenames(const char *log_dir, const char *basename, LogFile
   m_filename = static_cast<char *>(ats_malloc(total_len));
   m_basename = static_cast<char *>(ats_malloc(basename_len));
 
-  memcpy(m_filename, log_dir, dir_len);
+  DSA_memcpy::memcpy(m_filename, log_dir, dir_len);
   m_filename[dir_len++] = '/';
-  memcpy(&m_filename[dir_len], basename, len);
-  memcpy(m_basename, basename, len);
+  DSA_memcpy::memcpy(&m_filename[dir_len], basename, len);
+  DSA_memcpy::memcpy(m_basename, basename, len);
 
   if (ext_len) {
-    memcpy(&m_filename[dir_len + len], ext, ext_len);
-    memcpy(&m_basename[len], ext, ext_len);
+    DSA_memcpy::memcpy(&m_filename[dir_len + len], ext, ext_len);
+    DSA_memcpy::memcpy(&m_basename[len], ext, ext_len);
   }
   m_filename[total_len - 1]    = 0;
   m_basename[basename_len - 1] = 0;
@@ -579,7 +583,7 @@ LogObject::log(LogAccess *lad, std::string_view text_entry)
     ink_assert(bytes_needed >= bytes_used);
   } else if (!text_entry.empty()) {
     char *dst = &(*buffer)[offset];
-    memcpy(dst, text_entry.data(), text_entry.size());
+    DSA_memcpy::memcpy(dst, text_entry.data(), text_entry.size());
     memset(dst + text_entry.size(), 0, bytes_needed - text_entry.size());
   }
 

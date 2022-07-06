@@ -28,6 +28,10 @@
 
 #include "I_MIOBufferWriter.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 //
 // MIOBufferWriter
 //
@@ -53,7 +57,7 @@ MIOBufferWriter::write(const void *data_, size_t length)
       writeSize = length;
     }
 
-    std::memcpy(iobbPtr->end(), data, writeSize);
+    DSA_memcpy::memcpy(iobbPtr->end(), data, writeSize);
     iobbPtr->fill(writeSize);
 
     data += writeSize;

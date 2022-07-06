@@ -27,6 +27,10 @@
 #include "MgmtMarshall.h"
 #include "MgmtSocket.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 union MgmtMarshallAnyPtr {
   MgmtMarshallInt *m_int;
   MgmtMarshallLong *m_long;
@@ -175,7 +179,7 @@ buffer_read_buffer(const uint8_t *buf, size_t len, MgmtMarshallData *data)
     goto fail;
   }
 
-  memcpy(&(data->len), buf, 4);
+  DSA_memcpy::memcpy(&(data->len), buf, 4);
   buf += 4;
   len -= 4;
 
@@ -185,7 +189,7 @@ buffer_read_buffer(const uint8_t *buf, size_t len, MgmtMarshallData *data)
 
   if (data->len) {
     data->ptr = ats_malloc(data->len);
-    memcpy(data->ptr, buf, data->len);
+    DSA_memcpy::memcpy(data->ptr, buf, data->len);
   }
 
   return data->len + 4;
@@ -399,7 +403,7 @@ mgmt_message_marshall_v(void *buf, size_t remain, const MgmtMarshallType *fields
         goto nospace;
       }
       ptr.m_int = va_arg(ap, MgmtMarshallInt *);
-      memcpy(buf, ptr.m_int, 4);
+      DSA_memcpy::memcpy(buf, ptr.m_int, 4);
       nwritten = 4;
       break;
     case MGMT_MARSHALL_LONG:
@@ -407,7 +411,7 @@ mgmt_message_marshall_v(void *buf, size_t remain, const MgmtMarshallType *fields
         goto nospace;
       }
       ptr.m_long = va_arg(ap, MgmtMarshallLong *);
-      memcpy(buf, ptr.m_long, 8);
+      DSA_memcpy::memcpy(buf, ptr.m_long, 8);
       nwritten = 8;
       break;
     case MGMT_MARSHALL_STRING: {
@@ -424,8 +428,8 @@ mgmt_message_marshall_v(void *buf, size_t remain, const MgmtMarshallType *fields
         goto nospace;
       }
 
-      memcpy(buf, &data.len, 4);
-      memcpy(static_cast<uint8_t *>(buf) + 4, data.ptr, data.len);
+      DSA_memcpy::memcpy(buf, &data.len, 4);
+      DSA_memcpy::memcpy(static_cast<uint8_t *>(buf) + 4, data.ptr, data.len);
       nwritten = 4 + data.len;
       break;
     }
@@ -434,8 +438,8 @@ mgmt_message_marshall_v(void *buf, size_t remain, const MgmtMarshallType *fields
       if (remain < (4 + ptr.m_data->len)) {
         goto nospace;
       }
-      memcpy(buf, &(ptr.m_data->len), 4);
-      memcpy(static_cast<uint8_t *>(buf) + 4, ptr.m_data->ptr, ptr.m_data->len);
+      DSA_memcpy::memcpy(buf, &(ptr.m_data->len), 4);
+      DSA_memcpy::memcpy(static_cast<uint8_t *>(buf) + 4, ptr.m_data->ptr, ptr.m_data->len);
       nwritten = 4 + ptr.m_data->len;
       break;
     default:
@@ -483,7 +487,7 @@ mgmt_message_parse_v(const void *buf, size_t len, const MgmtMarshallType *fields
         goto nospace;
       }
       ptr.m_int = va_arg(ap, MgmtMarshallInt *);
-      memcpy(ptr.m_int, buf, 4);
+      DSA_memcpy::memcpy(ptr.m_int, buf, 4);
       nread = 4;
       break;
     case MGMT_MARSHALL_LONG:
@@ -491,7 +495,7 @@ mgmt_message_parse_v(const void *buf, size_t len, const MgmtMarshallType *fields
         goto nospace;
       }
       ptr.m_long = va_arg(ap, MgmtMarshallLong *);
-      memcpy(ptr.m_int, buf, 8);
+      DSA_memcpy::memcpy(ptr.m_int, buf, 8);
       nread = 8;
       break;
     case MGMT_MARSHALL_STRING: {

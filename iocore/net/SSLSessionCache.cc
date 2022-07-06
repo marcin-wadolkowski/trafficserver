@@ -26,6 +26,10 @@
 #include <cstring>
 #include <memory>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define SSLSESSIONCACHE_STRINGIFY0(x) #x
 #define SSLSESSIONCACHE_STRINGIFY(x) SSLSESSIONCACHE_STRINGIFY0(x)
 #define SSLSESSIONCACHE_LINENO SSLSESSIONCACHE_STRINGIFY(__LINE__)
@@ -212,7 +216,7 @@ SSLSessionBucket::getSessionBuffer(const SSLSessionID &id, char *buffer, int &le
     if (true_len < len) {
       len = true_len;
     }
-    memcpy(buffer, loc, len);
+    DSA_memcpy::memcpy(buffer, loc, len);
     return true_len;
   }
   return 0;

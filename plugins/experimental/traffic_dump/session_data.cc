@@ -38,6 +38,10 @@
 #include "global_variables.h"
 #include "transaction_data.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 namespace
 {
 /** The final string used to close a JSON session. */
@@ -316,7 +320,7 @@ SessionData::write_to_disk_no_lock(std::string_view content)
   char *pBuf = nullptr;
   // Allocate a buffer for aio writing
   if ((pBuf = static_cast<char *>(TSmalloc(sizeof(char) * content.size())))) {
-    memcpy(pBuf, content.data(), content.size());
+    DSA_memcpy::memcpy(pBuf, content.data(), content.size());
     if (TS_SUCCESS == TSAIOWrite(log_fd, write_offset, pBuf, content.size(), aio_cont)) {
       // Update offset within file and aio events count
       write_offset += content.size();

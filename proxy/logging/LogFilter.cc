@@ -42,6 +42,10 @@
 #include "Log.h"
 #include "tscore/SimpleTokenizer.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 const char *LogFilter::OPERATOR_NAME[] = {"MATCH", "CASE_INSENSITIVE_MATCH", "CONTAIN", "CASE_INSENSITIVE_CONTAIN"};
 const char *LogFilter::ACTION_NAME[]   = {"REJECT", "ACCEPT", "WIPE_FIELD_VALUE"};
 
@@ -487,7 +491,7 @@ LogFilterInt::_setValues(size_t n, int64_t *value)
   m_num_values = n;
   if (n) {
     m_value = new int64_t[n];
-    memcpy(m_value, value, n * sizeof(int64_t));
+    DSA_memcpy::memcpy(m_value, value, n * sizeof(int64_t));
   }
 }
 

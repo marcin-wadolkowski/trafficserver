@@ -30,6 +30,10 @@
 #include "records/P_RecCore.h"
 #include "records/P_RecProcess.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 const char *const HTTP2_CONNECTION_PREFACE = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 
 // Constant strings for pseudo headers
@@ -105,7 +109,7 @@ template <typename T> union byte_addressable_value {
 static void
 write_and_advance(byte_pointer &dst, const uint8_t *src, size_t length)
 {
-  memcpy(dst.u8, src, length);
+  DSA_memcpy::memcpy(dst.u8, src, length);
   dst.u8 += length;
 }
 
@@ -116,7 +120,7 @@ write_and_advance(byte_pointer &dst, uint32_t src)
 
   // cppcheck-suppress unreadVariable ; it's an union and be read as pval.bytes
   pval.value = htonl(src);
-  memcpy(dst.u8, pval.bytes, sizeof(pval.bytes));
+  DSA_memcpy::memcpy(dst.u8, pval.bytes, sizeof(pval.bytes));
   dst.u8 += sizeof(pval.bytes);
 }
 
@@ -127,7 +131,7 @@ write_and_advance(byte_pointer &dst, uint16_t src)
 
   // cppcheck-suppress unreadVariable ; it's an union and be read as pval.bytes
   pval.value = htons(src);
-  memcpy(dst.u8, pval.bytes, sizeof(pval.bytes));
+  DSA_memcpy::memcpy(dst.u8, pval.bytes, sizeof(pval.bytes));
   dst.u8 += sizeof(pval.bytes);
 }
 
@@ -142,7 +146,7 @@ template <unsigned N>
 static void
 memcpy_and_advance(uint8_t (&dst)[N], byte_pointer &src)
 {
-  memcpy(dst, src.u8, N);
+  DSA_memcpy::memcpy(dst, src.u8, N);
   src.u8 += N;
 }
 
@@ -612,7 +616,7 @@ http2_convert_header_from_1_1_to_2(HTTPHdr *headers)
       ts::LocalBuffer<char> buf(value_len + 1);
       char *path = buf.data();
       path[0]    = '/';
-      memcpy(path + 1, value, value_len);
+      DSA_memcpy::memcpy(path + 1, value, value_len);
 
       field->value_set(headers->m_heap, headers->m_mime, path, value_len + 1);
     } else {

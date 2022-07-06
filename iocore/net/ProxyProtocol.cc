@@ -32,6 +32,10 @@
 #include "tscore/ink_inet.h"
 #include "tscpp/util/TextView.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 namespace
 {
 using namespace std::literals;
@@ -440,7 +444,7 @@ proxy_protocol_v2_build(uint8_t *buf, size_t max_buf_len, const ProxyProtocol &p
 
   // Set len field (number of following bytes part of the header) in the hdr
   uint16_t len = htons(bw.size() - PPv2_CONNECTION_HEADER_LEN);
-  memcpy(buf + len_field_offset, &len, sizeof(uint16_t));
+  DSA_memcpy::memcpy(buf + len_field_offset, &len, sizeof(uint16_t));
   return bw.size();
 }
 

@@ -26,6 +26,10 @@
 #include "tscore/ink_assert.h"
 #include "tscore/ink_memory.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /****************************************************************************
  *
  *  Tokenizer.cc - A string tokenzier
@@ -43,7 +47,7 @@ Tokenizer::Tokenizer(const char *StrOfDelimiters)
   } else {
     length       = static_cast<int>(strlen(StrOfDelimiters) + 1);
     strOfDelimit = new char[length];
-    memcpy(strOfDelimit, StrOfDelimiters, length);
+    DSA_memcpy::memcpy(strOfDelimit, StrOfDelimiters, length);
   }
 
   memset(&start_node, 0, sizeof(tok_node));
@@ -252,7 +256,7 @@ Tokenizer::addToken(char *startAddr, int length)
     add_ptr           = startAddr;
   } else {
     add_ptr = static_cast<char *>(ats_malloc(length + 1));
-    memcpy(add_ptr, startAddr, length);
+    DSA_memcpy::memcpy(add_ptr, startAddr, length);
     add_ptr[length] = '\0';
   }
 

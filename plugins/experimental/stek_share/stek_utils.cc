@@ -36,6 +36,10 @@
 #include "stek_utils.h"
 #include "common.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 int
 get_good_random(char *buffer, int size, int need_good_entropy)
 {
@@ -75,7 +79,7 @@ generate_new_stek(ssl_ticket_key_t *return_stek, int entropy_ensured)
     return -1; /* couldn't generate new STEK */
   }
 
-  std::memcpy(return_stek, &new_key, SSL_TICKET_KEY_SIZE);
+  DSA_memcpy::memcpy(return_stek, &new_key, SSL_TICKET_KEY_SIZE);
   std::memset(&new_key, 0, SSL_TICKET_KEY_SIZE); // keep our stack clean
 
   return 0; /* success */

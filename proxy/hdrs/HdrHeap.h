@@ -37,6 +37,10 @@
 #include "tscore/Scalar.h"
 #include "HdrToken.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // Objects in the heap must currently be aligned to 8 byte boundaries,
 // so their (address & HDR_PTR_ALIGNMENT_MASK) == 0
 
@@ -100,13 +104,13 @@ obj_copy_data(HdrHeapObjImpl *s_obj, HdrHeapObjImpl *d_obj)
   int hdr_length = sizeof(HdrHeapObjImpl);
   src            = (char *)s_obj + hdr_length;
   dst            = (char *)d_obj + hdr_length;
-  memcpy(dst, src, d_obj->m_length - hdr_length);
+  DSA_memcpy::memcpy(dst, src, d_obj->m_length - hdr_length);
 }
 
 inline void
 obj_copy(HdrHeapObjImpl *s_obj, char *d_addr)
 {
-  memcpy(d_addr, (char *)s_obj, s_obj->m_length);
+  DSA_memcpy::memcpy(d_addr, (char *)s_obj, s_obj->m_length);
 }
 
 inline void
@@ -241,7 +245,7 @@ public:
     if (length > 0) {
       char *new_str = this->allocate_str(length);
       if (new_str) {
-        memcpy(new_str, string.data(), length);
+        DSA_memcpy::memcpy(new_str, string.data(), length);
       } else {
         length = 0;
       }
@@ -426,7 +430,7 @@ struct HeapCheck {
     if (str) {                                 \
       char *new_str = new_heap->allocate(len); \
       if (new_str)                             \
-        memcpy(new_str, str, len);             \
+        DSA_memcpy::memcpy(new_str, str, len);             \
       str = new_str;                           \
     }                                          \
   }

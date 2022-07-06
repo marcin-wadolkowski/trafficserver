@@ -27,6 +27,10 @@
 #include <memory.h>
 #include "tscore/ink_assert.h"
 
+#include "DSA_memcpy.h"
+using DSA::DSA_memcpy;
+
+
 struct ArenaBlock {
   ArenaBlock *next;
   char *m_heap_end;
@@ -159,7 +163,7 @@ Arena::str_store(const char *str, size_t len)
   char *mem;
 
   mem = str_alloc(len);
-  memcpy(mem, str, len);
+  DSA_memcpy::memcpy(mem, str, len);
   mem[len] = '\0';
 
   return mem;

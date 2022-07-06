@@ -27,6 +27,10 @@
 #include "I_Tasks.h"
 #include "CacheControl.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 struct ShowCache : public ShowCont {
   enum scan_type {
     scan_type_lookup,
@@ -607,7 +611,7 @@ ShowCache::handleCacheScanCallback(int event, Event *e)
 
     const char *mm = alt->request_get()->method_get(&ml);
 
-    memcpy(m, mm, ml);
+    DSA_memcpy::memcpy(m, mm, ml);
     m[ml] = 0;
 
     int res = CACHE_SCAN_RESULT_CONTINUE;

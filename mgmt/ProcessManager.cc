@@ -29,6 +29,10 @@
 #include "MgmtSocket.h"
 #include "tscore/I_Layout.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /*
  * Global ProcessManager
  */
@@ -61,7 +65,7 @@ read_management_message(int sockfd, MgmtMessageHdr **msg)
   size_t msg_size          = sizeof(MgmtMessageHdr) + hdr.data_len;
   MgmtMessageHdr *full_msg = static_cast<MgmtMessageHdr *>(ats_malloc(msg_size));
 
-  memcpy(full_msg, &hdr, sizeof(MgmtMessageHdr));
+  DSA_memcpy::memcpy(full_msg, &hdr, sizeof(MgmtMessageHdr));
   char *data_raw = reinterpret_cast<char *>(full_msg) + sizeof(MgmtMessageHdr);
 
   ret = mgmt_read_pipe(sockfd, data_raw, hdr.data_len);
@@ -249,7 +253,7 @@ ProcessManager::signalManager(int msg_id, const char *data_raw, int data_len)
   mh           = static_cast<MgmtMessageHdr *>(ats_malloc(sizeof(MgmtMessageHdr) + data_len));
   mh->msg_id   = msg_id;
   mh->data_len = data_len;
-  memcpy(reinterpret_cast<char *>(mh) + sizeof(MgmtMessageHdr), data_raw, data_len);
+  DSA_memcpy::memcpy(reinterpret_cast<char *>(mh) + sizeof(MgmtMessageHdr), data_raw, data_len);
   this->signalManager(mh);
 }
 
@@ -263,7 +267,7 @@ ProcessManager::signalManager(int msg_id, std::string_view text)
   auto body    = reinterpret_cast<char *>(mh + 1); // start of the message body.
   mh->msg_id   = msg_id;
   mh->data_len = text.size() + 1;
-  memcpy(body, text.data(), text.size());
+  DSA_memcpy::memcpy(body, text.data(), text.size());
   body[text.size()] = '\0';
 
   this->signalManager(mh);
@@ -366,7 +370,7 @@ ProcessManager::initLMConnection()
   mh_full->msg_id   = MGMT_SIGNAL_PID;
   mh_full->data_len = data_len;
 
-  memcpy(reinterpret_cast<char *>(mh_full) + sizeof(MgmtMessageHdr), &(pid), data_len);
+  DSA_memcpy::memcpy(reinterpret_cast<char *>(mh_full) + sizeof(MgmtMessageHdr), &(pid), data_len);
 
   if (mgmt_write_pipe(local_manager_sockfd, reinterpret_cast<char *>(mh_full), sizeof(MgmtMessageHdr) + data_len) <= 0) {
     Fatal("error writing message: %s", strerror(errno));

@@ -32,6 +32,11 @@
 
 #include "tscore/ink_config.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -603,9 +608,9 @@ path_join(ats_scoped_str const &lhs, ats_scoped_str const &rhs)
 
   ats_scoped_str x(ln + rn + 2);
 
-  memcpy(x, lhs, ln);
+  DSA_memcpy::memcpy(x, lhs, ln);
   x[ln] = '/';
-  memcpy(x + ln + 1, rptr, rn);
+  DSA_memcpy::memcpy(x + ln + 1, rptr, rn);
   x[ln + rn + 1] = 0; // terminate string.
 
   return x.release();

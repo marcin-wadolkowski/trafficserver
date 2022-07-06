@@ -37,6 +37,10 @@
 #include "tscore/MatcherUtils.h"
 #include "tscore/Tokenizer.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // char* readIntoBuffer(const char* file_path, const char* module_name,
 //                          int* read_size_ptr)
 //
@@ -507,7 +511,7 @@ parseConfigLine(char *line, matcher_line *p_line, const matcher_tags *tags)
           if (copyForward != nullptr) {
             // Perform the prior copy forward
             int bytesCopy = s - copyFrom;
-            memcpy(copyForward, copyFrom, s - copyFrom);
+            DSA_memcpy::memcpy(copyForward, copyFrom, s - copyFrom);
             ink_assert(bytesCopy > 0);
 
             copyForward += bytesCopy;
@@ -556,7 +560,7 @@ parseConfigLine(char *line, matcher_line *p_line, const matcher_tags *tags)
       //   we've pushed into the future
       if (copyForward != nullptr) {
         int toCopy = (s - 1) - copyFrom;
-        memcpy(copyForward, copyFrom, toCopy);
+        DSA_memcpy::memcpy(copyForward, copyFrom, toCopy);
         *(copyForward + toCopy) = '\0';
       }
 

@@ -27,6 +27,10 @@
 #include "tscore/Regression.h"
 #include "tscore/Random.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // #define LOOP_CHECK_MODE 1
 #ifdef LOOP_CHECK_MODE
 #define DIR_LOOP_THRESHOLD 1000
@@ -1012,7 +1016,7 @@ sync_cache_dir_on_shutdown()
     d->footer->sync_serial = d->header->sync_serial;
 
     CHECK_DIR(d);
-    memcpy(buf, d->raw_dir, dirlen);
+    DSA_memcpy::memcpy(buf, d->raw_dir, dirlen);
     size_t B    = d->header->sync_serial & 1;
     off_t start = d->skip + (B ? dirlen : 0);
     B           = pwrite(d->fd, buf, dirlen, start);
@@ -1138,7 +1142,7 @@ Lrestart:
       vol->header->sync_serial++;
       vol->footer->sync_serial = vol->header->sync_serial;
       CHECK_DIR(d);
-      memcpy(buf, vol->raw_dir, dirlen);
+      DSA_memcpy::memcpy(buf, vol->raw_dir, dirlen);
       vol->dir_sync_in_progress = true;
     }
     size_t B    = vol->header->sync_serial & 1;

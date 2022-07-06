@@ -46,6 +46,10 @@
 #include "QUICConfig.h"
 #include "QUICIntUtil.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using namespace std::literals;
 static constexpr std::string_view QUIC_DEBUG_TAG = "quic_net"sv;
 
@@ -1303,7 +1307,7 @@ QUICNetVConnection::_state_handshake_process_retry_packet(const QUICRetryPacketR
   // TODO: move packet->payload to _av_token
   this->_av_token_len = packet.token().length();
   this->_av_token     = ats_unique_malloc(this->_av_token_len);
-  memcpy(this->_av_token.get(), packet.token().buf(), this->_av_token_len);
+  DSA_memcpy::memcpy(this->_av_token.get(), packet.token().buf(), this->_av_token_len);
 
   this->_padder->set_av_token_len(this->_av_token_len);
 
@@ -1772,7 +1776,7 @@ QUICNetVConnection::_recv_and_ack(const QUICPacketR &packet, bool *has_non_probi
   uint8_t *payload            = payload_ubuf.get();
   size_t copied_len           = 0;
   for (auto b = packet.payload_block(); b; b = b->next) {
-    memcpy(payload + copied_len, b->start(), b->size());
+    DSA_memcpy::memcpy(payload + copied_len, b->start(), b->size());
     copied_len += b->size();
   }
   QUICPacketNumber packet_num = packet.packet_number();
@@ -1836,7 +1840,7 @@ QUICNetVConnection::_build_packet(uint8_t *packet_buf, QUICEncryptionLevel level
       if (this->_av_token) {
         token     = ats_unique_malloc(this->_av_token_len);
         token_len = this->_av_token_len;
-        memcpy(token.get(), this->_av_token.get(), token_len);
+        DSA_memcpy::memcpy(token.get(), this->_av_token.get(), token_len);
       } else {
         dcid = this->_original_quic_connection_id;
       }

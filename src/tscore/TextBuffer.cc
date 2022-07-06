@@ -27,6 +27,10 @@
 #include "tscore/ink_memory.h"
 #include "tscore/TextBuffer.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /****************************************************************************
  *
  *  TextBuffer.cc - A self-expanding buffer, primarily meant for strings
@@ -103,7 +107,7 @@ TextBuffer::copyFrom(const void *source, unsigned num_bytes)
     }
   }
 
-  memcpy(nextAdd, source, num_bytes);
+  DSA_memcpy::memcpy(nextAdd, source, num_bytes);
   spaceLeft -= num_bytes;
 
   nextAdd += num_bytes;

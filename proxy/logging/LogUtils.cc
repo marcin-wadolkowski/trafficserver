@@ -63,6 +63,10 @@
 #include "LogUtils.h"
 #include "LogLimits.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /*-------------------------------------------------------------------------
   LogUtils::timestamp_to_str
 
@@ -569,7 +573,7 @@ LogUtils::file_is_writeable(const char *full_filename, off_t *size_bytes, bool *
       if (slash) {
         size_t prefix_len = slash - full_filename + 1;
         prefix            = new char[prefix_len + 1];
-        memcpy(prefix, full_filename, prefix_len);
+        DSA_memcpy::memcpy(prefix, full_filename, prefix_len);
         prefix[prefix_len] = 0;
         dir                = prefix;
       } else {

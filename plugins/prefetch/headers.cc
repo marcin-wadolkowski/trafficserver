@@ -27,6 +27,10 @@
 #include "configs.h"
 #include "headers.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /**
  * @brief Remove a header (fully) from an TSMLoc / TSMBuffer.
  *
@@ -104,10 +108,10 @@ getHeader(TSMBuffer bufp, TSMLoc hdrLoc, const char *header, int headerlen, char
       int neededSpace = ((dst - value) + vlen + (dst == value ? 0 : 2));
       if (neededSpace < *valuelen) {
         if (!first) {
-          memcpy(dst, ", ", 2);
+          DSA_memcpy::memcpy(dst, ", ", 2);
           dst += 2;
         }
-        memcpy(dst, v, vlen);
+        DSA_memcpy::memcpy(dst, v, vlen);
         dst += vlen;
       }
     }

@@ -33,6 +33,10 @@
 #include "utils_internal.h"
 #include "tscpp/api/noncopyable.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using std::map;
 using std::string;
 using namespace atscppapi;
@@ -183,7 +187,7 @@ Transaction::setErrorBody(const std::string &page)
 {
   LOG_DEBUG("Transaction tshttptxn=%p setting error body page length: %lu", state_->txn_, page.length());
   char *body = static_cast<char *>(TSmalloc(page.length()));
-  memcpy(body, page.data(), page.length());
+  DSA_memcpy::memcpy(body, page.data(), page.length());
   TSHttpTxnErrorBodySet(state_->txn_, body, page.length(), nullptr); // Default to text/html
 }
 
@@ -192,7 +196,7 @@ Transaction::setErrorBody(const std::string &page, const std::string &mimetype)
 {
   LOG_DEBUG("Transaction tshttptxn=%p setting error body page length: %lu", state_->txn_, page.length());
   char *body = static_cast<char *>(TSmalloc(page.length()));
-  memcpy(body, page.data(), page.length());
+  DSA_memcpy::memcpy(body, page.data(), page.length());
   TSHttpTxnErrorBodySet(state_->txn_, body, page.length(), TSstrdup(mimetype.c_str()));
 }
 
@@ -399,7 +403,7 @@ Transaction::redirectTo(std::string const &url)
 {
   // Must re-alloc the string locally because ownership is transferred to the transaction.
   char *const buffer = static_cast<char *>(TSmalloc(url.size() + 1));
-  memcpy(buffer, url.c_str(), url.size());
+  DSA_memcpy::memcpy(buffer, url.c_str(), url.size());
   buffer[url.size()] = '\0';
   TSHttpTxnRedirectUrlSet(state_->txn_, buffer, url.size());
 }

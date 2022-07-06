@@ -36,6 +36,10 @@
 #include "IPAllow.h"
 #include "PluginFactory.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define modulePrefix "[ReverseProxy]"
 
 static bool remap_parse_config_bti(const char *path, BUILD_TABLE_INFO *bti);
@@ -894,7 +898,7 @@ process_regex_mapping_config(const char *from_host_lower, url_mapping *new_mappi
   str                               = new_mapping->toURL.host_get(&str_index); // reusing str and str_index
   reg_map->to_url_host_template_len = str_index;
   reg_map->to_url_host_template     = static_cast<char *>(ats_malloc(str_index));
-  memcpy(reg_map->to_url_host_template, str, str_index);
+  DSA_memcpy::memcpy(reg_map->to_url_host_template, str, str_index);
 
   return true;
 
@@ -1215,7 +1219,7 @@ remap_parse_config_bti(const char *path, BUILD_TABLE_INFO *bti)
       fromHost_lower = &fromHost_lower_buf[0];
     }
     // Canonicalize the hostname by making it lower case
-    memcpy(fromHost_lower, fromHost, fromHostLen);
+    DSA_memcpy::memcpy(fromHost_lower, fromHost, fromHostLen);
     fromHost_lower[fromHostLen] = 0;
     LowerCaseStr(fromHost_lower);
 

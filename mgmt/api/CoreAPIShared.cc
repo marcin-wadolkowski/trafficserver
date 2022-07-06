@@ -29,6 +29,10 @@
 #include "CoreAPIShared.h"
 #include "MgmtSocket.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // Forward declarations, used to be in the CoreAPIShared.h include file but
 // that doesn't make any sense since these are both statically declared. /leif
 static int poll_write(int fd, int timeout);
@@ -218,7 +222,7 @@ connectDirect(const char *host, int port, uint64_t /* timeout ATS_UNUSED */)
   if (!pHostent) {
     goto error;
   }
-  memcpy(reinterpret_cast<caddr_t>(&(name.sin_addr)), pHostent->h_addr, pHostent->h_length);
+  DSA_memcpy::memcpy(reinterpret_cast<caddr_t>(&(name.sin_addr)), pHostent->h_addr, pHostent->h_length);
 
   do {
     err = connect(sock, reinterpret_cast<struct sockaddr *>(&name), sizeof(name));

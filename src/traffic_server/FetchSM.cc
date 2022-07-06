@@ -28,6 +28,10 @@
 #include "PluginVC.h"
 #include "ts/ts.h" // Ugly, but we need a bunch of the public APIs here ... :-/
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define DEBUG_TAG "FetchSM"
 #define FETCH_LOCK_RETRY_TIME HRTIME_MSECONDS(10)
 
@@ -392,7 +396,7 @@ FetchSM::get_info_from_buffer(IOBufferReader *reader)
     header_done    = true;
     if (client_response_hdr.parse_resp(&http_parser, reader, &bytes_used, 0) == PARSE_RESULT_DONE) {
       if ((bytes_used > 0) && (bytes_used <= read_avail)) {
-        memcpy(info, buf, bytes_used);
+        DSA_memcpy::memcpy(info, buf, bytes_used);
         info += bytes_used;
         client_bytes += bytes_used;
       }
@@ -419,7 +423,7 @@ FetchSM::get_info_from_buffer(IOBufferReader *reader)
       read_done = blk->read_avail() - reader->start_offset;
 
       if ((read_done > 0) && ((read_done <= read_avail))) {
-        memcpy(info, buf, read_done);
+        DSA_memcpy::memcpy(info, buf, read_done);
         reader->consume(read_done);
         read_avail -= read_done;
         info += read_done;
@@ -454,7 +458,7 @@ FetchSM::get_info_from_buffer(IOBufferReader *reader)
       read_done = blk->read_avail() - reader->start_offset;
 
       if ((read_done > 0) && (read_done <= read_avail)) {
-        memcpy(info, buf, read_done);
+        DSA_memcpy::memcpy(info, buf, read_done);
         reader->consume(read_done);
         read_avail -= read_done;
         info += read_done;
@@ -698,7 +702,7 @@ FetchSM::ext_read_data(char *buf, size_t len)
 
     need = blk_len > wavail ? wavail : blk_len;
 
-    memcpy(&buf[already], start, need);
+    DSA_memcpy::memcpy(&buf[already], start, need);
     already += need;
 
     if (already >= static_cast<int64_t>(len)) {

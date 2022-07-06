@@ -28,6 +28,10 @@
 #include "tscore/ink_string.h"
 #include "tscore/ink_memory.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #if HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif
@@ -223,7 +227,7 @@ ink_filepath_merge(char *path, int pathsz, const char *rootpath, const char *add
     // Base the result path on the rootpath
     //
     keptlen = rootlen;
-    memcpy(path, rootpath, rootlen);
+    DSA_memcpy::memcpy(path, rootpath, rootlen);
 
     // Always '/' terminate the given root path
     //
@@ -271,7 +275,7 @@ ink_filepath_merge(char *path, int pathsz, const char *rootpath, const char *add
         // Otherwise append another backpath, including
         // trailing slash if present.
         //
-        memcpy(path + pathlen, "../", *next ? 3 : 2);
+        DSA_memcpy::memcpy(path + pathlen, "../", *next ? 3 : 2);
         pathlen += *next ? 3 : 2;
       } else {
         // otherwise crop the prior segment
@@ -296,7 +300,7 @@ ink_filepath_merge(char *path, int pathsz, const char *rootpath, const char *add
       if (*next) {
         seglen++;
       }
-      memcpy(path + pathlen, addpath, seglen);
+      DSA_memcpy::memcpy(path + pathlen, addpath, seglen);
       pathlen += seglen;
     }
 

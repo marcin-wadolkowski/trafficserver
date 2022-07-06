@@ -34,6 +34,10 @@
 #include "ssl_utils.h"
 #include "common.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 const uint64_t protocol_version = 2;
 
 int
@@ -55,11 +59,11 @@ encrypt_session(const char *session_data, int32_t session_data_len, const unsign
   // Transition the expiration time into a protocol version field.
   // Keeping it unnecessarily long at 64 bits to have consistency with previous version
   // Version 1, had a fixed expiration time of 2*3600 seconds
-  std::memcpy(data + offset, &protocol_version, sizeof(int64_t));
+  DSA_memcpy::memcpy(data + offset, &protocol_version, sizeof(int64_t));
   offset += sizeof(int64_t);
-  std::memcpy(data + offset, &session_data_len, sizeof(int32_t));
+  DSA_memcpy::memcpy(data + offset, &session_data_len, sizeof(int32_t));
   offset += sizeof(session_data_len);
-  std::memcpy(data + offset, session_data, session_data_len);
+  DSA_memcpy::memcpy(data + offset, session_data, session_data_len);
 
   std::memset(encrypted, 0, encrypted_size);
   ret = encrypt_encode64(key, key_length, data, data_len, encrypted, encrypted_size, &encrypted_len);
@@ -126,7 +130,7 @@ decrypt_session(const std::string &encrypted_data, const unsigned char *key, int
     if (ret < session_data_len) {
       session_data_len = ret;
     }
-    std::memcpy(session_data, ssl_sess_ptr, session_data_len);
+    DSA_memcpy::memcpy(session_data, ssl_sess_ptr, session_data_len);
   }
 
 Cleanup:
@@ -192,7 +196,7 @@ add_session(char *session_id, int session_id_len, const std::string &encrypted_s
     return -1;
   }
   TSSslSessionID sid;
-  memcpy(reinterpret_cast<char *>(sid.bytes), session_id, session_id_len);
+  DSA_memcpy::memcpy(reinterpret_cast<char *>(sid.bytes), session_id, session_id_len);
   sid.len = session_id_len;
   if (sid.len > sizeof(sid.bytes)) {
     sid.len = sizeof(sid.bytes);

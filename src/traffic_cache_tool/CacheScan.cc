@@ -27,6 +27,10 @@
 #include "../../proxy/hdrs/MIME.h"
 #include "../../proxy/hdrs/URL.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // using namespace ct;
 
 constexpr HdrHeapMarshalBlocks HTTP_ALT_MARSHAL_SIZE = ts::round_up(sizeof(HTTPCacheAlt));
@@ -294,8 +298,8 @@ CacheScan::unmarshal(char *buf, int len, RefCountObj *block_ref)
     }
     alt->m_frag_offsets =
       static_cast<uint64_t *>(ats_malloc(bcount * sizeof(uint64_t))); // WRONG - must round up to next power of 2.
-    memcpy(alt->m_frag_offsets, alt->m_integral_frag_offsets, sizeof(alt->m_integral_frag_offsets));
-    memcpy(alt->m_frag_offsets + HTTPCacheAlt::N_INTEGRAL_FRAG_OFFSETS, extra_src, extra);
+    DSA_memcpy::memcpy(alt->m_frag_offsets, alt->m_integral_frag_offsets, sizeof(alt->m_integral_frag_offsets));
+    DSA_memcpy::memcpy(alt->m_frag_offsets + HTTPCacheAlt::N_INTEGRAL_FRAG_OFFSETS, extra_src, extra);
     len -= extra;
   } else if (alt->m_frag_offset_count > 0) {
     alt->m_frag_offsets = alt->m_integral_frag_offsets;

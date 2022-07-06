@@ -34,6 +34,10 @@
 #include "ts/ts.h"
 #include "ts/remap.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 struct remap_line {
   int argc;
   char **argv; // store the originals
@@ -60,7 +64,7 @@ ParseArgIntoNv(const char *arg, char **n, char **v)
 
   size_t name_len = colon_pos - arg;
   *n              = static_cast<char *>(TSmalloc(name_len + 1));
-  memcpy(*n, arg, colon_pos - arg);
+  DSA_memcpy::memcpy(*n, arg, colon_pos - arg);
   (*n)[name_len] = '\0';
 
   size_t val_len = strlen(colon_pos + 1); // skip past the ':'
@@ -72,7 +76,7 @@ ParseArgIntoNv(const char *arg, char **n, char **v)
   }
 
   *v = static_cast<char *>(TSmalloc(val_len + 1));
-  memcpy(*v, colon_pos + 1, val_len);
+  DSA_memcpy::memcpy(*v, colon_pos + 1, val_len);
   (*v)[val_len] = '\0';
 
   TSDebug(PLUGIN_NAME, "\t name_len=%zu, val_len=%zu, %s=%s", name_len, val_len, *n, *v);

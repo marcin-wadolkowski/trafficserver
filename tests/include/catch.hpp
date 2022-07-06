@@ -11482,20 +11482,24 @@ namespace Catch {
 #include <iomanip>
 #include <limits>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 namespace Catch {
 namespace {
 
     int32_t convert(float f) {
         static_assert(sizeof(float) == sizeof(int32_t), "Important ULP matcher assumption violated");
         int32_t i;
-        std::memcpy(&i, &f, sizeof(f));
+        DSA_memcpy::memcpy(&i, &f, sizeof(f));
         return i;
     }
 
     int64_t convert(double d) {
         static_assert(sizeof(double) == sizeof(int64_t), "Important ULP matcher assumption violated");
         int64_t i;
-        std::memcpy(&i, &d, sizeof(d));
+        DSA_memcpy::memcpy(&i, &d, sizeof(d));
         return i;
     }
 

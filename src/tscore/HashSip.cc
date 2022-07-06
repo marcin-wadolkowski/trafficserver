@@ -11,6 +11,10 @@ https://github.com/floodyberry/siphash
 #include "tscore/HashSip.h"
 #include <cstring>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using namespace std;
 
 #define SIP_BLOCK_SIZE 8
@@ -63,12 +67,12 @@ ATSHash64Sip24::update(const void *data, size_t len)
     total_len += len;
 
     if (len + block_buffer_len < SIP_BLOCK_SIZE) {
-      memcpy(block_buffer + block_buffer_len, m, len);
+      DSA_memcpy::memcpy(block_buffer + block_buffer_len, m, len);
       block_buffer_len += len;
     } else {
       if (block_buffer_len > 0) {
         block_off = SIP_BLOCK_SIZE - block_buffer_len;
-        memcpy(block_buffer + block_buffer_len, m, block_off);
+        DSA_memcpy::memcpy(block_buffer + block_buffer_len, m, block_off);
 
         mi = U8TO64_LE(block_buffer);
         v3 ^= mi;
@@ -86,7 +90,7 @@ ATSHash64Sip24::update(const void *data, size_t len)
       }
 
       block_buffer_len = (len - block_off) & (SIP_BLOCK_SIZE - 1);
-      memcpy(block_buffer, m + block_off + blocks, block_buffer_len);
+      DSA_memcpy::memcpy(block_buffer, m + block_off + blocks, block_buffer_len);
     }
   }
 }

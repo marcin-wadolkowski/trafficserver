@@ -29,6 +29,10 @@
 #include <netinet/in.h>
 #include <mutex>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 namespace
 {
 Config globalConfig;
@@ -85,9 +89,9 @@ read_request(TSHttpTxn txnp, Config *const config)
 
       // set up feedback connect
       if (AF_INET == ip->sa_family) {
-        memcpy(&data->m_client_ip, ip, sizeof(sockaddr_in));
+        DSA_memcpy::memcpy(&data->m_client_ip, ip, sizeof(sockaddr_in));
       } else if (AF_INET6 == ip->sa_family) {
-        memcpy(&data->m_client_ip, ip, sizeof(sockaddr_in6));
+        DSA_memcpy::memcpy(&data->m_client_ip, ip, sizeof(sockaddr_in6));
       } else {
         delete data;
         return false;

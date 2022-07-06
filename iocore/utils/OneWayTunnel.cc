@@ -35,6 +35,10 @@
 #include "P_EventSystem.h"
 #include "I_OneWayTunnel.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // #define TEST
 
 //////////////////////////////////////////////////////////////////////////////
@@ -59,7 +63,7 @@ transfer_data(MIOBufferAccessor &in_buf, MIOBufferAccessor &out_buf)
   if (!n) {
     return;
   }
-  memcpy(in_buf.reader()->start(), out_buf.writer()->end(), n);
+  DSA_memcpy::memcpy(in_buf.reader()->start(), out_buf.writer()->end(), n);
   in_buf.reader()->consume(n);
   out_buf.writer()->fill(n);
 }

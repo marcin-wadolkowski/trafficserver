@@ -55,6 +55,11 @@
 #include "LogConfig.h"
 #include "Log.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 /*-------------------------------------------------------------------------
   LogFile::LogFile
 
@@ -558,7 +563,7 @@ LogFile::write_ascii_logbuffer(LogBufferHeader *buffer_header, int fd, const cha
       }
       ink_assert(fmt_buf_bytes < LOG_MAX_FORMATTED_BUFFER);
       ink_assert(fmt_line_bytes < LOG_MAX_FORMATTED_BUFFER - fmt_buf_bytes);
-      memcpy(&fmt_buf[fmt_buf_bytes], fmt_line, fmt_line_bytes);
+      DSA_memcpy::memcpy(&fmt_buf[fmt_buf_bytes], fmt_line, fmt_line_bytes);
       fmt_buf_bytes += fmt_line_bytes;
       ink_assert(fmt_buf_bytes < LOG_MAX_FORMATTED_BUFFER);
       fmt_buf[fmt_buf_bytes] = '\n'; // keep entries separate

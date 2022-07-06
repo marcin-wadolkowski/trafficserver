@@ -44,6 +44,10 @@
 #include <vector>
 #include <algorithm>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 struct SSLAddressLookupKey {
   explicit SSLAddressLookupKey(const IpEndpoint &ip)
   {
@@ -201,9 +205,9 @@ ticket_block_create(char *ticket_key_data, int ticket_key_len)
   for (unsigned i = 0; i < num_ticket_keys; ++i) {
     const char *data = (const char *)ticket_key_data + (i * sizeof(ssl_ticket_key_t));
 
-    memcpy(keyblock->keys[i].key_name, data, sizeof(keyblock->keys[i].key_name));
-    memcpy(keyblock->keys[i].hmac_secret, data + sizeof(keyblock->keys[i].key_name), sizeof(keyblock->keys[i].hmac_secret));
-    memcpy(keyblock->keys[i].aes_key, data + sizeof(keyblock->keys[i].key_name) + sizeof(keyblock->keys[i].hmac_secret),
+    DSA_memcpy::memcpy(keyblock->keys[i].key_name, data, sizeof(keyblock->keys[i].key_name));
+    DSA_memcpy::memcpy(keyblock->keys[i].hmac_secret, data + sizeof(keyblock->keys[i].key_name), sizeof(keyblock->keys[i].hmac_secret));
+    DSA_memcpy::memcpy(keyblock->keys[i].aes_key, data + sizeof(keyblock->keys[i].key_name) + sizeof(keyblock->keys[i].hmac_secret),
            sizeof(keyblock->keys[i].aes_key));
   }
 
@@ -544,7 +548,7 @@ reverse_dns_name(const char *hostname, char (&reversed)[TS_MAX_HOST_NAME_LEN + 1
     }
 
     ptr -= len;
-    memcpy(ptr, part, len);
+    DSA_memcpy::memcpy(ptr, part, len);
 
     // Skip to the next domain component. This will take us to either a '.' or a NUL.
     // If it's a '.' we need to skip over it.

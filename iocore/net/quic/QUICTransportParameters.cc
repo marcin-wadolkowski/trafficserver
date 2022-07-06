@@ -31,6 +31,10 @@
 #include "QUICTLS.h"
 #include "QUICTypes.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 static constexpr char tag[] = "quic_handshake";
 
 static constexpr int TRANSPORT_PARAMETERS_MAXIMUM_SIZE = 65535;
@@ -43,7 +47,7 @@ static constexpr uint32_t TP_ERROR_MUST_NOT_EXIST = 0x040000;
 QUICTransportParameters::Value::Value(const uint8_t *data, uint16_t len) : _len(len)
 {
   this->_data = static_cast<uint8_t *>(ats_malloc(len));
-  memcpy(this->_data, data, len);
+  DSA_memcpy::memcpy(this->_data, data, len);
 }
 
 QUICTransportParameters::Value::~Value()
@@ -265,7 +269,7 @@ QUICTransportParameters::store(uint8_t *buf, uint16_t *len) const
     p += l;
     QUICVariableInt::encode(p, TRANSPORT_PARAMETERS_MAXIMUM_SIZE, l, it.second->len());
     p += l;
-    memcpy(p, it.second->data(), it.second->len());
+    DSA_memcpy::memcpy(p, it.second->data(), it.second->len());
     p += it.second->len();
   }
 

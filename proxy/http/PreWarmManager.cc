@@ -31,6 +31,10 @@
 
 #include <algorithm>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define PreWarmSMDebug(fmt, ...) Debug("prewarm_sm", "[%p] " fmt, this, ##__VA_ARGS__);
 #define PreWarmSMVDebug(fmt, ...) Debug("v_prewarm_sm", "[%p] " fmt, this, ##__VA_ARGS__);
 
@@ -229,10 +233,10 @@ PreWarmSM::state_init(int event, void *data)
       char target[MAXDNAME];
       size_t target_len = 0;
 
-      memcpy(target, SRV_TUNNEL_TCP.data(), SRV_TUNNEL_TCP.size());
+      DSA_memcpy::memcpy(target, SRV_TUNNEL_TCP.data(), SRV_TUNNEL_TCP.size());
       target_len += SRV_TUNNEL_TCP.size();
 
-      memcpy(target + target_len, _dst->host.data(), _dst->host.size());
+      DSA_memcpy::memcpy(target + target_len, _dst->host.data(), _dst->host.size());
       target_len += _dst->host.size();
 
       PreWarmSMVDebug("lookup SRV by %.*s", (int)target_len, target);

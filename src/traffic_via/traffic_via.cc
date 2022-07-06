@@ -38,6 +38,10 @@
 #include <pcre.h>
 #endif
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define SUBSTRING_VECTOR_COUNT 30 // Should be multiple of 3
 
 static AppVersionInfo appVersionInfo;
@@ -235,7 +239,7 @@ decodeViaHeader(std::string_view text)
 
   char extender[6];
   if (text.size() == 5) { // add a trailing space in this case.
-    memcpy(extender, text.data(), text.size());
+    DSA_memcpy::memcpy(extender, text.data(), text.size());
     extender[5] = ' ';
     text        = std::string_view{extender, 6};
   }

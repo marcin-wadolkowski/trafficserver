@@ -26,6 +26,10 @@
 #include "tscore/ink_error.h"
 #include "tscore/ink_uuid.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 void
 ATSUuid::initialize(TSUuidVersion v)
 {
@@ -55,8 +59,8 @@ ATSUuid &
 ATSUuid::operator=(const ATSUuid &other)
 {
   if (this != &other) { // Self assignment guard
-    memcpy(_uuid.data, other._uuid.data, sizeof(_uuid.data));
-    memcpy(_string, other._string, sizeof(_string));
+    DSA_memcpy::memcpy(_uuid.data, other._uuid.data, sizeof(_uuid.data));
+    DSA_memcpy::memcpy(_string, other._string, sizeof(_string));
     _version = other._version;
   }
 

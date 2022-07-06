@@ -27,6 +27,10 @@
 #include "tscore/ink_defs.h"
 #include "tscore/ink_memory.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define QPACKDebug(fmt, ...) Debug("qpack", "[%s] " fmt, this->_qc->cids().data(), ##__VA_ARGS__)
 #define QPACKDTDebug(fmt, ...) Debug("qpack", "" fmt, ##__VA_ARGS__)
 
@@ -1839,8 +1843,8 @@ uint16_t
 QPACK::DynamicTableStorage::write(const char *name, uint16_t name_len, const char *value, uint16_t value_len)
 {
   uint16_t offset = (this->_head + 1) % this->_data_size;
-  memcpy(this->_data + offset, name, name_len);
-  memcpy(this->_data + offset + name_len, value, value_len);
+  DSA_memcpy::memcpy(this->_data + offset, name, name_len);
+  DSA_memcpy::memcpy(this->_data + offset + name_len, value, value_len);
 
   this->_head = (this->_head + (name_len + value_len)) % this->_data_size;
   if (this->_head > this->_overwrite_threshold) {

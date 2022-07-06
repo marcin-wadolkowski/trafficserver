@@ -33,6 +33,10 @@
 #include "tscpp/util/TextView.h"
 #include "tscore/ink_inet.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 IpAddr const IpAddr::INVALID;
 
 using namespace std::literals;
@@ -259,7 +263,7 @@ ats_ip_pton(const std::string_view &src, sockaddr *ip)
     // Copy if not terminated.
     if (0 != addr[addr.size() - 1]) {
       char *tmp = static_cast<char *>(alloca(addr.size() + 1));
-      memcpy(tmp, addr.data(), addr.size());
+      DSA_memcpy::memcpy(tmp, addr.data(), addr.size());
       tmp[addr.size()] = 0;
       addr             = std::string_view(tmp, addr.size());
     }
@@ -583,7 +587,7 @@ ats_ip_getbestaddrinfo(const char *host, IpEndpoint *ip4, IpEndpoint *ip6)
     // Copy if not terminated.
     if (0 != addr_text[addr_text.size() - 1]) {
       char *tmp = static_cast<char *>(alloca(addr_text.size() + 1));
-      memcpy(tmp, addr_text.data(), addr_text.size());
+      DSA_memcpy::memcpy(tmp, addr_text.data(), addr_text.size());
       tmp[addr_text.size()] = 0;
       addr_text             = std::string_view(tmp, addr_text.size());
     }

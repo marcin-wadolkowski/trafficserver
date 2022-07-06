@@ -39,6 +39,10 @@
 
 #include "I_Machine.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using namespace std::literals;
 
 bool
@@ -163,7 +167,7 @@ HttpTransactHeaders::insert_supported_methods_in_response(HTTPHdr *response, int
   p = value_buffer;
   for (i = 0; i < nmethods; i++) {
     if (method_output_lengths[i]) {
-      memcpy(p, methods[i], method_output_lengths[i]);
+      DSA_memcpy::memcpy(p, methods[i], method_output_lengths[i]);
       p += method_output_lengths[i];
       if (num_methods_supported > 1) {
         *p++ = ',';
@@ -671,7 +675,7 @@ HttpTransactHeaders::write_hdr_protocol_stack(char *hdr_string, size_t len, Prot
       if (v != proto_buf) {
         *hdr++ = separator;
       }
-      memcpy(hdr, v->data(), v->size());
+      DSA_memcpy::memcpy(hdr, v->data(), v->size());
       hdr += v->size();
     }
   } else {
@@ -682,7 +686,7 @@ HttpTransactHeaders::write_hdr_protocol_stack(char *hdr_string, size_t len, Prot
     if ((http_1_0_p || http_1_1_p) && hdr + 10 < limit) {
       bool tls_p = std::find_if(proto_buf, proto_end, [](std::string_view tag) { return IsPrefixOf("tls/"sv, tag); }) != proto_end;
 
-      memcpy(hdr, "http", 4);
+      DSA_memcpy::memcpy(hdr, "http", 4);
       hdr += 4;
       if (tls_p) {
         *hdr++ = 's';
@@ -696,10 +700,10 @@ HttpTransactHeaders::write_hdr_protocol_stack(char *hdr_string, size_t len, Prot
         if (http_2_p) {
           *hdr++ = '2';
         } else if (http_1_0_p) {
-          memcpy(hdr, "1.0", 3);
+          DSA_memcpy::memcpy(hdr, "1.0", 3);
           hdr += 3;
         } else if (http_1_1_p) {
-          memcpy(hdr, "1.1", 3);
+          DSA_memcpy::memcpy(hdr, "1.1", 3);
           hdr += 3;
         }
       }
@@ -775,13 +779,13 @@ HttpTransactHeaders::insert_via_header_in_request(HttpTransact::State *s, HTTPHd
   via_string += nstrcpy(via_string, s->http_config_param->proxy_hostname);
 
   *via_string++ = '[';
-  memcpy(via_string, Machine::instance()->uuid.getString(), TS_UUID_STRING_LEN);
+  DSA_memcpy::memcpy(via_string, Machine::instance()->uuid.getString(), TS_UUID_STRING_LEN);
   via_string += TS_UUID_STRING_LEN;
   *via_string++ = ']';
   *via_string++ = ' ';
   *via_string++ = '(';
 
-  memcpy(via_string, s->http_config_param->proxy_request_via_string, s->http_config_param->proxy_request_via_string_len);
+  DSA_memcpy::memcpy(via_string, s->http_config_param->proxy_request_via_string, s->http_config_param->proxy_request_via_string_len);
   via_string += s->http_config_param->proxy_request_via_string_len;
 
   if (s->txn_conf->insert_request_via_string > 1) {
@@ -792,7 +796,7 @@ HttpTransactHeaders::insert_via_header_in_request(HttpTransact::State *s, HTTPHd
     if (s->txn_conf->insert_request_via_string > 2) { // Highest verbosity
       via_string += nstrcpy(via_string, incoming_via);
     } else {
-      memcpy(via_string, incoming_via + VIA_CLIENT, VIA_SERVER - VIA_CLIENT);
+      DSA_memcpy::memcpy(via_string, incoming_via + VIA_CLIENT, VIA_SERVER - VIA_CLIENT);
       via_string += VIA_SERVER - VIA_CLIENT;
     }
     *via_string++ = ']';
@@ -827,7 +831,7 @@ HttpTransactHeaders::insert_hsts_header_in_response(HttpTransact::State *s, HTTP
   // add include subdomain if set
   if (s->txn_conf->proxy_response_hsts_include_subdomains) {
     hsts_string += length;
-    memcpy(hsts_string, include_subdomains, sizeof(include_subdomains) - 1);
+    DSA_memcpy::memcpy(hsts_string, include_subdomains, sizeof(include_subdomains) - 1);
     length += sizeof(include_subdomains) - 1;
   }
 
@@ -866,7 +870,7 @@ HttpTransactHeaders::insert_via_header_in_response(HttpTransact::State *s, HTTPH
   *via_string++ = ' ';
   *via_string++ = '(';
 
-  memcpy(via_string, s->http_config_param->proxy_response_via_string, s->http_config_param->proxy_response_via_string_len);
+  DSA_memcpy::memcpy(via_string, s->http_config_param->proxy_response_via_string, s->http_config_param->proxy_response_via_string_len);
   via_string += s->http_config_param->proxy_response_via_string_len;
 
   if (s->txn_conf->insert_response_via_string > 1) {
@@ -877,7 +881,7 @@ HttpTransactHeaders::insert_via_header_in_response(HttpTransact::State *s, HTTPH
     if (s->txn_conf->insert_response_via_string > 2) { // Highest verbosity
       via_string += nstrcpy(via_string, incoming_via);
     } else {
-      memcpy(via_string, incoming_via + VIA_CACHE, VIA_PROXY - VIA_CACHE);
+      DSA_memcpy::memcpy(via_string, incoming_via + VIA_CACHE, VIA_PROXY - VIA_CACHE);
       via_string += VIA_PROXY - VIA_CACHE;
     }
     *via_string++ = ']';

@@ -51,6 +51,10 @@
 #include "http/HttpSM.h"
 #include "tscore/TestBox.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // This used to be in InkAPITestTool.cc, which we'd just #include here... But that seemed silly.
 #define SDBG_TAG "SockServer"
 #define CDBG_TAG "SockClient"
@@ -612,7 +616,7 @@ synclient_txn_read_response(TSCont contp)
     const char *blockptr = TSIOBufferBlockReadStart(block, txn->resp_reader, &blocklen);
 
     if (txn->response_len + blocklen <= RESPONSE_MAX_SIZE) {
-      memcpy((txn->response + txn->response_len), blockptr, blocklen);
+      DSA_memcpy::memcpy((txn->response + txn->response_len), blockptr, blocklen);
       txn->response_len += blocklen;
     } else {
       TSError("Error: Response length %" PRId64 " > response buffer size %d", txn->response_len + blocklen, RESPONSE_MAX_SIZE);
@@ -695,7 +699,7 @@ synclient_txn_write_request(TSCont contp)
     block     = TSIOBufferStart(txn->req_buffer);
     ptr_block = TSIOBufferBlockWriteStart(block, &avail);
     towrite   = std::min(ntodo, avail);
-    memcpy(ptr_block, txn->request + ndone, towrite);
+    DSA_memcpy::memcpy(ptr_block, txn->request + ndone, towrite);
     TSIOBufferProduce(txn->req_buffer, towrite);
     ntodo -= towrite;
     ndone += towrite;
@@ -990,7 +994,7 @@ synserver_txn_write_response(TSCont contp)
     block     = TSIOBufferStart(txn->resp_buffer);
     ptr_block = TSIOBufferBlockWriteStart(block, &avail);
     towrite   = std::min(ntodo, avail);
-    memcpy(ptr_block, response + ndone, towrite);
+    DSA_memcpy::memcpy(ptr_block, response + ndone, towrite);
     TSIOBufferProduce(txn->resp_buffer, towrite);
     ntodo -= towrite;
     ndone += towrite;
@@ -1055,7 +1059,7 @@ synserver_txn_read_request(TSCont contp)
     const char *blockptr = TSIOBufferBlockReadStart(block, txn->req_reader, &blocklen);
 
     if (txn->request_len + blocklen <= REQUEST_MAX_SIZE) {
-      memcpy((txn->request + txn->request_len), blockptr, blocklen);
+      DSA_memcpy::memcpy((txn->request + txn->request_len), blockptr, blocklen);
       txn->request_len += blocklen;
     } else {
       TSError("Error: Request length %" PRId64 " > request buffer size %d", txn->request_len + blocklen, REQUEST_MAX_SIZE);
@@ -1645,7 +1649,7 @@ cache_handler(TSCont contp, TSEvent event, void *data)
       blockp    = TSIOBufferStart(cache_vconn->bufp);
       ptr_block = TSIOBufferBlockWriteStart(blockp, &avail);
       towrite   = ((ntodo < avail) ? ntodo : avail);
-      memcpy(ptr_block, content + ndone, towrite);
+      DSA_memcpy::memcpy(ptr_block, content + ndone, towrite);
       TSIOBufferProduce(cache_vconn->bufp, towrite);
       ntodo -= towrite;
       ndone += towrite;
@@ -3686,7 +3690,7 @@ test_url_print(TSMBuffer bufp, TSMLoc hdr_loc)
       break;
     }
 
-    memcpy(output_string + output_len, block_start, block_avail);
+    DSA_memcpy::memcpy(output_string + output_len, block_start, block_avail);
     output_len += block_avail;
 
     /* Consume the data so that we get to the next block */
@@ -4631,7 +4635,7 @@ REGRESSION_TEST(SDK_API_TSHttpHdr)(RegressionTest *test, int /* atype ATS_UNUSED
             break;
           }
 
-          memcpy(actual_iobuf + bytes_read, block_start, block_size);
+          DSA_memcpy::memcpy(actual_iobuf + bytes_read, block_start, block_size);
           bytes_read += block_size;
           TSIOBufferReaderConsume(iobufreader, block_size);
           iobufblock = TSIOBufferReaderStart(iobufreader);
@@ -5565,7 +5569,7 @@ convert_http_hdr_to_string(TSMBuffer bufp, TSMLoc hdr_loc)
       break;
     }
 
-    memcpy(output_string + output_len, block_start, block_avail);
+    DSA_memcpy::memcpy(output_string + output_len, block_start, block_avail);
     output_len += block_avail;
 
     /* Consume the data so that we get to the next block */
@@ -5772,7 +5776,7 @@ convert_mime_hdr_to_string(TSMBuffer bufp, TSMLoc hdr_loc)
       break;
     }
 
-    memcpy(output_string + output_len, block_start, block_avail);
+    DSA_memcpy::memcpy(output_string + output_len, block_start, block_avail);
     output_len += block_avail;
 
     /* Consume the data so that we get to the next block */
@@ -6383,7 +6387,7 @@ log_test_handler(TSCont contp, TSEvent event, void * /* edata ATS_UNUSED */)
   if (i < 0) {
     ink_string_concatenate_strings(meta_filename, ".", data->fullpath_logname, ".meta", NULL);
   } else {
-    memcpy(meta_filename, data->fullpath_logname, i + 1);
+    DSA_memcpy::memcpy(meta_filename, data->fullpath_logname, i + 1);
     ink_string_concatenate_strings(&meta_filename[i + 1], ".", &data->fullpath_logname[i + 1], ".meta", NULL);
   }
 
@@ -8948,7 +8952,7 @@ REGRESSION_TEST(SDK_API_ENCODING)(RegressionTest *test, int /* atype ATS_UNUSED 
   // test to verify TSStringPercentDecode does not write past the end of the
   // buffer
   const size_t buf_len = strlen(url3) + 1; // 81
-  memcpy(buf, url3, buf_len - 1);
+  DSA_memcpy::memcpy(buf, url3, buf_len - 1);
   const char canary = 0xFF;
   buf[buf_len - 1]  = canary;
 

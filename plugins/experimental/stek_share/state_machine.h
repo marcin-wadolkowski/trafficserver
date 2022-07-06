@@ -30,6 +30,11 @@ limitations under the License.
 #include "common.h"
 #include "stek_utils.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 class STEKShareSM : public nuraft::state_machine
 {
 public:
@@ -56,7 +61,7 @@ public:
 
     {
       std::lock_guard<std::mutex> l(stek_lock_);
-      std::memcpy(&stek_, byte_array, len);
+      DSA_memcpy::memcpy(&stek_, byte_array, len);
       received_stek_ = true;
     }
 
@@ -81,7 +86,7 @@ public:
     received_stek_ = false;
 
     if (std::memcmp(curr_stek, &stek_, SSL_TICKET_KEY_SIZE != 0)) {
-      std::memcpy(curr_stek, &stek_, SSL_TICKET_KEY_SIZE);
+      DSA_memcpy::memcpy(curr_stek, &stek_, SSL_TICKET_KEY_SIZE);
       return true;
     }
 
@@ -135,7 +140,7 @@ public:
     assert(len == SSL_TICKET_KEY_SIZE);
 
     ssl_ticket_key_t local_stek;
-    std::memcpy(&local_stek, byte_array, len);
+    DSA_memcpy::memcpy(&local_stek, byte_array, len);
 
     nuraft::ptr<nuraft::buffer> snp_buf  = s.serialize();
     nuraft::ptr<nuraft::snapshot> ss     = nuraft::snapshot::deserialize(*snp_buf);
@@ -158,7 +163,7 @@ public:
       std::lock_guard<std::mutex> l(snapshot_lock_);
       if (snapshot_ != nullptr) {
         std::lock_guard<std::mutex> ll(stek_lock_);
-        std::memcpy(&stek_, &snapshot_->stek_, SSL_TICKET_KEY_SIZE);
+        DSA_memcpy::memcpy(&stek_, &snapshot_->stek_, SSL_TICKET_KEY_SIZE);
         received_stek_ = true;
         return true;
       } else {
@@ -197,7 +202,7 @@ public:
     ssl_ticket_key_t local_stek;
     {
       std::lock_guard<std::mutex> l(stek_lock_);
-      std::memcpy(&local_stek, &stek_, SSL_TICKET_KEY_SIZE);
+      DSA_memcpy::memcpy(&local_stek, &stek_, SSL_TICKET_KEY_SIZE);
     }
 
     nuraft::ptr<nuraft::buffer> snp_buf  = s.serialize();

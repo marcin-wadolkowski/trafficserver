@@ -23,6 +23,10 @@
 
 #include "P_Cache.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define UINT_WRAP_LTE(_x, _y) (((_y) - (_x)) < INT_MAX) // exploit overflow
 #define UINT_WRAP_GTE(_x, _y) (((_x) - (_y)) < INT_MAX) // exploit overflow
 #define UINT_WRAP_LT(_x, _y) (((_x) - (_y)) >= INT_MAX) // exploit overflow
@@ -276,7 +280,7 @@ iobufferblock_memcpy(char *p, int len, IOBufferBlock *ab, int offset)
     if (bytes >= max_bytes) {
       bytes = max_bytes;
     }
-    ::memcpy(p, start + offset, bytes);
+    DSA_memcpy::memcpy(p, start + offset, bytes);
     p += bytes;
     len -= bytes;
     b      = b->next.get();
@@ -867,7 +871,7 @@ agg_copy(char *p, CacheVC *vc)
         ink_assert(!(((uintptr_t)&doc->hdr()[0]) & HDR_PTR_ALIGNMENT_MASK));
         ink_assert(vc->header_len == vc->write_vector->marshal(doc->hdr(), vc->header_len));
       } else {
-        memcpy(doc->hdr(), vc->header_to_write, vc->header_len);
+        DSA_memcpy::memcpy(doc->hdr(), vc->header_to_write, vc->header_len);
       }
       // the single fragment flag is not used in the write call.
       // putting it in for completeness.
@@ -926,7 +930,7 @@ agg_copy(char *p, CacheVC *vc)
     doc->sync_serial  = vc->vol->header->sync_serial;
     doc->write_serial = vc->vol->header->write_serial;
 
-    memcpy(p, doc, doc->len);
+    DSA_memcpy::memcpy(p, doc, doc->len);
 
     vc->dir = vc->overwrite_dir;
     dir_set_offset(&vc->dir, vc->vol->offset_to_vol_offset(o));

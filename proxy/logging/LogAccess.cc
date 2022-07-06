@@ -30,6 +30,10 @@
 #include "LogFormat.h"
 #include "LogBuffer.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 extern AppVersionInfo appVersionInfo;
 
 char INVALID_STR[] = "!INVALID_STR!";
@@ -71,7 +75,7 @@ LogAccess::init()
     // make a copy of the incoming url into the arena
     const char *url_string_ref = m_client_request->url_string_get_ref(&m_client_req_url_len);
     m_client_req_url_str       = m_arena.str_alloc(m_client_req_url_len + 1);
-    memcpy(m_client_req_url_str, url_string_ref, m_client_req_url_len);
+    DSA_memcpy::memcpy(m_client_req_url_str, url_string_ref, m_client_req_url_len);
     m_client_req_url_str[m_client_req_url_len] = '\0';
 
     m_client_req_url_canon_str =
@@ -298,7 +302,7 @@ LogAccess::marshal_record(char *record, char *buf)
   }
 
   ink_assert(num_chars <= max_chars);
-  memcpy(buf, out_buf, num_chars);
+  DSA_memcpy::memcpy(buf, out_buf, num_chars);
 
   return max_chars;
 }
@@ -360,7 +364,7 @@ LogAccess::marshal_mem(char *dest, const char *source, int actual_len, int padde
     actual_len = DEFAULT_STR_LEN;
     ink_assert(actual_len < padded_len);
   }
-  memcpy(dest, source, actual_len);
+  DSA_memcpy::memcpy(dest, source, actual_len);
   dest[actual_len] = 0; // add terminating null
 
 #ifdef DEBUG
@@ -408,7 +412,7 @@ LogAccess::marshal_ip(char *dest, sockaddr const *ip)
   }
 
   if (dest) {
-    memcpy(dest, &data, len);
+    DSA_memcpy::memcpy(dest, &data, len);
   }
   return INK_ALIGN_DEFAULT(len);
 }
@@ -557,7 +561,7 @@ LogAccess::unmarshal_int_to_str(char **buf, char *dest, int len)
   int val_len = unmarshal_itoa(val, val_buf + 127);
 
   if (val_len < len) {
-    memcpy(dest, val_buf + 128 - val_len, val_len);
+    DSA_memcpy::memcpy(dest, val_buf + 128 - val_len, val_len);
     return val_len;
   }
   return -1;
@@ -581,7 +585,7 @@ LogAccess::unmarshal_int_to_str_hex(char **buf, char *dest, int len)
   int val_len = unmarshal_itox(val, val_buf + 127);
 
   if (val_len < len) {
-    memcpy(dest, val_buf + 128 - val_len, val_len);
+    DSA_memcpy::memcpy(dest, val_buf + 128 - val_len, val_len);
     return val_len;
   }
   return -1;
@@ -768,12 +772,12 @@ LogAccess::unmarshal_str(char **buf, char *dest, int len, LogSlice *slice, LogEs
       return -1;
     }
 
-    memcpy(dest, (val_buf + offset), n);
+    DSA_memcpy::memcpy(dest, (val_buf + offset), n);
     return n;
   }
 
   if (val_len < len) {
-    memcpy(dest, val_buf, val_len);
+    DSA_memcpy::memcpy(dest, val_buf, val_len);
     return val_len;
   }
   return -1;
@@ -803,7 +807,7 @@ LogAccess::unmarshal_int_to_date_str(char **buf, char *dest, int len)
   char *strval  = LogUtils::timestamp_to_date_str(value);
   int strlen    = static_cast<int>(::strlen(strval));
 
-  memcpy(dest, strval, strlen);
+  DSA_memcpy::memcpy(dest, strval, strlen);
   return strlen;
 }
 
@@ -818,7 +822,7 @@ LogAccess::unmarshal_int_to_time_str(char **buf, char *dest, int len)
   char *strval  = LogUtils::timestamp_to_time_str(value);
   int strlen    = static_cast<int>(::strlen(strval));
 
-  memcpy(dest, strval, strlen);
+  DSA_memcpy::memcpy(dest, strval, strlen);
   return strlen;
 }
 
@@ -845,7 +849,7 @@ LogAccess::unmarshal_int_to_netscape_str(char **buf, char *dest, int len)
   char *strval  = LogUtils::timestamp_to_netscape_str(value);
   int strlen    = static_cast<int>(::strlen(strval));
 
-  memcpy(dest, strval, strlen);
+  DSA_memcpy::memcpy(dest, strval, strlen);
   return strlen;
 }
 
@@ -891,7 +895,7 @@ LogAccess::unmarshal_http_version(char **buf, char *dest, int len)
   char val_buf[128];
   char *p = val_buf;
 
-  memcpy(p, http, http_len);
+  DSA_memcpy::memcpy(p, http, http_len);
   p += http_len;
 
   int res1 = unmarshal_int_to_str(buf, p, 128 - http_len);
@@ -907,7 +911,7 @@ LogAccess::unmarshal_http_version(char **buf, char *dest, int len)
 
   int val_len = http_len + res1 + res2 + 1;
   if (val_len < len) {
-    memcpy(dest, val_buf, val_len);
+    DSA_memcpy::memcpy(dest, val_buf, val_len);
     return val_len;
   }
   return -1;
@@ -968,7 +972,7 @@ LogAccess::unmarshal_http_status(char **buf, char *dest, int len)
   int64_t val = unmarshal_int(buf);
   int val_len = unmarshal_itoa(val, val_buf + 127, 3, '0');
   if (val_len < len) {
-    memcpy(dest, val_buf + 128 - val_len, val_len);
+    DSA_memcpy::memcpy(dest, val_buf + 128 - val_len, val_len);
     return val_len;
   }
   return -1;
@@ -1151,7 +1155,7 @@ LogAccess::unmarshal_record(char **buf, char *dest, int len)
   int val_len   = static_cast<int>(::strlen(val_buf));
   *buf += MARSHAL_RECORD_LENGTH; // this is how it was stored
   if (val_len < len) {
-    memcpy(dest, val_buf, val_len);
+    DSA_memcpy::memcpy(dest, val_buf, val_len);
     return val_len;
   }
   return -1;
@@ -3008,7 +3012,7 @@ LogAccess::marshal_http_header_field(LogField::Container container, char *field,
       while (fld) {
         str = const_cast<char *>(fld->value_get(&actual_len));
         if (buf) {
-          memcpy(buf, str, actual_len);
+          DSA_memcpy::memcpy(buf, str, actual_len);
           buf += actual_len;
         }
         running_len += actual_len;
@@ -3019,7 +3023,7 @@ LogAccess::marshal_http_header_field(LogField::Container container, char *field,
         //
         if (fld != nullptr) {
           if (buf) {
-            memcpy(buf, ", ", 2);
+            DSA_memcpy::memcpy(buf, ", ", 2);
             buf += 2;
           }
           running_len += 2;
@@ -3110,7 +3114,7 @@ LogAccess::marshal_http_header_field_escapify(LogField::Container container, cha
         str     = const_cast<char *>(fld->value_get(&actual_len));
         new_str = LogUtils::escapify_url(&m_arena, str, actual_len, &new_len);
         if (buf) {
-          memcpy(buf, new_str, new_len);
+          DSA_memcpy::memcpy(buf, new_str, new_len);
           buf += new_len;
         }
         running_len += new_len;
@@ -3122,7 +3126,7 @@ LogAccess::marshal_http_header_field_escapify(LogField::Container container, cha
         constexpr size_t SEP_LEN   = sizeof(SEP) - 1;
         if (fld != nullptr) {
           if (buf) {
-            memcpy(buf, SEP, SEP_LEN);
+            DSA_memcpy::memcpy(buf, SEP, SEP_LEN);
             buf += SEP_LEN;
           }
           running_len += SEP_LEN;

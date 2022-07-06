@@ -18,6 +18,10 @@
 
 #include "mp4_meta.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 static mp4_atom_handler mp4_atoms[] = {{"ftyp", &Mp4Meta::mp4_read_ftyp_atom},
                                        {"moov", &Mp4Meta::mp4_read_moov_atom},
                                        {"mdat", &Mp4Meta::mp4_read_mdat_atom},
@@ -1869,7 +1873,7 @@ IOBufferReaderCopy(TSIOBufferReader readerp, void *buf, int64_t length)
     need  = length < avail ? length : avail;
 
     if (need > 0) {
-      memcpy(static_cast<char *>(buf) + n, start, need);
+      DSA_memcpy::memcpy(static_cast<char *>(buf) + n, start, need);
       length -= need;
       n += need;
     }

@@ -25,6 +25,10 @@
 
 #include <stdint.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /*
  * Always check for bound when decompressing.
  * Generally it is best to leave it defined.
@@ -112,7 +116,7 @@ fastlz_memmove(uint8_t *dest, const uint8_t *src, uint32_t count)
 static void
 fastlz_memcpy(uint8_t *dest, const uint8_t *src, uint32_t count)
 {
-  memcpy(dest, src, count);
+  DSA_memcpy::memcpy(dest, src, count);
 }
 
 #endif

@@ -28,6 +28,10 @@
 #include "tscore/ink_memory.h"
 #include "tscpp/util/LocalBuffer.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 //
 // [RFC 7541] 5.1. Integer representation
 //
@@ -100,7 +104,7 @@ xpack_decode_string(Arena &arena, char **str, uint64_t &str_length, const uint8_
   } else {
     *str = arena.str_alloc(encoded_string_len);
 
-    memcpy(*str, reinterpret_cast<const char *>(p), encoded_string_len);
+    DSA_memcpy::memcpy(*str, reinterpret_cast<const char *>(p), encoded_string_len);
 
     str_length = encoded_string_len;
   }
@@ -182,7 +186,7 @@ xpack_encode_string(uint8_t *buf_start, const uint8_t *buf_end, const char *valu
 
   // Value
   if (data_len) {
-    memcpy(p, data, data_len);
+    DSA_memcpy::memcpy(p, data, data_len);
     p += data_len;
   }
 

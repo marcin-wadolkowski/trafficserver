@@ -27,6 +27,10 @@
 #include "tscore/ink_memory.h"
 #include "tscore/ink_string.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 namespace wccp
 {
 // ------------------------------------------------------
@@ -132,7 +136,7 @@ CacheIdBox::fill(self const &src)
 {
   size_t n = src.getSize();
   this->require(src.getSize());
-  memcpy(m_base, src.m_base, n);
+  DSA_memcpy::memcpy(m_base, src.m_base, n);
   m_size = src.m_size;
   // If tail is set in src, use the same offset here.
   if (src.m_tail)
@@ -149,7 +153,7 @@ CacheIdBox::fill(void *base, self const &src)
   m_size = src.getSize();
   m_cap  = 0;
   m_base = static_cast<CacheIdElt *>(base);
-  memcpy(m_base, src.m_base, m_size);
+  DSA_memcpy::memcpy(m_base, src.m_base, m_size);
   return *this;
 }
 
@@ -498,7 +502,7 @@ SecurityComp::validate(MsgBuffer const &msg) const
     MD5_CTX ctx;
     char const *key = m_local_key ? m_key : m_default_key;
     // save the original hash aside.
-    memcpy(save, org, sizeof(save));
+    DSA_memcpy::memcpy(save, org, sizeof(save));
     // zero out the component hash area to compute the hash.
     memset(org, 0, sizeof(org));
     // Compute hash in to hash area.
@@ -509,7 +513,7 @@ SecurityComp::validate(MsgBuffer const &msg) const
     // check hash.
     zret = 0 == memcmp(org, save, sizeof(save));
     // restore original data.
-    memcpy(org, save, sizeof(save));
+    DSA_memcpy::memcpy(org, save, sizeof(save));
   }
   return zret;
 }
@@ -578,7 +582,7 @@ ServiceComp::fill(MsgBuffer &buffer, ServiceGroup const &svc)
 
   // Cast buffer to our serialized type, then cast to ServiceGroup
   // to get offset of that part of the serialization storage.
-  memcpy(
+  DSA_memcpy::memcpy(
     // This generates a gcc warning, but the next line doesn't. Yay.
     //    static_cast<ServiceGroup*>(reinterpret_cast<raw_t*>(m_base)),
     &static_cast<ServiceGroup &>(*reinterpret_cast<raw_t *>(m_base)), &svc, sizeof(svc));
@@ -1158,10 +1162,10 @@ AssignInfoComp::fill(MsgBuffer &buffer, detail::Assignment const &assign)
 
   this->setType(COMP_TYPE);
   this->keyElt() = assign.getKey();
-  memcpy(&(access_field(&raw_t::m_routers, m_base)), &ralist, ralist.getSize());
+  DSA_memcpy::memcpy(&(access_field(&raw_t::m_routers, m_base)), &ralist, ralist.getSize());
   // Set the pointer to the count of caches and write the count.
   m_cache_count = this->calcCacheCountPtr();
-  memcpy(m_cache_count, &ha, ha.getSize());
+  DSA_memcpy::memcpy(m_cache_count, &ha, ha.getSize());
 
   this->setLength(comp_size - HEADER_SIZE);
   buffer.use(comp_size);
@@ -1251,10 +1255,10 @@ AltHashAssignComp::fill(MsgBuffer &buffer, detail::Assignment const &assign)
     .setAssignType(ALT_HASH_ASSIGNMENT)
     .setAssignLength(comp_size - HEADER_SIZE - sizeof(local_header_t));
   this->keyElt() = assign.getKey();
-  memcpy(&(access_field(&raw_t::m_routers, m_base)), &ralist, ralist.getSize());
+  DSA_memcpy::memcpy(&(access_field(&raw_t::m_routers, m_base)), &ralist, ralist.getSize());
   // Set the pointer to the count of caches and write the count.
   m_cache_count = static_cast<uint32_t *>(this->calcVarPtr());
-  memcpy(m_cache_count, &ha, ha.getSize());
+  DSA_memcpy::memcpy(m_cache_count, &ha, ha.getSize());
 
   buffer.use(comp_size);
 
@@ -1305,9 +1309,9 @@ AltMaskAssignComp::fill(MsgBuffer &buffer, detail::Assignment const &assign)
     .setAssignLength(comp_size - HEADER_SIZE - sizeof(local_header_t));
   this->keyElt() = assign.getKey();
 
-  memcpy(&(access_field(&raw_t::m_routers, m_base)), &ralist, ralist.getSize());
+  DSA_memcpy::memcpy(&(access_field(&raw_t::m_routers, m_base)), &ralist, ralist.getSize());
   m_mask_elt = static_cast<MaskAssignElt *>(this->calcVarPtr());
-  memcpy(m_mask_elt, &ma, ma.getSize());
+  DSA_memcpy::memcpy(m_mask_elt, &ma, ma.getSize());
 
   buffer.use(comp_size);
 
@@ -1524,7 +1528,7 @@ AssignMapComp::fill(MsgBuffer &buffer, detail::Assignment const &assign)
     throw ts::Exception(BUFFER_TOO_SMALL_FOR_COMP_TEXT);
 
   m_base = buffer.getTail();
-  memcpy(&(access_field(&raw_t::m_assign, m_base)), &ma, ma_size);
+  DSA_memcpy::memcpy(&(access_field(&raw_t::m_assign, m_base)), &ma, ma_size);
   comp_size += ma_size - sizeof(ma);
 
   this->setType(COMP_TYPE).setLength(comp_size - HEADER_SIZE);

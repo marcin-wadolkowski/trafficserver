@@ -25,6 +25,10 @@
 #include "tscore/Diags.h"
 #include "P_SSLSNI.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 int TLSSNISupport::_ex_data_index = -1;
 
 void
@@ -152,7 +156,7 @@ TLSSNISupport::_set_sni_server_name(std::string_view name)
 {
   if (name.size()) {
     char *n = new char[name.size() + 1];
-    std::memcpy(n, name.data(), name.size());
+    DSA_memcpy::memcpy(n, name.data(), name.size());
     n[name.size()] = '\0';
     _sni_server_name.reset(n);
   }

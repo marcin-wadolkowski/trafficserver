@@ -50,6 +50,10 @@
 #include <pcre.h>
 #endif
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 static const char *PLUGIN_NAME = "regex_remap";
 
 // Constants
@@ -543,10 +547,10 @@ RemapRegex::substitute(char dest[], const char *src, const int ovector[], const 
       char *start = p1;
       int ix      = _sub_ix[i];
 
-      memcpy(p1, p2, _sub_pos[i] - prev);
+      DSA_memcpy::memcpy(p1, p2, _sub_pos[i] - prev);
       p1 += (_sub_pos[i] - prev);
       if (ix < 10) {
-        memcpy(p1, src + ovector[2 * ix], lengths[ix]);
+        DSA_memcpy::memcpy(p1, src + ovector[2 * ix], lengths[ix]);
         p1 += lengths[ix];
       } else {
         char buff[INET6_ADDRSTRLEN];
@@ -593,7 +597,7 @@ RemapRegex::substitute(char dest[], const char *src, const int ovector[], const 
         }
         // If one of the rules fetched a read-only string, copy it in.
         if (str && len > 0) {
-          memcpy(p1, str, len);
+          DSA_memcpy::memcpy(p1, str, len);
           p1 += len;
         }
       }
@@ -608,12 +612,12 @@ RemapRegex::substitute(char dest[], const char *src, const int ovector[], const 
       }
     }
 
-    memcpy(p1, p2, _subst_len - (p2 - _subst));
+    DSA_memcpy::memcpy(p1, p2, _subst_len - (p2 - _subst));
     p1 += _subst_len - (p2 - _subst);
     *p1 = 0; // Make sure it's NULL terminated (for safety).
     return p1 - dest;
   } else {
-    memcpy(dest, _subst, _subst_len + 1); // No substitutions in the string, copy it all
+    DSA_memcpy::memcpy(dest, _subst, _subst_len + 1); // No substitutions in the string, copy it all
     return _subst_len;
   }
 
@@ -843,7 +847,7 @@ TSRemapDeleteInstance(void *ih)
     if (ink_ctime_r(&tim, now)) {
       now[strlen(now) - 1] = '\0';
     } else {
-      memcpy(now, "unknown time", 12);
+      DSA_memcpy::memcpy(now, "unknown time", 12);
       *(now + 12) = '\0';
     }
 
@@ -947,33 +951,33 @@ TSRemapDoRemap(void *ih, TSHttpTxn txnp, TSRemapRequestInfo *rri)
         if (match_len > 16) {
           match_len = 16;
         }
-        memcpy(match_buf, method, match_len);
+        DSA_memcpy::memcpy(match_buf, method, match_len);
       }
     }
   }
 
   if (ri->host && req_url.host && req_url.host_len > 0) {
-    memcpy(match_buf + match_len, "//", 2);
-    memcpy(match_buf + match_len + 2, req_url.host, req_url.host_len);
+    DSA_memcpy::memcpy(match_buf + match_len, "//", 2);
+    DSA_memcpy::memcpy(match_buf + match_len + 2, req_url.host, req_url.host_len);
     match_len += (req_url.host_len + 2);
   }
 
   *(match_buf + match_len) = '/';
   match_len++;
   if (req_url.path && req_url.path_len > 0) {
-    memcpy(match_buf + match_len, req_url.path, req_url.path_len);
+    DSA_memcpy::memcpy(match_buf + match_len, req_url.path, req_url.path_len);
     match_len += (req_url.path_len);
   }
 
   if (ri->matrix_params && req_url.matrix && req_url.matrix_len > 0) {
     *(match_buf + match_len) = ';';
-    memcpy(match_buf + match_len + 1, req_url.matrix, req_url.matrix_len);
+    DSA_memcpy::memcpy(match_buf + match_len + 1, req_url.matrix, req_url.matrix_len);
     match_len += (req_url.matrix_len + 1);
   }
 
   if (ri->query_string && req_url.query && req_url.query_len > 0) {
     *(match_buf + match_len) = '?';
-    memcpy(match_buf + match_len + 1, req_url.query, req_url.query_len);
+    DSA_memcpy::memcpy(match_buf + match_len + 1, req_url.query, req_url.query_len);
     match_len += (req_url.query_len + 1);
   }
   match_buf[match_len] = '\0'; // NULL terminate the match string

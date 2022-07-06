@@ -23,6 +23,10 @@
 #include <string.h>
 #include <strings.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /** Compare views with ordering, ignoring case.
  *
  * @param lhs input view
@@ -95,5 +99,5 @@ strcmp(const std::string_view &lhs, const std::string_view &rhs)
 inline void *
 memcpy(void *dst, const std::string_view &src)
 {
-  return memcpy(dst, src.data(), src.size());
+  return DSA_memcpy::memcpy(dst, src.data(), src.size());
 }

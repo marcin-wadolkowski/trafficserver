@@ -25,6 +25,10 @@
 #include <iostream>
 #include <fcntl.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using namespace std;
 using namespace ts;
 
@@ -313,9 +317,9 @@ Stripe::updateHeaderFooter()
   // copy headers
   for (auto i : {A, B}) {
     // copy header
-    memcpy(meta_t, &_meta[i][HEAD], sizeof(StripeMeta));
+    DSA_memcpy::memcpy(meta_t, &_meta[i][HEAD], sizeof(StripeMeta));
     // copy freelist
-    memcpy(meta_t + sizeof(StripeMeta) - sizeof(uint16_t), this->freelist, this->_segments * sizeof(uint16_t));
+    DSA_memcpy::memcpy(meta_t + sizeof(StripeMeta) - sizeof(uint16_t), this->freelist, this->_segments * sizeof(uint16_t));
 
     ssize_t n = pwrite(_span->_fd, meta_t, hdr_size, _meta_pos[i][HEAD]);
     if (n < hdr_size) {
@@ -327,7 +331,7 @@ Stripe::updateHeaderFooter()
     }
     // copy dir entries
     dir_size = dir_size - hdr_size - ROUND_TO_STORE_BLOCK(sizeof(StripeMeta));
-    memcpy(meta_t, (char *)dir, dir_size);
+    DSA_memcpy::memcpy(meta_t, (char *)dir, dir_size);
     n = pwrite(_span->_fd, meta_t, dir_size, _meta_pos[i][HEAD] + hdr_size); //
     if (n < dir_size) {
       std::cout << "problem writing dir to disk: " << strerror(errno) << ":"
@@ -338,7 +342,7 @@ Stripe::updateHeaderFooter()
     }
 
     // copy footer,
-    memcpy(meta_t, &_meta[i][FOOT], sizeof(StripeMeta));
+    DSA_memcpy::memcpy(meta_t, &_meta[i][FOOT], sizeof(StripeMeta));
 
     int64_t footer_size = ROUND_TO_STORE_BLOCK(sizeof(StripeMeta));
     n                   = pwrite(_span->_fd, meta_t, footer_size, _meta_pos[i][FOOT]);

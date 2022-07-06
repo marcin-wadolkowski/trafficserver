@@ -34,6 +34,10 @@
 #include <lzma.h>
 #endif
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define REQUIRED_COMPRESSION 0.9 // must get to this size or declared incompressible
 #define REQUIRED_SHRINK 0.8      // must get to this size or keep original buffer (with padding)
 #define HISTORY_HYSTERIA 10      // extra temporary history
@@ -306,7 +310,7 @@ RamCacheCLFUS::get(CryptoHash *key, Ptr<IOBufferData> *ret_data, uint64_t auxkey
           IOBufferData *data = e->data.get();
           if (e->flag_bits.copy) {
             data = new_IOBufferData(iobuffer_size_to_index(e->len, MAX_BUFFER_SIZE_INDEX), MEMALIGNED);
-            ::memcpy(data->data(), e->data->data(), e->len);
+            DSA_memcpy::memcpy(data->data(), e->data->data(), e->len);
           }
           (*ret_data) = data;
         }
@@ -523,7 +527,7 @@ RamCacheCLFUS::compress_entries(EThread *thread, int do_at_most)
       if (l < e->len) {
         e->flag_bits.compressed = cache_config_ram_cache_compress;
         bb                      = static_cast<char *>(ats_malloc(l));
-        memcpy(bb, b, l);
+        DSA_memcpy::memcpy(bb, b, l);
         ats_free(b);
         e->compressed_len = l;
         int64_t delta     = (static_cast<int64_t>(l)) - static_cast<int64_t>(e->size);
@@ -534,7 +538,7 @@ RamCacheCLFUS::compress_entries(EThread *thread, int do_at_most)
         ats_free(b);
         e->flag_bits.compressed = 0;
         bb                      = static_cast<char *>(ats_malloc(e->len));
-        memcpy(bb, e->data->data(), e->len);
+        DSA_memcpy::memcpy(bb, e->data->data(), e->len);
         int64_t delta = (static_cast<int64_t>(e->len)) - static_cast<int64_t>(e->size);
         this->_bytes += delta;
         CACHE_SUM_DYN_STAT_THREAD(cache_ram_cache_bytes_stat, delta);
@@ -608,7 +612,7 @@ RamCacheCLFUS::put(CryptoHash *key, IOBufferData *data, uint32_t len, bool copy,
         e->data = data;
       } else {
         char *b = static_cast<char *>(ats_malloc(len));
-        memcpy(b, data->data(), len);
+        DSA_memcpy::memcpy(b, data->data(), len);
         e->data            = new_xmalloc_IOBufferData(b, len);
         e->data->_mem_type = DEFAULT_ALLOC;
         e->size            = size;
@@ -717,7 +721,7 @@ Linsert:
     e->data = data;
   } else {
     char *b = static_cast<char *>(ats_malloc(len));
-    memcpy(b, data->data(), len);
+    DSA_memcpy::memcpy(b, data->data(), len);
     e->data            = new_xmalloc_IOBufferData(b, len);
     e->data->_mem_type = DEFAULT_ALLOC;
   }

@@ -33,6 +33,11 @@
 #include "tscore/ink_apidefs.h"
 #include "tscore/BufferWriterForward.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 #if !TS_HAS_IN6_IS_ADDR_UNSPECIFIED
 #if defined(IN6_IS_ADDR_UNSPECIFIED)
 #undef IN6_IS_ADDR_UNSPECIFIED
@@ -740,7 +745,7 @@ ats_ip_copy(sockaddr *dst,      ///< Destination object.
   }
   if (n) {
     if (src != dst) {
-      memcpy(dst, src, n);
+      DSA_memcpy::memcpy(dst, src, n);
 #if HAVE_STRUCT_SOCKADDR_SA_LEN
       dst->sa_len = n;
 #endif
@@ -975,7 +980,7 @@ ats_ip6_set(sockaddr_in6 *dst,    ///< Destination storage.
   dst->sin6_len = sizeof(sockaddr_in6);
 #endif
   dst->sin6_family = AF_INET6;
-  memcpy(&dst->sin6_addr, &addr, sizeof addr);
+  DSA_memcpy::memcpy(&dst->sin6_addr, &addr, sizeof addr);
   dst->sin6_port = port;
   return ats_ip_sa_cast(dst);
 }

@@ -35,6 +35,10 @@
 #include "stek.h"
 #include "common.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define SSL_AES_KEY_SUFFIX "_aes_key"
 #define SSL_HMAC_KEY_SUFFIX "_hmac_key"
 
@@ -146,7 +150,7 @@ STEK_CreateNew(struct ssl_ticket_key_t *returnSTEK, int globalkey, int entropyEn
   if (globalkey) {
     ssl_key_lock.lock();
   }
-  memcpy(returnSTEK, &newKey, sizeof(struct ssl_ticket_key_t));
+  DSA_memcpy::memcpy(returnSTEK, &newKey, sizeof(struct ssl_ticket_key_t));
   if (globalkey) {
     ssl_key_lock.unlock();
   }
@@ -203,7 +207,7 @@ STEK_decrypt(const std::string &encrypted_data, const char *key, int key_length,
     goto Cleanup;
   }
 
-  memcpy(ret_STEK, decrypted, sizeof(struct ssl_ticket_key_t));
+  DSA_memcpy::memcpy(ret_STEK, decrypted, sizeof(struct ssl_ticket_key_t));
   memset(decrypted, 0, decrypted_size); // warm fuzzies
   ret = 0;
 
@@ -323,8 +327,8 @@ STEK_update(const std::string &encrypted_stek)
     if (memcmp(&newSTEK, &ssl_param.ticket_keys[0], sizeof(struct ssl_ticket_key_t)) != 0) {
       /* ... and it's a new one,  so we will now set and use it. */
       ssl_key_lock.lock();
-      memcpy(&ssl_param.ticket_keys[1], &ssl_param.ticket_keys[0], sizeof(struct ssl_ticket_key_t));
-      memcpy(&ssl_param.ticket_keys[0], &newSTEK, sizeof(struct ssl_ticket_key_t));
+      DSA_memcpy::memcpy(&ssl_param.ticket_keys[1], &ssl_param.ticket_keys[0], sizeof(struct ssl_ticket_key_t));
+      DSA_memcpy::memcpy(&ssl_param.ticket_keys[0], &newSTEK, sizeof(struct ssl_ticket_key_t));
 
       // Let TSAPI know about new ticket information
       stek_initialized = true;
@@ -432,8 +436,8 @@ STEK_init_keys()
     TSError("Can't init STEK.");
     return -1;
   }
-  memcpy(&ssl_param.ticket_keys[0], &initKey, sizeof(struct ssl_ticket_key_t));
-  memcpy(&ssl_param.ticket_keys[1], &initKey, sizeof(struct ssl_ticket_key_t));
+  DSA_memcpy::memcpy(&ssl_param.ticket_keys[0], &initKey, sizeof(struct ssl_ticket_key_t));
+  DSA_memcpy::memcpy(&ssl_param.ticket_keys[1], &initKey, sizeof(struct ssl_ticket_key_t));
   memset(&initKey, 0, sizeof(struct ssl_ticket_key_t));
 
   // Call into TSAPI to register the ticket info

@@ -44,6 +44,11 @@
 #include "LogUtils.h"
 #include "Log.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 // logcat-specific command-line flags
 static int squid_flag              = 0;
 static int follow_flag             = 0;
@@ -325,8 +330,8 @@ main(int /* argc ATS_UNUSED */, const char *argv[])
 
           char *out_filename = (char *)ats_malloc(copy_len + ascii_ext_len + 1);
 
-          memcpy(out_filename, file_arguments[i], copy_len);
-          memcpy(&out_filename[copy_len], LOG_FILE_ASCII_OBJECT_FILENAME_EXTENSION, ascii_ext_len);
+          DSA_memcpy::memcpy(out_filename, file_arguments[i], copy_len);
+          DSA_memcpy::memcpy(&out_filename[copy_len], LOG_FILE_ASCII_OBJECT_FILENAME_EXTENSION, ascii_ext_len);
           out_filename[copy_len + ascii_ext_len] = 0;
 
           out_fd = open_output_file(out_filename);

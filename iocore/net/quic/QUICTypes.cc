@@ -32,6 +32,10 @@
 #include "I_EventSystem.h"
 #include <openssl/hmac.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 uint8_t QUICConnectionId::SCID_LEN = 0;
 
 // TODO: move to somewhere in lib/ts/
@@ -227,7 +231,7 @@ QUICTypeUtil::read_QUICMaxData(const uint8_t *buf, size_t buf_len)
 void
 QUICTypeUtil::write_QUICConnectionId(QUICConnectionId connection_id, uint8_t *buf, size_t *len)
 {
-  memcpy(buf, connection_id, connection_id.length());
+  DSA_memcpy::memcpy(buf, connection_id, connection_id.length());
   *len = connection_id.length();
 }
 
@@ -442,24 +446,24 @@ QUICPreferredAddress::QUICPreferredAddress(const uint8_t *buf, uint16_t len)
 
   // ipv4Address
   in_addr_t addr_ipv4;
-  memcpy(&addr_ipv4, p, 4);
+  DSA_memcpy::memcpy(&addr_ipv4, p, 4);
   p += 4;
 
   // ipv4Port
   in_port_t port_ipv4;
-  memcpy(&port_ipv4, p, 2);
+  DSA_memcpy::memcpy(&port_ipv4, p, 2);
   p += 2;
 
   ats_ip4_set(&this->_endpoint_ipv4, addr_ipv4, port_ipv4);
 
   // ipv6Address
   in6_addr addr_ipv6;
-  memcpy(&addr_ipv6, p, 16);
+  DSA_memcpy::memcpy(&addr_ipv6, p, 16);
   p += TS_IP6_SIZE;
 
   // ipv6Port
   in_port_t port_ipv6;
-  memcpy(&port_ipv6, p, 2);
+  DSA_memcpy::memcpy(&port_ipv6, p, 2);
   p += 2;
 
   ats_ip6_set(&this->_endpoint_ipv6, addr_ipv6, port_ipv6);
@@ -526,11 +530,11 @@ QUICPreferredAddress::store(uint8_t *buf, uint16_t &len) const
 
   if (this->_endpoint_ipv4.isValid()) {
     // ipv4Address
-    memcpy(p, &ats_ip4_addr_cast(this->_endpoint_ipv4), 4);
+    DSA_memcpy::memcpy(p, &ats_ip4_addr_cast(this->_endpoint_ipv4), 4);
     p += 4;
 
     // ipv4Port
-    memcpy(p, &ats_ip_port_cast(this->_endpoint_ipv4), 2);
+    DSA_memcpy::memcpy(p, &ats_ip_port_cast(this->_endpoint_ipv4), 2);
     p += 2;
   } else {
     memset(p, 0, 6);
@@ -539,11 +543,11 @@ QUICPreferredAddress::store(uint8_t *buf, uint16_t &len) const
 
   if (this->_endpoint_ipv6.isValid()) {
     // ipv6Address
-    memcpy(p, &ats_ip6_addr_cast(this->_endpoint_ipv6), 16);
+    DSA_memcpy::memcpy(p, &ats_ip6_addr_cast(this->_endpoint_ipv6), 16);
     p += 16;
 
     // ipv6Port
-    memcpy(p, &ats_ip_port_cast(this->_endpoint_ipv6), 2);
+    DSA_memcpy::memcpy(p, &ats_ip_port_cast(this->_endpoint_ipv6), 2);
     p += 2;
   } else {
     memset(p, 0, 18);
@@ -558,7 +562,7 @@ QUICPreferredAddress::store(uint8_t *buf, uint16_t &len) const
   p += cid_len;
 
   // Token
-  memcpy(p, this->_token.buf(), 16);
+  DSA_memcpy::memcpy(p, this->_token.buf(), 16);
   p += 16;
 
   len = p - buf;
@@ -637,7 +641,7 @@ QUICConnectionId::QUICConnectionId()
 QUICConnectionId::QUICConnectionId(const uint8_t *buf, uint8_t len) : _len(len)
 {
   ink_assert(len <= QUICConnectionId::MAX_LENGTH);
-  memcpy(this->_id, buf, std::min(static_cast<int>(len), QUICConnectionId::MAX_LENGTH));
+  DSA_memcpy::memcpy(this->_id, buf, std::min(static_cast<int>(len), QUICConnectionId::MAX_LENGTH));
 }
 
 uint8_t

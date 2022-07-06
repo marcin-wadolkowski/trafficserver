@@ -32,6 +32,10 @@
 #include "HttpSM.h"
 #include "nexthop_test_stubs.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 HttpSM::HttpSM() : Continuation(nullptr), vc_table(this) {}
 void
 HttpSM::cleanup()
@@ -116,7 +120,7 @@ build_request(int64_t sm_id, HttpSM *sm, sockaddr_in *ip, const char *os_hostnam
   }
   sm->t_state.request_data.api_info = new HttpApiInfo();
   if (ip != nullptr) {
-    memcpy(&sm->t_state.request_data.src_ip.sa, ip, sizeof(sm->t_state.request_data.src_ip.sa));
+    DSA_memcpy::memcpy(&sm->t_state.request_data.src_ip.sa, ip, sizeof(sm->t_state.request_data.src_ip.sa));
   }
   sm->t_state.request_data.xact_start = time(0);
 

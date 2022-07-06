@@ -40,6 +40,10 @@
 #include "I_Cache.h"
 #include "I_HostDB.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // This assert is for internal API use only.
 #if TS_USE_FAST_SDK
 #define sdk_assert(EX) (void)(EX)
@@ -464,7 +468,7 @@ INKUDPSendTo(TSCont contp, INKUDPConn udp, unsigned int ip, int port, char *data
     len = index_to_buffer_size(BUFFER_SIZE_INDEX_32K) - 1;
   }
 
-  memcpy(blockp->start(), data, len);
+  DSA_memcpy::memcpy(blockp->start(), data, len);
   blockp->fill(len);
 
   packet->append_block((IOBufferBlock *)blockp);

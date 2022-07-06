@@ -37,6 +37,10 @@
 #include "tscore/MatcherUtils.h"
 #include "tscore/HostLookup.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /* --------------------------------------------------------------
    this file is built using "ParentSelection.cc as a template.
    -------------    ------------------------------------------------- */
@@ -349,7 +353,7 @@ SplitDNSRecord::ProcessDNSHosts(char *val)
 
     if ((MAXDNAME * 2 - 1) > totsz) {
       sz = strlen(current);
-      memcpy((m_servers.x_dns_ip_line + totsz), current, sz);
+      DSA_memcpy::memcpy((m_servers.x_dns_ip_line + totsz), current, sz);
       totsz += sz;
     }
   }
@@ -379,7 +383,7 @@ SplitDNSRecord::ProcessDefDomain(char *val)
 
   int len = 0;
   if (pTok[0] && 0 != (len = strlen(pTok[0]))) {
-    memcpy(&m_servers.x_def_domain[0], pTok[0], len);
+    DSA_memcpy::memcpy(&m_servers.x_def_domain[0], pTok[0], len);
     m_servers.x_def_domain[len] = '\0';
   }
 
@@ -413,7 +417,7 @@ SplitDNSRecord::ProcessDomainSrchList(char *val)
       break;
     }
 
-    memcpy(pSp, current, cnt);
+    DSA_memcpy::memcpy(pSp, current, cnt);
     pSp += (cnt + 1);
   }
 

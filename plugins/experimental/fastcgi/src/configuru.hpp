@@ -73,6 +73,11 @@ emil.ernerfeldt@gmail.com.
 #include <utility>
 #include <vector>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 #ifndef CONFIGURU_ONERROR
 #define CONFIGURU_ONERROR(message_str) throw std::runtime_error(message_str)
 #endif // CONFIGURU_ONERROR
@@ -1751,13 +1756,13 @@ Config::operator=(const Config &o)
   } else if (_type == Array) {
     _u.array = new ConfigArray(*o._u.array);
   } else {
-    memcpy(&_u, &o._u, sizeof(_u));
+    DSA_memcpy::memcpy(&_u, &o._u, sizeof(_u));
   }
 #else  // !CONFIGURU_VALUE_SEMANTICS:
   if (_type == String) {
     _u.str = new std::string(*o._u.str);
   } else {
-    memcpy(&_u, &o._u, sizeof(_u));
+    DSA_memcpy::memcpy(&_u, &o._u, sizeof(_u));
     if (_type == BadLookupType) {
       ++_u.bad_lookup->_ref_count;
     }

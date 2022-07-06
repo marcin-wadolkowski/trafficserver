@@ -32,6 +32,10 @@
 #include <unordered_set>
 #include <tscore/IpMapConf.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 SessionProtocolNameRegistry globalSessionProtocolNameRegistry;
 
 /* Protocol session well-known protocol names.
@@ -334,7 +338,7 @@ HttpProxyPort::processOptions(const char *opts)
   // Make a copy we can modify safely.
   size_t opts_len = strlen(opts) + 1;
   char *text      = static_cast<char *>(alloca(opts_len));
-  memcpy(text, opts, opts_len);
+  DSA_memcpy::memcpy(text, opts, opts_len);
 
   // Split the copy in to tokens.
   char *token = nullptr;
@@ -799,7 +803,7 @@ SessionProtocolNameRegistry::toIndex(ts::TextView name)
     if (m_n < MAX) {
       // Localize the name by copying it in to the arena.
       auto text = m_arena.alloc(name.size() + 1).rebind<char>();
-      memcpy(text.data(), name.data(), name.size());
+      DSA_memcpy::memcpy(text.data(), name.data(), name.size());
       text.end()[-1] = '\0';
       m_names[m_n]   = text.view();
       zret           = m_n++;

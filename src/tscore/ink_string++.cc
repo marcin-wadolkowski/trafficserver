@@ -36,6 +36,10 @@
 #include "tscore/ink_memory.h"
 #include "tscore/ink_align.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /***********************************************************************
  *                                                                     *
  *       StrList (doubly-linked list of string/length list cells)      *
@@ -84,7 +88,7 @@ StrList::_new_cell(const char *s, int len_not_counting_nul)
     if (buf == nullptr) {
       return (nullptr); // FIX: need to grow heap!
     }
-    memcpy(buf, s, l);
+    DSA_memcpy::memcpy(buf, s, l);
     buf[l] = '\0';
 
     cell->str = (const char *)buf;

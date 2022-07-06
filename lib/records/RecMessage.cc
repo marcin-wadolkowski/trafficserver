@@ -33,6 +33,10 @@
 #include "tscore/I_Layout.h"
 #include "tscpp/util/MemSpan.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 static RecMessageRecvCb g_recv_cb = nullptr;
 static void *g_recv_cookie        = nullptr;
 
@@ -124,30 +128,30 @@ RecMessageMarshal_Realloc(RecMessage *msg, const RecRecord *record)
   ele_hdr->magic  = REC_MESSAGE_ELE_MAGIC;
   ele_hdr->o_next = msg->o_write;
   p               = reinterpret_cast<char *>(ele_hdr) + sizeof(RecMessageEleHdr);
-  memcpy(p, record, sizeof(RecRecord));
+  DSA_memcpy::memcpy(p, record, sizeof(RecRecord));
   r = reinterpret_cast<RecRecord *>(p);
   p += sizeof(RecRecord);
   if (rec_name_len != -1) {
     ink_assert((msg->o_end - ((uintptr_t)p - (uintptr_t)msg)) >= (uintptr_t)rec_name_len);
-    memcpy(p, record->name, rec_name_len);
+    DSA_memcpy::memcpy(p, record->name, rec_name_len);
     r->name = (char *)((uintptr_t)p - (uintptr_t)r);
     p += rec_name_len;
   }
   if (rec_data_str_len != -1) {
     ink_assert((msg->o_end - ((uintptr_t)p - (uintptr_t)msg)) >= (uintptr_t)rec_data_str_len);
-    memcpy(p, record->data.rec_string, rec_data_str_len);
+    DSA_memcpy::memcpy(p, record->data.rec_string, rec_data_str_len);
     r->data.rec_string = (char *)((uintptr_t)p - (uintptr_t)r);
     p += rec_data_str_len;
   }
   if (rec_data_def_str_len != -1) {
     ink_assert((msg->o_end - ((uintptr_t)p - (uintptr_t)msg)) >= (uintptr_t)rec_data_def_str_len);
-    memcpy(p, record->data_default.rec_string, rec_data_def_str_len);
+    DSA_memcpy::memcpy(p, record->data_default.rec_string, rec_data_def_str_len);
     r->data_default.rec_string = (char *)((uintptr_t)p - (uintptr_t)r);
     p += rec_data_def_str_len;
   }
   if (rec_cfg_chk_len != -1) {
     ink_assert((msg->o_end - ((uintptr_t)p - (uintptr_t)msg)) >= (uintptr_t)rec_cfg_chk_len);
-    memcpy(p, record->config_meta.check_expr, rec_cfg_chk_len);
+    DSA_memcpy::memcpy(p, record->config_meta.check_expr, rec_cfg_chk_len);
     r->config_meta.check_expr = (char *)((uintptr_t)p - (uintptr_t)r);
   }
 
@@ -270,7 +274,7 @@ RecMessageReadFromDisk(const char *fpath)
     goto Lerror;
   }
   msg = static_cast<RecMessage *>(ats_malloc((msg_hdr.o_end - msg_hdr.o_start) + sizeof(RecMessageHdr)));
-  memcpy(msg, &msg_hdr, sizeof(RecMessageHdr));
+  DSA_memcpy::memcpy(msg, &msg_hdr, sizeof(RecMessageHdr));
   if (RecSnapFileRead(h_file, reinterpret_cast<char *>(msg) + msg_hdr.o_start, msg_hdr.o_end - msg_hdr.o_start, &bytes_read) ==
       REC_ERR_FAIL) {
     goto Lerror;

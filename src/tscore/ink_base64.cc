@@ -33,6 +33,10 @@
 #include "tscore/ink_base64.h"
 #include "tscore/ink_assert.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // TODO: The code here seems a bit klunky, and could probably be improved a bit.
 
 bool
@@ -71,7 +75,7 @@ ats_base64_encode(const unsigned char *inBuffer, size_t inBufferSize, char *outB
     }
   } else {
     memset(in_tail, 0, sizeof(in_tail));
-    memcpy(in_tail, inBuffer, inBufferSize);
+    DSA_memcpy::memcpy(in_tail, inBuffer, inBufferSize);
 
     *(obuf)     = _codes[(in_tail[0] >> 2) & 077];
     *(obuf + 1) = _codes[((in_tail[0] & 03) << 4) | ((in_tail[1] >> 4) & 017)];

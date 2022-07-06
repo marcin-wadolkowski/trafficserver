@@ -5,6 +5,9 @@
  */
 
 #include "swoc/ArenaWriter.h"
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
 
 namespace swoc { inline namespace SWOC_VERSION_NS {
 
@@ -41,7 +44,7 @@ ArenaWriter::realloc(size_t n) {
   auto span                    = _arena.require(n).remnant().rebind<char>();
   const_cast<char *&>(_buffer) = span.data();
   _capacity                    = span.size();
-  memcpy(_buffer, text.data(), text.size());
+  DSA_memcpy::memcpy(_buffer, text.data(), text.size());
 }
 
 }} // namespace swoc::SWOC_VERSION_NS

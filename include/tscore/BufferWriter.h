@@ -35,6 +35,11 @@
 #include "tscpp/util/MemSpan.h"
 #include "tscore/BufferWriterForward.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 namespace ts
 {
 /** Base (abstract) class for concrete buffer writers.
@@ -259,9 +264,9 @@ public:
 
     if (_buf) {
       if (newSize <= _capacity) {
-        std::memcpy(_buf + _attempted, data, length);
+        DSA_memcpy::memcpy(_buf + _attempted, data, length);
       } else if (_attempted < _capacity) {
-        std::memcpy(_buf + _attempted, data, _capacity - _attempted);
+        DSA_memcpy::memcpy(_buf + _attempted, data, _capacity - _attempted);
       }
     }
     _attempted = newSize;
@@ -426,7 +431,7 @@ public:
   /// Any data in @a that is copied over.
   LocalBufferWriter(const LocalBufferWriter &that) : FixedBufferWriter(_arr, N)
   {
-    std::memcpy(_arr, that._arr, that.size());
+    DSA_memcpy::memcpy(_arr, that._arr, that.size());
     _attempted = that._attempted;
   }
 
@@ -435,7 +440,7 @@ public:
   template <size_t K> LocalBufferWriter(const LocalBufferWriter<K> &that) : FixedBufferWriter(_arr, N)
   {
     size_t n = std::min(N, that.size());
-    std::memcpy(_arr, that.data(), n);
+    DSA_memcpy::memcpy(_arr, that.data(), n);
     // if a bigger space here, don't leave a gap between size and attempted.
     _attempted = N > K ? n : that.extent();
   }
@@ -447,7 +452,7 @@ public:
   {
     if (this != &that) {
       _attempted = that.extent();
-      std::memcpy(_buf, that._buf, that.size());
+      DSA_memcpy::memcpy(_buf, that._buf, that.size());
     }
 
     return *this;
@@ -462,7 +467,7 @@ public:
     size_t n = std::min(N, that.size());
     // if a bigger space here, don't leave a gap between size and attempted.
     _attempted = N > K ? n : that.extent();
-    std::memcpy(_arr, that.data(), n);
+    DSA_memcpy::memcpy(_arr, that.data(), n);
     return *this;
   }
 

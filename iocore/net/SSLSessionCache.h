@@ -32,6 +32,11 @@
 #include <mutex>
 #include <shared_mutex>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 #define SSL_MAX_SESSION_SIZE 256
 #define SSL_MAX_ORIG_SESSION_SIZE 4096
 
@@ -52,14 +57,14 @@ struct SSLSessionID : public TSSslSessionID {
   {
     len = l;
     ink_release_assert(l <= sizeof(bytes));
-    memcpy(bytes, s, l);
+    DSA_memcpy::memcpy(bytes, s, l);
     hash();
   }
 
   SSLSessionID(const SSLSessionID &other)
   {
     if (other.len)
-      memcpy(bytes, other.bytes, other.len);
+      DSA_memcpy::memcpy(bytes, other.bytes, other.len);
 
     len = other.len;
     hash();
@@ -78,7 +83,7 @@ struct SSLSessionID : public TSSslSessionID {
   operator=(const SSLSessionID &other)
   {
     if (other.len)
-      memcpy(bytes, other.bytes, other.len);
+      DSA_memcpy::memcpy(bytes, other.bytes, other.len);
 
     len = other.len;
     return *this;

@@ -23,6 +23,10 @@
 
 #include "tsmemcache.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /*
   TODO
   - on OPEN_WRITE_FAIL don't poll, figure out another way, and timeout
@@ -69,7 +73,7 @@ mc_string(const char *s, int len)
     l = TSMEMCACHE_TMP_CMD_BUFFER_SIZE - 1;
   }
   if (l) {
-    memcpy(debug_string_buffer, s, l);
+    DSA_memcpy::memcpy(debug_string_buffer, s, l);
   }
   debug_string_buffer[l] = 0;
   return debug_string_buffer;
@@ -762,7 +766,7 @@ MC::ascii_set_event(int event, void *data)
         return ASCII_RESPONSE("NOT_STORED");
       }
     }
-    memcpy(tmp_cache_header_key, key, header.nkey);
+    DSA_memcpy::memcpy(tmp_cache_header_key, key, header.nkey);
     header.settime = Thread::get_hrtime();
     if (exptime) {
       if (exptime > REALTIME_MAXDELTA) {
@@ -916,7 +920,7 @@ MC::ascii_incr_decr_event(int event, void *data)
       } else {
         goto Lfail;
       }
-      memcpy(tmp_cache_header_key, key, header.nkey);
+      DSA_memcpy::memcpy(tmp_cache_header_key, key, header.nkey);
       header.settime = Thread::get_hrtime();
       if (exptime) {
         if (exptime > REALTIME_MAXDELTA) {

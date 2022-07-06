@@ -34,6 +34,10 @@
 #include "ts/experimental.h"
 #include "tscore/ink_defs.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define PLUGIN_NAME "cache_scan"
 
 static TSCont global_contp;
@@ -425,7 +429,7 @@ setup_request(TSCont contp, TSHttpTxn txnp)
       query_len   = static_cast<unsigned>(query_len) > sizeof(querybuf) - 1 ? sizeof(querybuf) - 1 : query_len;
       char *start = querybuf, *end = querybuf + query_len;
       size_t del_url_len;
-      memcpy(querybuf, query, query_len);
+      DSA_memcpy::memcpy(querybuf, query, query_len);
       *end  = '\0';
       start = strstr(querybuf, "remove_url=");
       if (start && (start == querybuf || *(start - 1) == '&')) {

@@ -29,6 +29,10 @@
 #include "P_UDPConnection.h"
 #include "P_UDPPacket.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 static bool
 is_vn(QUICVersion v)
 {
@@ -70,7 +74,7 @@ QUICPacketReceiveQueue::dequeue(uint8_t *packet_buf, QUICPacketCreationResult &r
     IOBufferBlock *b   = udp_packet->getIOBlockChain();
     size_t written     = 0;
     while (b) {
-      memcpy(this->_payload.get() + written, b->start(), b->read_avail());
+      DSA_memcpy::memcpy(this->_payload.get() + written, b->start(), b->read_avail());
       written += b->read_avail();
       b = b->next.get();
     }
@@ -116,7 +120,7 @@ QUICPacketReceiveQueue::dequeue(uint8_t *packet_buf, QUICPacketCreationResult &r
 
     if (pkt_len < this->_payload_len) {
       pkt = ats_unique_malloc(pkt_len);
-      memcpy(pkt.get(), this->_payload.get() + this->_offset, pkt_len);
+      DSA_memcpy::memcpy(pkt.get(), this->_payload.get() + this->_offset, pkt_len);
       this->_offset += pkt_len;
 
       if (this->_offset >= this->_payload_len) {

@@ -23,6 +23,10 @@
 
 #include "P_Net.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using namespace std::literals;
 
 ink_hrtime last_throttle_warning;
@@ -248,7 +252,7 @@ initialize_thread_for_net(EThread *thread)
   int cop_freq                 = 1;
 
   REC_ReadConfigInteger(cop_freq, "proxy.config.net.inactivity_check_frequency");
-  memcpy(&nh->config, &NetHandler::global_config, sizeof(NetHandler::global_config));
+  DSA_memcpy::memcpy(&nh->config, &NetHandler::global_config, sizeof(NetHandler::global_config));
   nh->configure_per_thread_values();
   thread->schedule_every(inactivityCop, HRTIME_SECONDS(cop_freq));
 

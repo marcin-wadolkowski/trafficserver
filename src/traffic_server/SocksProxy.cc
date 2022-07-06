@@ -32,6 +32,10 @@
 #include "I_OneWayTunnel.h"
 #include "HttpSessionAccept.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 enum {
   socksproxy_http_connections_stat,
   socksproxy_tunneled_connections_stat,
@@ -517,7 +521,7 @@ SocksProxy::parse_socks_client_request(unsigned char *p)
       uint32_t ip;
       struct sockaddr_in addr;
 
-      memcpy(&ip, &p[4], 4);
+      DSA_memcpy::memcpy(&ip, &p[4], 4);
       ats_ip4_set(&addr, ip, htons(port));
 
       // Ignore further reads
@@ -650,7 +654,7 @@ SocksProxy::setupHttpRequest(unsigned char *p)
   case SOCKS_ATYPE_FQHN:
     // This is stored as a zero terminated string
     a->addr.buf = (unsigned char *)ats_malloc(p[4] + 1);
-    memcpy(a->addr.buf, &p[5], p[4]);
+    DSA_memcpy::memcpy(a->addr.buf, &p[5], p[4]);
     a->addr.buf[p[4]] = 0;
     break;
   case SOCKS_ATYPE_IPV6:

@@ -28,6 +28,10 @@
 #include "tscore/ink_defs.h"
 #include "P_EventSystem.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 //
 // General Buffer Allocator
 //
@@ -74,7 +78,7 @@ MIOBuffer::write(const void *abuf, int64_t alen)
     int64_t f = _writer->write_avail();
     f         = f < len ? f : len;
     if (f > 0) {
-      ::memcpy(_writer->end(), buf, f);
+      DSA_memcpy::memcpy(_writer->end(), buf, f);
       _writer->fill(f);
       buf += f;
       len -= f;
@@ -168,7 +172,7 @@ IOBufferReader::read(void *ab, int64_t len)
     if (n < l) {
       l = n;
     }
-    ::memcpy(b, start(), l);
+    DSA_memcpy::memcpy(b, start(), l);
     consume(l);
     b += l;
     n -= l;
@@ -235,7 +239,7 @@ IOBufferReader::memcpy(void *ap, int64_t len, int64_t offset)
     } else {
       bytes = len;
     }
-    ::memcpy(p, b->start() + offset, bytes);
+    DSA_memcpy::memcpy(p, b->start() + offset, bytes);
     p += bytes;
     len -= bytes;
     b      = b->next.get();

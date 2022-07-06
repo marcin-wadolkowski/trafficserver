@@ -8,6 +8,10 @@
 #include "swoc/swoc_ip.h"
 #include "swoc/swoc_meta.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using swoc::TextView;
 using swoc::svtoi;
 using swoc::svtou;
@@ -59,7 +63,7 @@ IPEndpoint::assign(sockaddr *dst, sockaddr const *src) {
       break;
     }
     if (n) {
-      memcpy(dst, src, n);
+      DSA_memcpy::memcpy(dst, src, n);
     }
   }
   return n != 0;

@@ -13,6 +13,10 @@
 #include "swoc/bwf_ex.h"
 #include "swoc/bwf_std.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using swoc::MemArena;
 using std::string_view;
 using namespace std::literals;
@@ -34,7 +38,7 @@ std::string_view Errata::DEFAULT_GLUE{"\n", 1};
 string_view
 Errata::Data::localize(string_view src) {
   auto span = _arena.alloc(src.size());
-  memcpy(span.data(), src.data(), src.size());
+  DSA_memcpy::memcpy(span.data(), src.data(), src.size());
   return span.view();
 }
 
@@ -91,7 +95,7 @@ Errata::note_s(std::optional<Severity> severity, std::string_view text) {
   }
   if (!severity.has_value() || *severity >= FILTER_SEVERITY) {
     auto span = this->alloc(text.size());
-    memcpy(span, text);
+    DSA_memcpy::memcpy(span, text);
     this->note_localized(span.view(), severity);
   }
   return *this;

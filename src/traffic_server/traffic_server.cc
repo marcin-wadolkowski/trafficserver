@@ -117,6 +117,10 @@ extern "C" int plock(int);
 #include <gperftools/heap-profiler.h>
 #endif
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 //
 // Global Data
 //
@@ -2221,6 +2225,17 @@ main(int /* argc ATS_UNUSED */, const char **argv)
   while (!TSSystemState::is_event_system_shut_down()) {
     sleep(1);
   }
+  
+  // output to log file
+  time_t time_now;
+  time_now = time(NULL);
+  struct tm t = *localtime(&time_now);
+    
+  char date_and_time[16];
+  sprintf(date_and_time, "%04d%02d%02d_%02d%02d%02d", 
+	      t.tm_year+1900, t.tm_mon+1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+		  
+  DSA_memcpy::print_counts("/var/log/ats_dsa_"+std::string(date_and_time)+".csv");
 
   delete main_thread;
 }

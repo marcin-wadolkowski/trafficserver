@@ -31,6 +31,10 @@
 #include "HTTP.h"
 #include "tscore/Diags.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 const char *URL_SCHEME_FILE;
 const char *URL_SCHEME_FTP;
 const char *URL_SCHEME_GOPHER;
@@ -639,7 +643,7 @@ url_string_get(URLImpl *url, Arena *arena, int *length, HdrHeap *heap)
   /* see string_get_ref() */
   if (heap) {
     buf2 = heap->allocate_str(len + 1);
-    memcpy(buf2, buf, len);
+    DSA_memcpy::memcpy(buf2, buf, len);
     buf2[len]                 = '\0';
     url->m_clean              = true; // reset since we have url_print()'ed again
     url->m_len_printed_string = len;
@@ -868,7 +872,7 @@ url_to_string(URLImpl *url, Arena *arena, int *length)
   idx = 0;
 
   if (url->m_ptr_scheme) {
-    memcpy(&str[idx], url->m_ptr_scheme, url->m_len_scheme);
+    DSA_memcpy::memcpy(&str[idx], url->m_ptr_scheme, url->m_len_scheme);
     idx += url->m_len_scheme;
     if ((url->m_scheme_wks_idx >= 0) && (hdrtoken_index_to_wks(url->m_scheme_wks_idx) == URL_SCHEME_FILE)) {
       str[idx++] = ':';
@@ -880,44 +884,44 @@ url_to_string(URLImpl *url, Arena *arena, int *length)
   }
 
   if (url->m_ptr_user) {
-    memcpy(&str[idx], url->m_ptr_user, url->m_len_user);
+    DSA_memcpy::memcpy(&str[idx], url->m_ptr_user, url->m_len_user);
     idx += url->m_len_user;
     if (url->m_ptr_password) {
       str[idx++] = ':';
-      memcpy(&str[idx], url->m_ptr_password, url->m_len_password);
+      DSA_memcpy::memcpy(&str[idx], url->m_ptr_password, url->m_len_password);
       idx += url->m_len_password;
     }
     str[idx++] = '@';
   }
 
   if (url->m_ptr_host) {
-    memcpy(&str[idx], url->m_ptr_host, url->m_len_host);
+    DSA_memcpy::memcpy(&str[idx], url->m_ptr_host, url->m_len_host);
     idx += url->m_len_host;
     if (url->m_ptr_port != nullptr) {
       str[idx++] = ':';
-      memcpy(&str[idx], url->m_ptr_port, url->m_len_port);
+      DSA_memcpy::memcpy(&str[idx], url->m_ptr_port, url->m_len_port);
       idx += url->m_len_port;
     }
   }
 
-  memcpy(&str[idx], url->m_ptr_path, url->m_len_path);
+  DSA_memcpy::memcpy(&str[idx], url->m_ptr_path, url->m_len_path);
   idx += url->m_len_path;
 
   if (url->m_ptr_params && url->m_len_params > 0) {
     str[idx++] = ';';
-    memcpy(&str[idx], url->m_ptr_params, url->m_len_params);
+    DSA_memcpy::memcpy(&str[idx], url->m_ptr_params, url->m_len_params);
     idx += url->m_len_params;
   }
 
   if (url->m_ptr_query && url->m_len_query > 0) {
     str[idx++] = '?';
-    memcpy(&str[idx], url->m_ptr_query, url->m_len_query);
+    DSA_memcpy::memcpy(&str[idx], url->m_ptr_query, url->m_len_query);
     idx += url->m_len_query;
   }
 
   if (url->m_ptr_fragment && url->m_len_fragment > 0) {
     str[idx++] = '#';
-    memcpy(&str[idx], url->m_ptr_fragment, url->m_len_fragment);
+    DSA_memcpy::memcpy(&str[idx], url->m_ptr_fragment, url->m_len_fragment);
     idx += url->m_len_fragment;
   }
 
@@ -1746,7 +1750,7 @@ url_CryptoHash_get_fast(const URLImpl *url, CryptoContext &ctx, CryptoHash *hash
   memcpy_tolower(p, url->m_ptr_host, url->m_len_host);
   p += url->m_len_host;
   *p++ = '/';
-  memcpy(p, url->m_ptr_path, url->m_len_path);
+  DSA_memcpy::memcpy(p, url->m_ptr_path, url->m_len_path);
   p += url->m_len_path;
   *p++ = ';';
   // no params

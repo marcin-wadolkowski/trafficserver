@@ -20,6 +20,10 @@
 #include "strip.h"
 #include <cstring>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /* allowed cookie-name definition from RFC
  * cookie-name       = token
  * token             = <token, defined in [RFC2616], Section 2.2>
@@ -193,7 +197,7 @@ CookieJar::verify_value(char *val, int val_len)
     return -1;
   }
 
-  memcpy(val, buf, buf_len);
+  DSA_memcpy::memcpy(val, buf, buf_len);
   if (data_ptr) {
     free(data_ptr);
   }

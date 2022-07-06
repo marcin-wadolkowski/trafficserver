@@ -32,6 +32,10 @@
 #include "I_Machine.h"
 #include "tscore/Filenames.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define MAX_SIMPLE_RETRIES 5
 #define MAX_UNAVAILABLE_SERVER_RETRIES 5
 
@@ -530,7 +534,7 @@ ParentRecord::ProcessParents(char *val, bool isPrimary)
     }
     // Update the pRecords
     if (isPrimary) {
-      memcpy(this->parents[i].hostname, current, tmp - current);
+      DSA_memcpy::memcpy(this->parents[i].hostname, current, tmp - current);
       this->parents[i].hostname[tmp - current] = '\0';
       this->parents[i].port                    = port;
       this->parents[i].failedAt                = 0;
@@ -541,11 +545,11 @@ ParentRecord::ProcessParents(char *val, bool isPrimary)
       this->parents[i].available               = true;
       this->parents[i].weight                  = weight;
       if (tmp3) {
-        memcpy(this->parents[i].hash_string, tmp3 + 1, strlen(tmp3));
+        DSA_memcpy::memcpy(this->parents[i].hash_string, tmp3 + 1, strlen(tmp3));
         this->parents[i].name = this->parents[i].hash_string;
       }
     } else {
-      memcpy(this->secondary_parents[i].hostname, current, tmp - current);
+      DSA_memcpy::memcpy(this->secondary_parents[i].hostname, current, tmp - current);
       this->secondary_parents[i].hostname[tmp - current] = '\0';
       this->secondary_parents[i].port                    = port;
       this->secondary_parents[i].failedAt                = 0;
@@ -556,7 +560,7 @@ ParentRecord::ProcessParents(char *val, bool isPrimary)
       this->secondary_parents[i].available               = true;
       this->secondary_parents[i].weight                  = weight;
       if (tmp3) {
-        memcpy(this->secondary_parents[i].hash_string, tmp3 + 1, strlen(tmp3));
+        DSA_memcpy::memcpy(this->secondary_parents[i].hash_string, tmp3 + 1, strlen(tmp3));
         this->secondary_parents[i].name = this->secondary_parents[i].hash_string;
       }
     }

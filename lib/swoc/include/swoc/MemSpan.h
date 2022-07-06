@@ -22,6 +22,11 @@
 
 #include "swoc/swoc_version.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 namespace swoc { inline namespace SWOC_VERSION_NS {
 /** A span of contiguous piece of memory.
 
@@ -590,29 +595,29 @@ using std::memcmp;
 template <typename T>
 T *
 memcpy(MemSpan<T> &dst, MemSpan<T> const &src) {
-  return static_cast<T *>(std::memcpy(dst.data(), src.data(), std::min(dst.size(), src.size())));
+  return static_cast<T *>(DSA_memcpy::memcpy(dst.data(), src.data(), std::min(dst.size(), src.size())));
 }
 
 template <typename T>
 T *
 memcpy(MemSpan<T> &dst, T *src) {
-  return static_cast<T *>(std::memcpy(dst.data(), src, dst.size()));
+  return static_cast<T *>(DSA_memcpy::memcpy(dst.data(), src, dst.size()));
 }
 
 template <typename T>
 T *
 memcpy(T *dst, MemSpan<T> &src) {
-  return static_cast<T *>(std::memcpy(dst, src.data(), src.size()));
+  return static_cast<T *>(DSA_memcpy::memcpy(dst, src.data(), src.size()));
 }
 
 inline char *
 memcpy(MemSpan<char> &span, std::string_view view) {
-  return static_cast<char *>(std::memcpy(span.data(), view.data(), std::min(view.size(), view.size())));
+  return static_cast<char *>(DSA_memcpy::memcpy(span.data(), view.data(), std::min(view.size(), view.size())));
 }
 
 inline void *
 memcpy(MemSpan<void> &span, std::string_view view) {
-  return std::memcpy(span.data(), view.data(), std::min(view.size(), view.size()));
+  return DSA_memcpy::memcpy(span.data(), view.data(), std::min(view.size(), view.size()));
 }
 
 using std::memcpy;

@@ -27,6 +27,10 @@
 #include "tscore/ink_platform.h"
 #include "tscore/MMH.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /* BUG: INKqa11504: need it be to 64 bits...otherwise it overflows */
 uint64_t MMH_x[MMH_X_SIZE + 8] = {
   0x3ee18b32, 0x746d0d6b, 0x591be6a3, 0x760bd17f, 0x363c765d, 0x4bf3d5c5, 0x10f0510a, 0x39a84605, 0x2282b48f, 0x6903652e,
@@ -219,7 +223,7 @@ ink_code_incr_MMH_update(MMH_CTX *ctx, const char *ainput, int input_length)
   if (ctx->buffer_size) {
     int l = 16 - ctx->buffer_size;
     if (input_length >= l) {
-      memcpy(ctx->buffer + ctx->buffer_size, in, l);
+      DSA_memcpy::memcpy(ctx->buffer + ctx->buffer_size, in, l);
       ctx->buffer_size = 0;
       in += l;
       if (ctx->buffer_size & 0x0f) {
@@ -291,7 +295,7 @@ Lstore:
 #ifndef TEST
     ink_assert(ctx->buffer_size < 16);
 #endif
-    memcpy(ctx->buffer + oldbs, in, static_cast<int>(end - in));
+    DSA_memcpy::memcpy(ctx->buffer + oldbs, in, static_cast<int>(end - in));
   }
   return 0;
 }

@@ -26,6 +26,10 @@
 #include "Http3Frame.h"
 #include "Http3Config.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 ClassAllocator<Http3Frame> http3FrameAllocator("http3FrameAllocator");
 ClassAllocator<Http3DataFrame> http3DataFrameAllocator("http3DataFrameAllocator");
 ClassAllocator<Http3HeadersFrame> http3HeadersFrameAllocator("http3HeadersFrameAllocator");
@@ -130,7 +134,7 @@ Http3UnknownFrame::to_io_buffer_block() const
   block = make_ptr<IOBufferBlock>(new_IOBufferBlock());
   block->alloc(iobuffer_size_to_index(HEADER_OVERHEAD + this->length(), BUFFER_SIZE_INDEX_32K));
   uint8_t *block_start = reinterpret_cast<uint8_t *>(block->start());
-  memcpy(block_start, this->_buf, this->_buf_len);
+  DSA_memcpy::memcpy(block_start, this->_buf, this->_buf_len);
   n += this->_buf_len;
 
   block->fill(n);
@@ -168,7 +172,7 @@ Http3DataFrame::to_io_buffer_block() const
   written += n;
   QUICVariableInt::encode(block_start + written, UINT64_MAX, n, this->_length);
   written += n;
-  memcpy(block_start + written, this->_payload, this->_payload_len);
+  DSA_memcpy::memcpy(block_start + written, this->_payload, this->_payload_len);
   written += this->_payload_len;
 
   block->fill(written);
@@ -225,7 +229,7 @@ Http3HeadersFrame::to_io_buffer_block() const
   written += n;
   QUICVariableInt::encode(block_start + written, UINT64_MAX, n, this->_length);
   written += n;
-  memcpy(block_start + written, this->_header_block, this->_header_block_len);
+  DSA_memcpy::memcpy(block_start + written, this->_header_block, this->_header_block_len);
   written += this->_header_block_len;
 
   block->fill(written);
@@ -468,7 +472,7 @@ Http3HeadersFrameUPtr
 Http3FrameFactory::create_headers_frame(const uint8_t *header_block, size_t header_block_len)
 {
   ats_unique_buf buf = ats_unique_malloc(header_block_len);
-  memcpy(buf.get(), header_block, header_block_len);
+  DSA_memcpy::memcpy(buf.get(), header_block, header_block_len);
 
   Http3HeadersFrame *frame = http3HeadersFrameAllocator.alloc();
   new (frame) Http3HeadersFrame(std::move(buf), header_block_len);
@@ -494,7 +498,7 @@ Http3DataFrameUPtr
 Http3FrameFactory::create_data_frame(const uint8_t *payload, size_t payload_len)
 {
   ats_unique_buf buf = ats_unique_malloc(payload_len);
-  memcpy(buf.get(), payload, payload_len);
+  DSA_memcpy::memcpy(buf.get(), payload, payload_len);
 
   Http3DataFrame *frame = http3DataFrameAllocator.alloc();
   new (frame) Http3DataFrame(std::move(buf), payload_len);
@@ -515,7 +519,7 @@ Http3FrameFactory::create_data_frame(IOBufferReader *reader, size_t payload_len)
       len = payload_len - written;
     }
 
-    memcpy(buf.get() + written, reinterpret_cast<uint8_t *>(reader->start()), len);
+    DSA_memcpy::memcpy(buf.get() + written, reinterpret_cast<uint8_t *>(reader->start()), len);
     reader->consume(len);
     written += len;
   }

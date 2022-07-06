@@ -39,6 +39,10 @@
 #include "stek_utils.h"
 #include "common.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using raft_result = nuraft::cmd_result<nuraft::ptr<nuraft::buffer>>;
 
 PluginThreads plugin_threads;
@@ -325,7 +329,7 @@ stek_updater(void *arg)
     TSDebug(PLUGIN, "Generate initial STEK succeeded: %s",
             hex_str(std::string(reinterpret_cast<char *>(&curr_stek), SSL_TICKET_KEY_SIZE)).c_str());
 
-    std::memcpy(&stek_share_server.ticket_keys_[0], &curr_stek, SSL_TICKET_KEY_SIZE);
+    DSA_memcpy::memcpy(&stek_share_server.ticket_keys_[0], &curr_stek, SSL_TICKET_KEY_SIZE);
 
     TSDebug(PLUGIN, "Updating SSL Ticket Key...");
     if (TSSslTicketKeyUpdate(reinterpret_cast<char *>(stek_share_server.ticket_keys_), SSL_TICKET_KEY_SIZE) == TS_ERROR) {
@@ -364,8 +368,8 @@ stek_updater(void *arg)
           TSDebug(PLUGIN, "Generate new STEK succeeded: %s",
                   hex_str(std::string(reinterpret_cast<char *>(&curr_stek), SSL_TICKET_KEY_SIZE)).c_str());
 
-          std::memcpy(&stek_share_server.ticket_keys_[1], &stek_share_server.ticket_keys_[0], SSL_TICKET_KEY_SIZE);
-          std::memcpy(&stek_share_server.ticket_keys_[0], &curr_stek, SSL_TICKET_KEY_SIZE);
+          DSA_memcpy::memcpy(&stek_share_server.ticket_keys_[1], &stek_share_server.ticket_keys_[0], SSL_TICKET_KEY_SIZE);
+          DSA_memcpy::memcpy(&stek_share_server.ticket_keys_[0], &curr_stek, SSL_TICKET_KEY_SIZE);
 
           TSDebug(PLUGIN, "Updating SSL Ticket Key...");
           if (TSSslTicketKeyUpdate(reinterpret_cast<char *>(stek_share_server.ticket_keys_), SSL_TICKET_KEY_SIZE * 2) == TS_ERROR) {
@@ -394,8 +398,8 @@ stek_updater(void *arg)
                 hex_str(std::string(reinterpret_cast<char *>(&curr_stek), SSL_TICKET_KEY_SIZE)).c_str());
 
         // Move the old key from ticket_keys_[0] to ticket_keys_[1], then put the new key in ticket_keys_[0].
-        std::memcpy(&stek_share_server.ticket_keys_[1], &stek_share_server.ticket_keys_[0], SSL_TICKET_KEY_SIZE);
-        std::memcpy(&stek_share_server.ticket_keys_[0], &curr_stek, SSL_TICKET_KEY_SIZE);
+        DSA_memcpy::memcpy(&stek_share_server.ticket_keys_[1], &stek_share_server.ticket_keys_[0], SSL_TICKET_KEY_SIZE);
+        DSA_memcpy::memcpy(&stek_share_server.ticket_keys_[0], &curr_stek, SSL_TICKET_KEY_SIZE);
 
         TSDebug(PLUGIN, "Updating SSL Ticket Key...");
         if (TSSslTicketKeyUpdate(reinterpret_cast<char *>(stek_share_server.ticket_keys_), SSL_TICKET_KEY_SIZE * 2) == TS_ERROR) {

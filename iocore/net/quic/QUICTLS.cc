@@ -30,6 +30,10 @@
 #include "QUICPacketProtectionKeyInfo.h"
 #include "QUICDebugNames.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 constexpr static char tag[] = "quic_tls";
 
 static const char *
@@ -387,7 +391,7 @@ QUICTLS::on_handshake_data_generated(QUICEncryptionLevel level, const uint8_t *d
   size_t offset            = this->_out.offsets[next_index];
   size_t next_level_offset = offset + len;
 
-  memcpy(this->_out.buf + offset, data, len);
+  DSA_memcpy::memcpy(this->_out.buf + offset, data, len);
 
   for (int i = next_index; i < 5; ++i) {
     this->_out.offsets[i] = next_level_offset;

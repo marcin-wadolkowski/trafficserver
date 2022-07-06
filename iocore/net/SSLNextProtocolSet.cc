@@ -27,6 +27,10 @@
 #include "P_SSLNextProtocolSet.h"
 #include "tscpp/util/TextView.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // For currently defined protocol strings, see
 // http://technotes.googlecode.com/git/nextprotoneg.html. The OpenSSL
 // documentation tells us to return a string in "wire format". The
@@ -39,7 +43,7 @@ append_protocol(const char *proto, unsigned char *buf)
 {
   size_t sz = strlen(proto);
   *buf++    = static_cast<unsigned char>(sz);
-  memcpy(buf, proto, sz);
+  DSA_memcpy::memcpy(buf, proto, sz);
   return buf + sz;
 }
 

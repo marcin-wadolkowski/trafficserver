@@ -33,6 +33,10 @@
 #include "SRV.h"
 #include "P_RefCountCache.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // Event returned on a lookup
 #define EVENT_HOST_DB_LOOKUP (HOSTDB_EVENT_EVENTS_START + 0)
 #define EVENT_HOST_DB_IP_REMOVED (HOSTDB_EVENT_EVENTS_START + 1)
@@ -177,7 +181,7 @@ struct HostDBInfo : public RefCountObj {
     }
     HostDBInfo *ret = HostDBInfo::alloc(size - sizeof(HostDBInfo));
     int buf_index   = ret->_iobuffer_index;
-    memcpy((void *)ret, buf, size);
+    DSA_memcpy::memcpy((void *)ret, buf, size);
     // Reset the refcount back to 0, this is a bit ugly-- but I'm not sure we want to expose a method
     // to mess with the refcount, since this is a fairly unique use case
     ret                  = new (ret) HostDBInfo();
@@ -348,7 +352,7 @@ struct HostDBInfo : public RefCountObj {
 
   HostDBInfo(HostDBInfo const &src) : RefCountObj()
   {
-    memcpy(static_cast<void *>(this), static_cast<const void *>(&src), sizeof(*this));
+    DSA_memcpy::memcpy(static_cast<void *>(this), static_cast<const void *>(&src), sizeof(*this));
     _iobuffer_index = -1;
   }
 
@@ -357,7 +361,7 @@ struct HostDBInfo : public RefCountObj {
   {
     if (this != &src) {
       int iob_idx = _iobuffer_index;
-      memcpy(static_cast<void *>(this), static_cast<const void *>(&src), sizeof(*this));
+      DSA_memcpy::memcpy(static_cast<void *>(this), static_cast<const void *>(&src), sizeof(*this));
       _iobuffer_index = iob_idx;
     }
     return *this;

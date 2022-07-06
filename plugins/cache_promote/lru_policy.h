@@ -30,6 +30,11 @@
 
 #include "policy.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 #define MINIMUM_BUCKET_SIZE 10
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +54,7 @@ public:
   LRUHash(const LRUHash &h)
   {
     TSDebug(PLUGIN_NAME, "Copy CTOR an LRUHash object");
-    memcpy(_hash, h._hash, sizeof(_hash));
+    DSA_memcpy::memcpy(_hash, h._hash, sizeof(_hash));
   }
 
   LRUHash &
@@ -57,7 +62,7 @@ public:
   {
     TSDebug(PLUGIN_NAME, "copying an LRUHash object");
     if (this != &h) {
-      memcpy(_hash, h._hash, sizeof(_hash));
+      DSA_memcpy::memcpy(_hash, h._hash, sizeof(_hash));
     }
     return *this;
   }

@@ -26,6 +26,10 @@
 #include <memory>
 #include <cstring>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 size_t
 QUICVariableInt::size(const uint8_t *src)
 {
@@ -93,7 +97,7 @@ QUICVariableInt::decode(uint64_t &dst, size_t &len, const uint8_t *src, size_t s
   }
 
   uint8_t buf[8] = {0};
-  memcpy(buf, src, len);
+  DSA_memcpy::memcpy(buf, src, len);
   buf[0] &= 0x3f;
 
   dst = QUICIntUtil::read_nbytes_as_uint(buf, len);
@@ -120,7 +124,7 @@ uint64_t
 QUICIntUtil::read_nbytes_as_uint(const uint8_t *buf, uint8_t n)
 {
   uint64_t value = 0;
-  memcpy(&value, buf, n);
+  DSA_memcpy::memcpy(&value, buf, n);
   return be64toh(value << (64 - n * 8));
 }
 
@@ -128,6 +132,6 @@ void
 QUICIntUtil::write_uint_as_nbytes(uint64_t value, uint8_t n, uint8_t *buf, size_t *len)
 {
   value = htobe64(value) >> (64 - n * 8);
-  memcpy(buf, reinterpret_cast<uint8_t *>(&value), n);
+  DSA_memcpy::memcpy(buf, reinterpret_cast<uint8_t *>(&value), n);
   *len = n;
 }

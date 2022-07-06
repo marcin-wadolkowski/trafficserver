@@ -28,6 +28,10 @@
 #include <algorithm>
 #include <memory.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 namespace ts
 {
 /** List of sinks for abandoned erratum.
@@ -256,7 +260,7 @@ Errata::write(char *buff, size_t n, int offset, int indent, int shift, char cons
   std::string text;
   this->write(out, offset, indent, shift, lead);
   text = out.str();
-  memcpy(buff, text.data(), std::min(n, text.size()));
+  DSA_memcpy::memcpy(buff, text.data(), std::min(n, text.size()));
   return text.size();
 }
 

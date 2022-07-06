@@ -30,6 +30,10 @@
 #include "tscore/Filenames.h"
 #include "HttpSM.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define modulePrefix "[ReverseProxy]"
 
 /**
@@ -299,7 +303,7 @@ url_rewrite_remap_request(const UrlMappingContainer &mapping_container, URL *req
 
     *newPath = 0;
     if (toPath) {
-      memcpy(newPath, toPath, toPathLen);
+      DSA_memcpy::memcpy(newPath, toPath, toPathLen);
       newPathLen += toPathLen;
     }
 
@@ -324,7 +328,7 @@ url_rewrite_remap_request(const UrlMappingContainer &mapping_container, URL *req
 
       // copy the end of the path past what has been mapped
       if ((requestPathLen - fromPathLen) > 0) {
-        memcpy(newPath + newPathLen, requestPath + fromPathLen, requestPathLen - fromPathLen);
+        DSA_memcpy::memcpy(newPath + newPathLen, requestPath + fromPathLen, requestPathLen - fromPathLen);
         newPathLen += (requestPathLen - fromPathLen);
       }
     }
@@ -833,7 +837,7 @@ UrlRewrite::_expandSubstitutions(int *matches_info, const RegexMapping *reg_map,
     if ((cur_buf_size + n_bytes_needed) > dest_buf_size) {
       goto lOverFlow;
     }
-    memcpy(dest_buf + cur_buf_size, reg_map->to_url_host_template + token_start, n_bytes_needed);
+    DSA_memcpy::memcpy(dest_buf + cur_buf_size, reg_map->to_url_host_template + token_start, n_bytes_needed);
     cur_buf_size += n_bytes_needed;
 
     // then copy the sub pattern match
@@ -842,7 +846,7 @@ UrlRewrite::_expandSubstitutions(int *matches_info, const RegexMapping *reg_map,
     if ((cur_buf_size + n_bytes_needed) > dest_buf_size) {
       goto lOverFlow;
     }
-    memcpy(dest_buf + cur_buf_size, matched_string + matches_info[match_index], n_bytes_needed);
+    DSA_memcpy::memcpy(dest_buf + cur_buf_size, matched_string + matches_info[match_index], n_bytes_needed);
     cur_buf_size += n_bytes_needed;
 
     token_start = reg_map->substitution_markers[i] + 2; // skip the place holder
@@ -854,7 +858,7 @@ UrlRewrite::_expandSubstitutions(int *matches_info, const RegexMapping *reg_map,
     if ((cur_buf_size + n_bytes_needed) > dest_buf_size) {
       goto lOverFlow;
     }
-    memcpy(dest_buf + cur_buf_size, reg_map->to_url_host_template + token_start, n_bytes_needed);
+    DSA_memcpy::memcpy(dest_buf + cur_buf_size, reg_map->to_url_host_template + token_start, n_bytes_needed);
     cur_buf_size += n_bytes_needed;
   }
   Debug("url_rewrite_regex", "Expanded substitutions and returning string [%.*s] with length %d", cur_buf_size, dest_buf,

@@ -31,6 +31,10 @@
 #include <atscppapi/Headers.h>
 #include <atscppapi/utils.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using namespace atscppapi;
 using namespace ats_plugin;
 using namespace std;
@@ -268,7 +272,7 @@ FCGIClientRequest::postBodyChunk()
   state_->postHeader->contentLengthB1 = BYTE_1(dataLen);
   serialize(state_->pBuffInc, state_->postHeader, sizeof(FCGI_Header));
   state_->pBuffInc += sizeof(FCGI_Header);
-  memcpy(state_->pBuffInc, postData.c_str(), dataLen);
+  DSA_memcpy::memcpy(state_->pBuffInc, postData.c_str(), dataLen);
   state_->pBuffInc += dataLen;
 
   state_->postHeader->contentLengthB0 = 0;
@@ -288,7 +292,7 @@ FCGIClientRequest::addClientRequest(int &dataLen)
 void
 FCGIClientRequest::serialize(uchar *buffer, void *st, size_t size)
 {
-  memcpy(buffer, st, size);
+  DSA_memcpy::memcpy(buffer, st, size);
 }
 
 uint32_t
@@ -316,9 +320,9 @@ FCGIClientRequest::serializeNameValue(uchar *buffer, const std::pair<string, str
     *p++ = BYTE_1(vl);
     *p++ = BYTE_0(vl);
   }
-  memcpy(p, it.first.c_str(), nl);
+  DSA_memcpy::memcpy(p, it.first.c_str(), nl);
   p += nl;
-  memcpy(p, it.second.c_str(), vl);
+  DSA_memcpy::memcpy(p, it.second.c_str(), vl);
   p += vl;
   return p - buffer;
 }
@@ -416,7 +420,7 @@ FCGIClientRequest::fcgiProcessContent(uchar **beg_buf, uchar *end_buf, FCGIRecor
     cpy_len = nb;
   }
 
-  memcpy(rec->content + offset, *beg_buf, cpy_len);
+  DSA_memcpy::memcpy(rec->content + offset, *beg_buf, cpy_len);
 
   if (tot_len <= nb) {
     rec->offset += tot_len;
@@ -511,7 +515,7 @@ convert_mime_hdr_to_string(TSMBuffer bufp, TSMLoc hdr_loc)
       break;
     }
 
-    memcpy(output_string + output_len, block_start, block_avail);
+    DSA_memcpy::memcpy(output_string + output_len, block_start, block_avail);
     output_len += block_avail;
 
     /* Consume the data so that we get to the next block */

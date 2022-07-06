@@ -26,13 +26,17 @@
 
 #include "Http3.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 //
 // HQSession
 //
 HQSession::HQSession(NetVConnection *vc) : ProxySession(vc)
 {
   auto app_name = static_cast<QUICNetVConnection *>(vc)->negotiated_application_name();
-  memcpy(this->_protocol_string, app_name.data(), std::min(app_name.length(), sizeof(this->_protocol_string)));
+  DSA_memcpy::memcpy(this->_protocol_string, app_name.data(), std::min(app_name.length(), sizeof(this->_protocol_string)));
   this->_protocol_string[app_name.length()] = '\0';
 }
 

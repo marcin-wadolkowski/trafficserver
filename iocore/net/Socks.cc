@@ -36,6 +36,10 @@
 #include "tscore/InkErrno.h"
 #include "tscore/IpMapConf.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 socks_conf_struct *g_socks_conf_stuff = nullptr;
 
 ClassAllocator<SocksEntry> socksAllocator("socksAllocator");
@@ -264,24 +268,24 @@ SocksEntry::mainEvent(int event, void *data)
         p[n_bytes++] = 0; // Reserved
         if (ats_is_ip4(&target_addr)) {
           p[n_bytes++] = 1; // IPv4 addr
-          memcpy(p + n_bytes, &target_addr.sin.sin_addr, 4);
+          DSA_memcpy::memcpy(p + n_bytes, &target_addr.sin.sin_addr, 4);
           n_bytes += 4;
         } else if (ats_is_ip6(&target_addr)) {
           p[n_bytes++] = 4; // IPv6 addr
-          memcpy(p + n_bytes, &target_addr.sin6.sin6_addr, TS_IP6_SIZE);
+          DSA_memcpy::memcpy(p + n_bytes, &target_addr.sin6.sin6_addr, TS_IP6_SIZE);
           n_bytes += TS_IP6_SIZE;
         } else {
           Debug("Socks", "SOCKS supports only IP addresses.");
         }
       }
 
-      memcpy(p + n_bytes, &ts, 2);
+      DSA_memcpy::memcpy(p + n_bytes, &ts, 2);
       n_bytes += 2;
 
       if (version == SOCKS4_VERSION) {
         if (ats_is_ip4(&target_addr)) {
           // for socks4, ip addr is after the port
-          memcpy(p + n_bytes, &target_addr.sin.sin_addr, 4);
+          DSA_memcpy::memcpy(p + n_bytes, &target_addr.sin.sin_addr, 4);
           n_bytes += 4;
 
           p[n_bytes++] = 0; // nullptr
@@ -575,9 +579,9 @@ loadSocksAuthInfo(int fd, socks_conf_struct *socks_stuff)
 
       char *ptr = static_cast<char *>(ats_malloc(socks_stuff->user_name_n_passwd_len));
       ptr[0]    = len1;
-      memcpy(&ptr[1], user_name, len1);
+      DSA_memcpy::memcpy(&ptr[1], user_name, len1);
       ptr[len1 + 1] = len2;
-      memcpy(&ptr[len1 + 2], passwd, len2);
+      DSA_memcpy::memcpy(&ptr[len1 + 2], passwd, len2);
 
       socks_stuff->user_name_n_passwd = ptr;
 
@@ -677,7 +681,7 @@ socks5PasswdAuthHandler(int event, unsigned char *p, void (**h_ptr)(void))
     ink_assert(pass_phrase);
 
     p[0] = 1; // version
-    memcpy(&p[1], pass_phrase, pass_len);
+    DSA_memcpy::memcpy(&p[1], pass_phrase, pass_len);
 
     ret = 1 + pass_len;
     break;

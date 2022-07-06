@@ -37,6 +37,10 @@
 #include "HTTP.h"
 #include "I_EventSystem.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 static constexpr size_t MAX_LOST_STR_SPACE        = 1024;
 static constexpr uint32_t MAX_HDR_HEAP_OBJ_LENGTH = (1 << 20) - 1; ///< m_length is 20 bit
 
@@ -304,7 +308,7 @@ HdrHeap::duplicate_str(const char *str, int nbytes)
   HeapGuard guard(this, str); // Don't let the source get de-allocated.
   char *new_str = allocate_str(nbytes);
 
-  memcpy(new_str, str, nbytes);
+  DSA_memcpy::memcpy(new_str, str, nbytes);
   return (new_str);
 }
 
@@ -598,7 +602,7 @@ compute_checksum(void *buf, int len)
 
   if (len > 0) {
     uint32_t tmp = 0;
-    memcpy((char *)&tmp, buf, len);
+    DSA_memcpy::memcpy((char *)&tmp, buf, len);
     cksum += tmp;
   }
 
@@ -651,12 +655,12 @@ HdrHeap::marshal(char *buf, int len)
     if (copy_size > len) {
       goto Failed;
     }
-    memcpy(b, unmarshal_hdr->m_data_start, copy_size);
+    DSA_memcpy::memcpy(b, unmarshal_hdr->m_data_start, copy_size);
 
     // Expand ptr xlation table if necessary - shameless hackery
     if (ptr_heaps >= ptr_xl_size) {
       MarshalXlate *tmp_xl = static_cast<MarshalXlate *>(alloca(sizeof(MarshalXlate) * ptr_xl_size * 2));
-      memcpy(tmp_xl, ptr_xlation, sizeof(MarshalXlate) * ptr_xl_size);
+      DSA_memcpy::memcpy(tmp_xl, ptr_xlation, sizeof(MarshalXlate) * ptr_xl_size);
       ptr_xlation = tmp_xl;
       ptr_xl_size *= 2;
     }
@@ -712,7 +716,7 @@ HdrHeap::marshal(char *buf, int len)
       goto Failed;
     }
 
-    memcpy(b, copy_start, nto_copy);
+    DSA_memcpy::memcpy(b, copy_start, nto_copy);
 
     // FIX ME - possible offset overflow issues?
     str_xlation[str_heaps].start  = copy_start;
@@ -731,7 +735,7 @@ HdrHeap::marshal(char *buf, int len)
         goto Failed;
       }
 
-      memcpy(b, i.m_heap_start, i.m_heap_len);
+      DSA_memcpy::memcpy(b, i.m_heap_start, i.m_heap_len);
 
       // Add translation table entry for string heaps
       //   FIX ME - possible offset overflow issues?
@@ -1121,7 +1125,7 @@ HdrHeap::dump_heap(int len)
       // Less than 4 bytes available so just
       //   grab the bytes we need
       content = 0;
-      memcpy(&content, tmp, (end - tmp));
+      DSA_memcpy::memcpy(&content, tmp, (end - tmp));
     }
 
     fprintf(stderr, "0x%x ", content);

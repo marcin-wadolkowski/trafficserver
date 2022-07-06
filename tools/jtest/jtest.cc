@@ -64,6 +64,10 @@
 #include "tscpp/util/TextView.h"
 #include "tscore/Random.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /*
  FTP - Traffic Server Template
    220 i5 FTP server (Version wu-2.4(3) Mon Jul 8 14:39:48 PDT 1996) ready.
@@ -527,7 +531,7 @@ append_string(char *dest, const char *src, int *offset_ptr, int max_len)
       return;
     }
   }
-  memcpy(dest + *offset_ptr, src, num);
+  DSA_memcpy::memcpy(dest + *offset_ptr, src, num);
   dest[*offset_ptr + num] = '\0';
   (*offset_ptr) += num;
 }
@@ -2190,9 +2194,9 @@ extract_urls(char *buf, int buflen, char *base_url)
           if (old_he) {
             char *old_hee = strchr(old_he, '/');
             if (old_hee) {
-              memcpy(base_url, t, (he - base_url));
-              memcpy(base_url + (he - base_url), old_he, (old_hee - old_he));
-              memcpy(base_url + (he - base_url) + (old_hee - old_he), t + (he - base_url), strlen(t + (he - base_url)));
+              DSA_memcpy::memcpy(base_url, t, (he - base_url));
+              DSA_memcpy::memcpy(base_url + (he - base_url), old_he, (old_hee - old_he));
+              DSA_memcpy::memcpy(base_url + (he - base_url) + (old_hee - old_he), t + (he - base_url), strlen(t + (he - base_url)));
               base_url[(he - base_url) + (old_hee - old_he) + strlen(t + (he - base_url))] = 0;
             }
           }
@@ -2508,7 +2512,7 @@ read_response(int sock)
     if (urls_mode) {
       fd[sock].response_remaining = total_read - length;
       if (fd[sock].response_remaining) {
-        memcpy(fd[sock].response, p, fd[sock].response_remaining);
+        DSA_memcpy::memcpy(fd[sock].response, p, fd[sock].response_remaining);
       }
       if (check_content && !cl) {
         if (verbose || verbose_errors) {
@@ -3185,7 +3189,7 @@ make_bfc_client(unsigned int addr, int port)
     char *s   = fd[sock].req_header;
     char *e   = (char *)memchr(s, '\r', 512);
     char *url = fd[sock].base_url;
-    memcpy(url, s, e - s);
+    DSA_memcpy::memcpy(url, s, e - s);
     url[e - s] = 0;
     if (show_before) {
       printf("%s\n", url);

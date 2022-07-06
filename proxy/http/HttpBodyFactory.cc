@@ -43,6 +43,10 @@
 #include "HttpCompat.h"
 #include "tscore/I_Layout.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 //////////////////////////////////////////////////////////////////////
 // The HttpBodyFactory creates HTTP response page bodies, supported //
 // configurable customization and language-targeting.               //
@@ -980,10 +984,10 @@ HttpBodySet::init(char *set, char *dir)
     // insert line into hash table //
     /////////////////////////////////
 
-    memcpy(name, name_s, name_e - name_s);
+    DSA_memcpy::memcpy(name, name_s, name_e - name_s);
     name[name_e - name_s] = '\0';
 
-    memcpy(value, value_s, value_e - value_s);
+    DSA_memcpy::memcpy(value, value_s, value_e - value_s);
     value[value_e - value_s] = '\0';
 
     //////////////////////////////////////////////////

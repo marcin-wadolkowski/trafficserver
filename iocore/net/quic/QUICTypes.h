@@ -40,6 +40,11 @@
 #include "tscore/ink_inet.h"
 #include <openssl/evp.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 using QUICPacketNumber = uint64_t;
 using QUICVersion      = uint32_t;
 using QUICStreamId     = uint64_t;
@@ -281,7 +286,7 @@ public:
 
   QUICStatelessResetToken() {}
   QUICStatelessResetToken(const QUICConnectionId &conn_id, uint32_t instance_id);
-  QUICStatelessResetToken(const uint8_t *buf) { memcpy(this->_token, buf, QUICStatelessResetToken::LEN); }
+  QUICStatelessResetToken(const uint8_t *buf) { DSA_memcpy::memcpy(this->_token, buf, QUICStatelessResetToken::LEN); }
 
   /**
    * Note that this returns a kind of hash code so we can use a StatelessResetToken as a key for a hashtable.
@@ -324,7 +329,7 @@ public:
   };
 
   // FIXME Check token length
-  QUICAddressValidationToken(const uint8_t *buf, size_t len) : _token_len(len) { memcpy(this->_token, buf, len); }
+  QUICAddressValidationToken(const uint8_t *buf, size_t len) : _token_len(len) { DSA_memcpy::memcpy(this->_token, buf, len); }
   virtual ~QUICAddressValidationToken(){};
 
   static Type
@@ -507,7 +512,7 @@ public:
 class QUICPathValidationData
 {
 public:
-  QUICPathValidationData(const uint8_t *data) { memcpy(this->_data, data, sizeof(this->_data)); }
+  QUICPathValidationData(const uint8_t *data) { DSA_memcpy::memcpy(this->_data, data, sizeof(this->_data)); }
 
   inline operator const uint8_t *() const { return this->_data; }
 

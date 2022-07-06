@@ -59,6 +59,10 @@
 #include <atomic>
 #include <logging/Log.h>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define DEFAULT_RESPONSE_BUFFER_SIZE_INDEX 6 // 8K
 #define DEFAULT_REQUEST_BUFFER_SIZE_INDEX 6  // 8K
 #define MIN_CONFIG_BUFFER_SIZE_INDEX 5       // 4K
@@ -7357,7 +7361,7 @@ HttpSM::update_stats()
     const char *field          = t_state.hdr_info.client_request.value_get(MIME_FIELD_X_ID, MIME_LEN_X_ID, &length);
     if (field != nullptr && length > 0) {
       length = std::min(length, static_cast<int>(sizeof(unique_id_string)) - 1);
-      memcpy(unique_id_string, field, length);
+      DSA_memcpy::memcpy(unique_id_string, field, length);
       unique_id_string[length] = 0; // NULL terminate the string
     }
 
@@ -8044,7 +8048,7 @@ HttpSM::redirect_request(const char *arg_redirect_url, const int arg_redirect_le
     tmpOrigHost = const_cast<char *>(t_state.hdr_info.server_request.value_get(MIME_FIELD_HOST, MIME_LEN_HOST, &origHost_len));
 
     if (tmpOrigHost) {
-      memcpy(origHost, tmpOrigHost, origHost_len);
+      DSA_memcpy::memcpy(origHost, tmpOrigHost, origHost_len);
       origHost[std::min(origHost_len, MAXDNAME - 1)] = '\0';
     } else {
       valid_origHost = false;
@@ -8052,7 +8056,7 @@ HttpSM::redirect_request(const char *arg_redirect_url, const int arg_redirect_le
 
     char *tmpOrigMethod = const_cast<char *>(t_state.hdr_info.server_request.method_get(&origMethod_len));
     if (tmpOrigMethod) {
-      memcpy(origMethod, tmpOrigMethod, std::min(origMethod_len, static_cast<int>(sizeof(origMethod))));
+      DSA_memcpy::memcpy(origMethod, tmpOrigMethod, std::min(origMethod_len, static_cast<int>(sizeof(origMethod))));
     } else {
       valid_origHost = false;
     }
@@ -8081,7 +8085,7 @@ HttpSM::redirect_request(const char *arg_redirect_url, const int arg_redirect_le
       char redirect_url_leading_slash[arg_redirect_len + 1];
       redirect_url_leading_slash[0] = '/';
       if (arg_redirect_len > 0) {
-        memcpy(redirect_url_leading_slash + 1, arg_redirect_url, arg_redirect_len);
+        DSA_memcpy::memcpy(redirect_url_leading_slash + 1, arg_redirect_url, arg_redirect_len);
       }
       url_nuke_proxy_stuff(redirectUrl.m_url_impl);
       redirectUrl.parse(redirect_url_leading_slash, arg_redirect_len + 1);
@@ -8111,7 +8115,7 @@ HttpSM::redirect_request(const char *arg_redirect_url, const int arg_redirect_le
   char scheme_str[scheme_len + 1];
 
   if (next_hop_scheme) {
-    memcpy(scheme_str, next_hop_scheme, scheme_len);
+    DSA_memcpy::memcpy(scheme_str, next_hop_scheme, scheme_len);
   } else {
     valid_origHost = false;
   }

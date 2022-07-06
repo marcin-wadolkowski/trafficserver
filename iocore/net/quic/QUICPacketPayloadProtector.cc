@@ -25,6 +25,10 @@
 #include "QUICPacketPayloadProtector.h"
 #include "QUICDebugNames.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 static constexpr char tag[] = "quic_ppp";
 
 Ptr<IOBufferBlock>
@@ -117,7 +121,7 @@ void
 QUICPacketPayloadProtector::_gen_nonce(uint8_t *nonce, size_t &nonce_len, uint64_t pkt_num, const uint8_t *iv, size_t iv_len) const
 {
   nonce_len = iv_len;
-  memcpy(nonce, iv, iv_len);
+  DSA_memcpy::memcpy(nonce, iv, iv_len);
 
   pkt_num    = htobe64(pkt_num);
   uint8_t *p = reinterpret_cast<uint8_t *>(&pkt_num);

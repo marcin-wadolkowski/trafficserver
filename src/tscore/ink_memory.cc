@@ -46,6 +46,10 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 void *
 ats_malloc(size_t size)
 {
@@ -265,7 +269,7 @@ ats_scoped_str::operator=(std::string_view s)
   this->clear();
   if (!s.empty()) {
     _r = static_cast<char *>(ats_malloc(s.size() + 1));
-    memcpy(_r, s.data(), s.size());
+    DSA_memcpy::memcpy(_r, s.data(), s.size());
     _r[s.size()] = '\0';
   }
   return *this;

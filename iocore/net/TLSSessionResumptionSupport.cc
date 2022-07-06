@@ -35,6 +35,10 @@
 #include "InkAPIInternal.h"
 #include "tscore/ink_config.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 // Remove this when drop OpenSSL 1.0.2 support
 #ifndef evp_md_func
 #ifdef OPENSSL_NO_SHA256
@@ -222,7 +226,7 @@ TLSSessionResumptionSupport::_setSessionInformation(ssl_ticket_key_block *keyblo
 #endif
 {
   const ssl_ticket_key_t &most_recent_key = keyblock->keys[0];
-  memcpy(keyname, most_recent_key.key_name, sizeof(most_recent_key.key_name));
+  DSA_memcpy::memcpy(keyname, most_recent_key.key_name, sizeof(most_recent_key.key_name));
   if (RAND_bytes(iv, EVP_MAX_IV_LENGTH) != 1) {
     return -1;
   }

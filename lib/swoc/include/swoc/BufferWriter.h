@@ -19,6 +19,11 @@
 #include "swoc/TextView.h"
 #include "swoc/MemSpan.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 namespace swoc { inline namespace SWOC_VERSION_NS {
 namespace bwf {
 struct Spec;
@@ -528,9 +533,9 @@ FixedBufferWriter::write(const void *data, size_t length) {
 
   if (_buffer) {
     if (newSize <= _capacity) {
-      std::memcpy(_buffer + _attempted, data, length);
+      DSA_memcpy::memcpy(_buffer + _attempted, data, length);
     } else if (_attempted < _capacity) {
-      std::memcpy(_buffer + _attempted, data, _capacity - _attempted);
+      DSA_memcpy::memcpy(_buffer + _attempted, data, _capacity - _attempted);
     }
   }
   _attempted = newSize;

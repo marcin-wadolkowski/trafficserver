@@ -44,6 +44,10 @@
 
 #define PLUGIN_NAME "remap"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 class remap_entry
 {
 public:
@@ -305,8 +309,8 @@ TSRemapDoRemap(void *ih, TSHttpTxn rh, TSRemapRequestInfo *rri)
       return TSREMAP_NO_REMAP;
     }
 
-    memcpy(new_path, "47_copy", 7);
-    memcpy(&new_path[7], &temp2[2], len2 - 2);
+    DSA_memcpy::memcpy(new_path, "47_copy", 7);
+    DSA_memcpy::memcpy(&new_path[7], &temp2[2], len2 - 2);
 
     if (TSUrlPathSet(rri->requestBufp, rri->requestUrl, new_path, len2 + 5) == TS_SUCCESS) {
       return TSREMAP_DID_REMAP;

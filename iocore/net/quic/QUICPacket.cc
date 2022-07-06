@@ -32,6 +32,10 @@
 #include "QUICDebugNames.h"
 #include "QUICRetryIntegrityTag.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using namespace std::literals;
 static constexpr uint64_t aead_tag_len             = 16;
 static constexpr int LONG_HDR_OFFSET_CONNECTION_ID = 6;
@@ -106,14 +110,14 @@ QUICPacket::store(uint8_t *buf, size_t *len) const
 
   block = this->header_block();
   while (block) {
-    memcpy(buf + written, block->start(), block->size());
+    DSA_memcpy::memcpy(buf + written, block->start(), block->size());
     written += block->size();
     block = block->next;
   }
 
   block = this->payload_block();
   while (block) {
-    memcpy(buf + written, block->start(), block->size());
+    DSA_memcpy::memcpy(buf + written, block->start(), block->size());
     written += block->size();
     block = block->next;
   }
@@ -692,7 +696,7 @@ QUICShortHeaderPacketR::QUICShortHeaderPacketR(UDPConnection *udp_con, IpEndpoin
 
   size_t copied_len = 0;
   for (auto b = blocks; b; b = b->next) {
-    memcpy(raw_buf + copied_len, b->start(), b->size());
+    DSA_memcpy::memcpy(raw_buf + copied_len, b->start(), b->size());
     copied_len += b->size();
   }
 
@@ -830,7 +834,7 @@ QUICStatelessResetPacket::payload_block() const
   block->alloc(iobuffer_size_to_index(QUICStatelessResetToken::LEN, BUFFER_SIZE_INDEX_32K));
   uint8_t *buf = reinterpret_cast<uint8_t *>(block->start());
 
-  memcpy(buf, this->_token.buf(), QUICStatelessResetToken::LEN);
+  DSA_memcpy::memcpy(buf, this->_token.buf(), QUICStatelessResetToken::LEN);
   written_len += QUICStatelessResetToken::LEN;
 
   block->fill(written_len);
@@ -1010,7 +1014,7 @@ QUICVersionNegotiationPacketR::QUICVersionNegotiationPacketR(UDPConnection *udp_
 
   size_t copied_len = 0;
   for (auto b = blocks; b; b = b->next) {
-    memcpy(raw_buf + copied_len, b->start(), b->size());
+    DSA_memcpy::memcpy(raw_buf + copied_len, b->start(), b->size());
     copied_len += b->size();
   }
 
@@ -1128,7 +1132,7 @@ QUICInitialPacket::header_block() const
   written_len += n;
 
   // Token
-  memcpy(buf + written_len, this->_token.get(), this->_token_len);
+  DSA_memcpy::memcpy(buf + written_len, this->_token.get(), this->_token_len);
   written_len += this->_token_len;
 
   QUICPacketNumber pn = 0;
@@ -1202,7 +1206,7 @@ QUICInitialPacketR::QUICInitialPacketR(UDPConnection *udp_con, IpEndpoint from, 
 
   size_t copied_len = 0;
   for (auto b = blocks; b; b = b->next) {
-    memcpy(raw_buf + copied_len, b->start(), b->size());
+    DSA_memcpy::memcpy(raw_buf + copied_len, b->start(), b->size());
     copied_len += b->size();
   }
 
@@ -1428,7 +1432,7 @@ QUICZeroRttPacketR::QUICZeroRttPacketR(UDPConnection *udp_con, IpEndpoint from, 
 
   size_t copied_len = 0;
   for (auto b = blocks; b; b = b->next) {
-    memcpy(raw_buf + copied_len, b->start(), b->size());
+    DSA_memcpy::memcpy(raw_buf + copied_len, b->start(), b->size());
     copied_len += b->size();
   }
 
@@ -1608,7 +1612,7 @@ QUICHandshakePacketR::QUICHandshakePacketR(UDPConnection *udp_con, IpEndpoint fr
 
   size_t copied_len = 0;
   for (auto b = blocks; b; b = b->next) {
-    memcpy(raw_buf + copied_len, b->start(), b->size());
+    DSA_memcpy::memcpy(raw_buf + copied_len, b->start(), b->size());
     copied_len += b->size();
   }
 
@@ -1740,7 +1744,7 @@ QUICRetryPacket::payload_block() const
   buf = reinterpret_cast<uint8_t *>(block->start());
 
   // Retry Token
-  memcpy(buf + written_len, this->_token.buf(), this->_token.length());
+  DSA_memcpy::memcpy(buf + written_len, this->_token.buf(), this->_token.length());
   written_len += this->_token.length();
   block->fill(written_len);
 
@@ -1777,7 +1781,7 @@ QUICRetryPacketR::QUICRetryPacketR(UDPConnection *udp_con, IpEndpoint from, IpEn
 
   size_t copied_len = 0;
   for (auto b = blocks; b; b = b->next) {
-    memcpy(raw_buf + copied_len, b->start(), b->size());
+    DSA_memcpy::memcpy(raw_buf + copied_len, b->start(), b->size());
     copied_len += b->size();
   }
 
@@ -1797,7 +1801,7 @@ QUICRetryPacketR::QUICRetryPacketR(UDPConnection *udp_con, IpEndpoint from, IpEn
   offset += this->_token->length();
 
   // Retry Integrity Tag
-  memcpy(this->_integrity_tag, raw_buf + offset, QUICRetryIntegrityTag::LEN);
+  DSA_memcpy::memcpy(this->_integrity_tag, raw_buf + offset, QUICRetryIntegrityTag::LEN);
 
   this->_header_block                    = concatenated_block->clone();
   this->_header_block->_end              = this->_header_block->_start + offset;

@@ -36,6 +36,11 @@
 
 #include "tscpp/util/TextView.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 /***********************************************************************
  *                                                                     *
  *                              Defines                                *
@@ -1527,7 +1532,7 @@ inline bool
 MIMEHdr::field_value_replace(MIMEField *field, const char *value, int value_length)
 {
   if (field->m_len_value >= value_length) {
-    memcpy((char *)field->m_ptr_value, value, value_length);
+    DSA_memcpy::memcpy((char *)field->m_ptr_value, value, value_length);
     field->m_len_value = value_length;
     return true;
   }

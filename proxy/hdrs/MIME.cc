@@ -36,6 +36,10 @@
 #include "HdrUtils.h"
 #include "HttpCompat.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using ts::TextView;
 
 /***********************************************************************
@@ -1074,7 +1078,7 @@ _mime_field_block_copy(MIMEFieldBlockImpl *s_fblock, HdrHeap * /* s_heap ATS_UNU
   MIMEFieldBlockImpl *d_fblock;
 
   d_fblock = (MIMEFieldBlockImpl *)d_heap->allocate_obj(sizeof(MIMEFieldBlockImpl), HDR_HEAP_OBJ_FIELD_BLOCK);
-  memcpy(d_fblock, s_fblock, sizeof(MIMEFieldBlockImpl));
+  DSA_memcpy::memcpy(d_fblock, s_fblock, sizeof(MIMEFieldBlockImpl));
   return d_fblock;
 }
 
@@ -1129,7 +1133,7 @@ mime_hdr_copy_onto(MIMEHdrImpl *s_mh, HdrHeap *s_heap, MIMEHdrImpl *d_mh, HdrHea
   int bytes_below_top = end - reinterpret_cast<char *>(s_mh);
 
   // copies useful part of enclosed first block too
-  memcpy(d_mh, s_mh, bytes_below_top);
+  DSA_memcpy::memcpy(d_mh, s_mh, bytes_below_top);
 
   if (d_mh->m_first_fblock.m_next == nullptr) // common case: no other block
   {
@@ -1942,7 +1946,7 @@ mime_field_value_str_from_strlist(HdrHeap *heap, int *new_str_len_return, StrLis
       *dest++ = ',';
       *dest++ = ' ';
     }
-    memcpy(dest, cell->str, cell->len);
+    DSA_memcpy::memcpy(dest, cell->str, cell->len);
     dest += cell->len;
     cell = cell->next;
   }
@@ -2118,9 +2122,9 @@ mime_field_value_extend_comma_val(HdrHeap *heap, MIMEHdrImpl *mh, MIMEField *fie
   if (trimmed) {
     *dest++ = '\"';
   }
-  memcpy(dest, cell->str, cell->len);
+  DSA_memcpy::memcpy(dest, cell->str, cell->len);
   dest += cell->len;
-  memcpy(dest, new_piece_str, new_piece_len);
+  DSA_memcpy::memcpy(dest, new_piece_str, new_piece_len);
   dest += new_piece_len;
   if (trimmed) {
     *dest++ = '\"';
@@ -2249,7 +2253,7 @@ mime_field_value_append(HdrHeap *heap, MIMEHdrImpl *mh, MIMEField *field, const 
   if (new_str == nullptr) {
     // Expansion failed.  Create a new string and copy over the value contents
     new_str = heap->allocate_str(new_length);
-    memcpy(new_str, field->m_ptr_value, field->m_len_value);
+    DSA_memcpy::memcpy(new_str, field->m_ptr_value, field->m_len_value);
   }
 
   char *ptr = new_str + field->m_len_value;
@@ -2258,7 +2262,7 @@ mime_field_value_append(HdrHeap *heap, MIMEHdrImpl *mh, MIMEField *field, const 
     *ptr++ = ' ';
   }
 
-  memcpy(ptr, value, length);
+  DSA_memcpy::memcpy(ptr, value, length);
 
   field->m_ptr_value         = new_str;
   field->m_len_value         = new_length;
@@ -2820,7 +2824,7 @@ mime_field_print(MIMEField *field, char *buf_start, int buf_length, int *buf_ind
 
     if ((buf_start != nullptr) && (*buf_chars_to_skip_inout == 0) && (total_len <= (buf_length - *buf_index_inout))) {
       buf_start += *buf_index_inout;
-      memcpy(buf_start, field->m_ptr_name, total_len);
+      DSA_memcpy::memcpy(buf_start, field->m_ptr_name, total_len);
       *buf_index_inout += total_len;
 
     } else {
@@ -2834,14 +2838,14 @@ mime_field_print(MIMEField *field, char *buf_start, int buf_length, int *buf_ind
     if ((buf_start != nullptr) && (*buf_chars_to_skip_inout == 0) && (total_len <= (buf_length - *buf_index_inout))) {
       buf_start += *buf_index_inout;
 
-      memcpy(buf_start, field->m_ptr_name, field->m_len_name);
+      DSA_memcpy::memcpy(buf_start, field->m_ptr_name, field->m_len_name);
       buf_start += field->m_len_name;
 
       buf_start[0] = ':';
       buf_start[1] = ' ';
       buf_start += 2;
 
-      memcpy(buf_start, field->m_ptr_value, field->m_len_value);
+      DSA_memcpy::memcpy(buf_start, field->m_ptr_value, field->m_len_value);
       buf_start += field->m_len_value;
 
       buf_start[0] = '\r';

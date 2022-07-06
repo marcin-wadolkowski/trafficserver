@@ -23,6 +23,10 @@
 
 #include "RemapProcessor.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 RemapProcessor remapProcessor;
 extern ClassAllocator<RemapPlugins> pluginAllocator;
 
@@ -164,7 +168,7 @@ RemapProcessor::finish_remap(HttpTransact::State *s, UrlRewrite *table)
       if (referer_len >= static_cast<int>(sizeof(tmp_referer_buf))) {
         referer_len = static_cast<int>(sizeof(tmp_referer_buf) - 1);
       }
-      memcpy(tmp_referer_buf, referer_hdr, referer_len);
+      DSA_memcpy::memcpy(tmp_referer_buf, referer_hdr, referer_len);
       tmp_referer_buf[referer_len] = 0;
       for (enabled_flag = false; ri; ri = ri->next) {
         if (ri->any) {
@@ -253,7 +257,7 @@ RemapProcessor::finish_remap(HttpTransact::State *s, UrlRewrite *table)
     char host_hdr_buf[TS_MAX_HOST_NAME_LEN];
     if (TS_MAX_HOST_NAME_LEN > remapped_host_len) {
       tmp = remapped_host_len;
-      memcpy(host_hdr_buf, remapped_host, remapped_host_len);
+      DSA_memcpy::memcpy(host_hdr_buf, remapped_host, remapped_host_len);
       if (remapped_port) {
         tmp += snprintf(host_hdr_buf + remapped_host_len, TS_MAX_HOST_NAME_LEN - remapped_host_len - 1, ":%d", remapped_port);
       }

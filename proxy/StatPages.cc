@@ -34,6 +34,10 @@
 #include "HdrUtils.h"
 #include "tscore/MatcherUtils.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 #define MAX_STAT_PAGES 32
 
 // Globals
@@ -81,7 +85,7 @@ StatPagesManager::handle_http(Continuation *cont, HTTPHdr *header)
     if (host_len > MAXDNAME) {
       host_len = MAXDNAME;
     }
-    memcpy(host, h, host_len);
+    DSA_memcpy::memcpy(host, h, host_len);
     host[host_len] = '\0';
     host_len       = unescapifyStr(host);
 
@@ -112,7 +116,7 @@ StatPagesManager::is_stat_page(URL *url)
     return false;
   }
 
-  memcpy(host, h, length);
+  DSA_memcpy::memcpy(host, h, length);
   host[length] = '\0';
   length       = unescapifyStr(host);
 
@@ -134,7 +138,7 @@ StatPagesManager::is_cache_inspector_page(URL *url)
     return false;
   }
 
-  memcpy(host, h, length);
+  DSA_memcpy::memcpy(host, h, length);
   host[length] = '\0';
   length       = unescapifyStr(host);
 
@@ -183,7 +187,7 @@ BaseStatPagesHandler::resp_add(const char *fmt, ...)
     response_size = size;
   }
 
-  memcpy(&response[response_length], buf, length + 1);
+  DSA_memcpy::memcpy(&response[response_length], buf, length + 1);
   response_length += length;
 }
 

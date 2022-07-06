@@ -35,6 +35,10 @@
 #include <random>
 #include <chrono>
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 HostDBProcessor hostDBProcessor;
 int HostDBProcessor::hostdb_strict_round_robin = 0;
 int HostDBProcessor::hostdb_timed_round_robin  = 0;
@@ -219,7 +223,7 @@ HostDBHash::refresh()
     char buff[TS_IP6_SIZE + 4];
     int n = ip.isIp6() ? sizeof(in6_addr) : sizeof(in_addr_t);
     memset(buff, 0, 2);
-    memcpy(buff + 2, ip._addr._byte, n);
+    DSA_memcpy::memcpy(buff + 2, ip._addr._byte, n);
     memset(buff + 2 + n, 0, 2);
     ctx.update(buff, n + 4);
   }
@@ -436,7 +440,7 @@ HostDBContinuation::init(HostDBHash const &the_hash, Options const &opt)
     if (hash.host_len > static_cast<int>(sizeof(hash_host_name_store) - 1)) {
       hash.host_len = sizeof(hash_host_name_store) - 1;
     }
-    memcpy(hash_host_name_store, hash.host_name, hash.host_len);
+    DSA_memcpy::memcpy(hash_host_name_store, hash.host_name, hash.host_len);
   } else {
     hash.host_len = 0;
   }
@@ -1297,7 +1301,7 @@ HostDBContinuation::dnsEvent(int event, HostEnt *e)
 
           ink_assert((skip + t->host_len) <= e->srv_hosts.srv_hosts_length);
 
-          memcpy(pos + skip, t->host, t->host_len);
+          DSA_memcpy::memcpy(pos + skip, t->host, t->host_len);
           item.data.srv.srv_offset = (pos - reinterpret_cast<char *>(rr_data)) + skip;
 
           skip += t->host_len;
@@ -1663,7 +1667,7 @@ HostDBContinuation::backgroundEvent(int /* event ATS_UNUSED */, Event * /* e ATS
       // path to hostfile changed
       hostdb_hostfile_update_timestamp = 0; // never updated from this file
       if ('\0' != *path) {
-        memcpy(hostdb_hostfile_path, path, sizeof(hostdb_hostfile_path));
+        DSA_memcpy::memcpy(hostdb_hostfile_path, path, sizeof(hostdb_hostfile_path));
       } else {
         hostdb_hostfile_path[0] = 0; // mark as not there
       }

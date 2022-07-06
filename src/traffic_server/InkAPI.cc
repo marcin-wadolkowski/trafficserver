@@ -76,6 +76,10 @@
 
 #include "ts/ts.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 /****************************************************************
  *  IMPORTANT - READ ME
  * Any plugin using the IO Core must enter
@@ -898,7 +902,7 @@ FileImpl::fread(void *buf, size_t length)
     if (amount > m_bufpos) {
       amount = m_bufpos;
     }
-    memcpy(buf, m_buf, amount);
+    DSA_memcpy::memcpy(buf, m_buf, amount);
     memmove(m_buf, &m_buf[amount], m_bufpos - amount);
     m_bufpos -= amount;
     return amount;
@@ -931,7 +935,7 @@ FileImpl::fwrite(const void *buf, size_t length)
     if (avail > length) {
       avail = length;
     }
-    memcpy(&m_buf[m_bufpos], p, avail);
+    DSA_memcpy::memcpy(&m_buf[m_bufpos], p, avail);
 
     m_bufpos += avail;
     p += avail;
@@ -3024,7 +3028,7 @@ TSMimeHdrFieldAppend(TSMBuffer bufp, TSMLoc mh_mloc, TSMLoc field_mloc)
     mh_field = mime_field_create(heap, mh);
 
     // FIX: is it safe to copy everything over?
-    memcpy(mh_field, field_handle->field_ptr, sizeof(MIMEField));
+    DSA_memcpy::memcpy(mh_field, field_handle->field_ptr, sizeof(MIMEField));
 
     // now set up the forwarding ptr from standalone field to hdr field
     field_handle->mh        = mh;
@@ -4326,7 +4330,7 @@ TSCacheKeyHostNameSet(TSCacheKey key, const char *hostname, int host_len)
   /* need to make a copy of the hostname. The caller
      might deallocate it anytime in the future */
   i->hostname = (char *)ats_malloc(host_len);
-  memcpy(i->hostname, hostname, host_len);
+  DSA_memcpy::memcpy(i->hostname, hostname, host_len);
   i->len = host_len;
   return TS_SUCCESS;
 }

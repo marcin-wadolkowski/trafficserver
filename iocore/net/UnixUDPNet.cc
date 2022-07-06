@@ -37,6 +37,10 @@
 #include "P_Net.h"
 #include "P_UDPNet.h"
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
 using UDPNetContHandler = int (UDPNetHandler::*)(int, void *);
 
 ClassAllocator<UDPPacketInternal> udpPacketAllocator("udpPacketAllocator");
@@ -228,7 +232,7 @@ UDPNetProcessorInternal::udp_read_from_net(UDPNetHandler *nh, UDPConnection *xuc
       case IPV6_PKTINFO: // IPV6_RECVPKTINFO uses IPV6_PKTINFO too
         if (cmsg->cmsg_level == IPPROTO_IPV6) {
           struct in6_pktinfo *pktinfo = reinterpret_cast<struct in6_pktinfo *>(CMSG_DATA(cmsg));
-          memcpy(toaddr.sin6_addr.s6_addr, &pktinfo->ipi6_addr, 16);
+          DSA_memcpy::memcpy(toaddr.sin6_addr.s6_addr, &pktinfo->ipi6_addr, 16);
         }
         break;
 #endif

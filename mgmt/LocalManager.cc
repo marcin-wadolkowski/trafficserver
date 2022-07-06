@@ -44,6 +44,11 @@
 #include <sys/capability.h>
 #endif
 
+#include "DSA_memcpy.h"
+
+using DSA::DSA_memcpy;
+
+
 using namespace std::literals;
 static const std::string_view MGMT_OPT{"-M"};
 static const std::string_view RUNROOT_OPT{"--run-root="};
@@ -407,7 +412,7 @@ LocalManager::pollMgmtProcessServer()
         // read the message
         if ((res = mgmt_read_pipe(watched_process_fd, reinterpret_cast<char *>(&mh_hdr), sizeof(MgmtMessageHdr))) > 0) {
           MgmtMessageHdr *mh_full = static_cast<MgmtMessageHdr *>(malloc(sizeof(MgmtMessageHdr) + mh_hdr.data_len));
-          memcpy(mh_full, &mh_hdr, sizeof(MgmtMessageHdr));
+          DSA_memcpy::memcpy(mh_full, &mh_hdr, sizeof(MgmtMessageHdr));
           char *data_raw = reinterpret_cast<char *>(mh_full) + sizeof(MgmtMessageHdr);
           if ((res = mgmt_read_pipe(watched_process_fd, data_raw, mh_hdr.data_len)) > 0) {
             handleMgmtMsgFromProcesses(mh_full);
@@ -580,7 +585,7 @@ LocalManager::sendMgmtMsgToProcesses(int msg_id, const char *data_raw, int data_
   mh           = static_cast<MgmtMessageHdr *>(alloca(sizeof(MgmtMessageHdr) + data_len));
   mh->msg_id   = msg_id;
   mh->data_len = data_len;
-  memcpy(reinterpret_cast<char *>(mh) + sizeof(MgmtMessageHdr), data_raw, data_len);
+  DSA_memcpy::memcpy(reinterpret_cast<char *>(mh) + sizeof(MgmtMessageHdr), data_raw, data_len);
   sendMgmtMsgToProcesses(mh);
   return;
 }
@@ -714,7 +719,7 @@ LocalManager::signalEvent(int msg_id, const char *data_raw, int data_len)
   mh->msg_id   = msg_id;
   mh->data_len = data_len;
   auto payload = mh->payload();
-  memcpy(payload.data(), data_raw, data_len);
+  DSA_memcpy::memcpy(payload.data(), data_raw, data_len);
   this->enqueue(mh);
   //  ink_assert(enqueue(mgmt_event_queue, mh));
 
