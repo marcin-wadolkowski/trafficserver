@@ -37,9 +37,9 @@
 #include "P_SSLUtils.h"
 #include "SSLStats.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 // Maximum OCSP stapling response size.
 // This should be the response for a single certificate and will typically include the responder certificate chain,

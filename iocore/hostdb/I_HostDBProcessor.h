@@ -33,9 +33,9 @@
 #include "SRV.h"
 #include "P_RefCountCache.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 // Event returned on a lookup
 #define EVENT_HOST_DB_LOOKUP (HOSTDB_EVENT_EVENTS_START + 0)

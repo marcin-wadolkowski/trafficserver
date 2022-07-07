@@ -37,9 +37,9 @@
 #include "HTTP.h"
 #include "I_EventSystem.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 static constexpr size_t MAX_LOST_STR_SPACE        = 1024;
 static constexpr uint32_t MAX_HDR_HEAP_OBJ_LENGTH = (1 << 20) - 1; ///< m_length is 20 bit

@@ -28,9 +28,9 @@
 #include "PluginVC.h"
 #include "ts/ts.h" // Ugly, but we need a bunch of the public APIs here ... :-/
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 #define DEBUG_TAG "FetchSM"
 #define FETCH_LOCK_RETRY_TIME HRTIME_MSECONDS(10)

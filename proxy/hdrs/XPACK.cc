@@ -28,9 +28,9 @@
 #include "tscore/ink_memory.h"
 #include "tscpp/util/LocalBuffer.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 //
 // [RFC 7541] 5.1. Integer representation

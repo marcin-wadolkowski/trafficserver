@@ -117,9 +117,9 @@ extern "C" int plock(int);
 #include <gperftools/heap-profiler.h>
 #endif
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 //
 // Global Data
@@ -2231,7 +2231,7 @@ main(int /* argc ATS_UNUSED */, const char **argv)
   time_now = time(NULL);
   struct tm t = *localtime(&time_now);
     
-  char date_and_time[16];
+  char date_and_time[128];
   sprintf(date_and_time, "%04d%02d%02d_%02d%02d%02d", 
 	      t.tm_year+1900, t.tm_mon+1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
 		  

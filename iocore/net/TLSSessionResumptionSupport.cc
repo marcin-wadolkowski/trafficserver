@@ -35,9 +35,11 @@
 #include "InkAPIInternal.h"
 #include "tscore/ink_config.h"
 
-#include "DSA_memcpy.h"
+#include <openssl/core.h>
 
-using DSA::DSA_memcpy;
+#include "../../include/shared/DSA_memcpy.h"
+
+using IDSA::DSA_memcpy;
 
 // Remove this when drop OpenSSL 1.0.2 support
 #ifndef evp_md_func

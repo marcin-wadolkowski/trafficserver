@@ -34,9 +34,9 @@
 #include <lzma.h>
 #endif
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 #define REQUIRED_COMPRESSION 0.9 // must get to this size or declared incompressible
 #define REQUIRED_SHRINK 0.8      // must get to this size or keep original buffer (with padding)

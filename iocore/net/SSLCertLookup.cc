@@ -21,6 +21,9 @@
   limitations under the License.
  */
 
+#include <openssl/ssl.h>
+typedef struct evp_mac_ctx_st EVP_MAC_CTX;
+
 #include "P_SSLCertLookup.h"
 
 #include "tscore/ink_config.h"
@@ -44,9 +47,9 @@
 #include <vector>
 #include <algorithm>
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 struct SSLAddressLookupKey {
   explicit SSLAddressLookupKey(const IpEndpoint &ip)

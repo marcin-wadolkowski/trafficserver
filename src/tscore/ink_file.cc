@@ -28,9 +28,9 @@
 #include "tscore/ink_string.h"
 #include "tscore/ink_memory.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 #if HAVE_SYS_STAT_H
 #include <sys/stat.h>

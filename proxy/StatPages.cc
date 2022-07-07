@@ -34,9 +34,9 @@
 #include "HdrUtils.h"
 #include "tscore/MatcherUtils.h"
 
-#include "DSA_memcpy.h"
+#include "../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 #define MAX_STAT_PAGES 32
 

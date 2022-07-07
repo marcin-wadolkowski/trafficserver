@@ -32,9 +32,9 @@
 
 #include "tscore/ink_config.h"
 
-#include "DSA_memcpy.h"
+#include "../shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 
 #if HAVE_UNISTD_H

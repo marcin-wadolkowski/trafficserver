@@ -36,9 +36,9 @@
 #include "tscore/InkErrno.h"
 #include "tscore/IpMapConf.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 socks_conf_struct *g_socks_conf_stuff = nullptr;
 

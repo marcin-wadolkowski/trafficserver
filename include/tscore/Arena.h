@@ -27,8 +27,8 @@
 #include <memory.h>
 #include "tscore/ink_assert.h"
 
-#include "DSA_memcpy.h"
-using DSA::DSA_memcpy;
+#include "../shared/DSA_memcpy.h"
+using IDSA::DSA_memcpy;
 
 
 struct ArenaBlock {

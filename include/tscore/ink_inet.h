@@ -33,9 +33,9 @@
 #include "tscore/ink_apidefs.h"
 #include "tscore/BufferWriterForward.h"
 
-#include "DSA_memcpy.h"
+#include "../shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 
 #if !TS_HAS_IN6_IS_ADDR_UNSPECIFIED

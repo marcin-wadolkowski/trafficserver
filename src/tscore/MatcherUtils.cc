@@ -37,9 +37,9 @@
 #include "tscore/MatcherUtils.h"
 #include "tscore/Tokenizer.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 // char* readIntoBuffer(const char* file_path, const char* module_name,
 //                          int* read_size_ptr)

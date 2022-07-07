@@ -38,9 +38,9 @@
 #include <pcre.h>
 #endif
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 #define SUBSTRING_VECTOR_COUNT 30 // Should be multiple of 3
 

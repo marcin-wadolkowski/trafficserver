@@ -32,9 +32,9 @@
 #include "I_Machine.h"
 #include "tscore/Filenames.h"
 
-#include "DSA_memcpy.h"
+#include "../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 #define MAX_SIMPLE_RETRIES 5
 #define MAX_UNAVAILABLE_SERVER_RETRIES 5

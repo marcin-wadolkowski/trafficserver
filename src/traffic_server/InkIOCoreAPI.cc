@@ -40,9 +40,9 @@
 #include "I_Cache.h"
 #include "I_HostDB.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 // This assert is for internal API use only.
 #if TS_USE_FAST_SDK

@@ -82,9 +82,9 @@
 #include "tscore/ink_error.h"
 #include "tscore/ink_resolver.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 #define SPRINTF(x) (sprintf x)
 

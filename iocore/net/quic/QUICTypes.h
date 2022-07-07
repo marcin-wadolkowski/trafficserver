@@ -40,9 +40,9 @@
 #include "tscore/ink_inet.h"
 #include <openssl/evp.h>
 
-#include "DSA_memcpy.h"
+#include "../../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 
 using QUICPacketNumber = uint64_t;

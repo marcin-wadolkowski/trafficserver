@@ -33,9 +33,9 @@
 #include "tscore/ink_base64.h"
 #include "tscore/ink_assert.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 // TODO: The code here seems a bit klunky, and could probably be improved a bit.
 

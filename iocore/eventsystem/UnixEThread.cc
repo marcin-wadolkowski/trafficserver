@@ -36,9 +36,9 @@
 
 #include <typeinfo>
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 struct AIOCallback;
 
@@ -239,7 +239,7 @@ EThread::execute_regular()
       // Mixed feelings - really this shouldn't be needed, but just in case more than one entry is
       // skipped, clear them all.
       do {
-        DSA_memcpy->memcpy((prev_metric = this->next(prev_metric)), &METRIC_INIT, sizeof(METRIC_INIT));
+        DSA_memcpy::memcpy((prev_metric = this->next(prev_metric)), &METRIC_INIT, sizeof(METRIC_INIT));
       } while (current_metric != prev_metric);
       current_metric->_loop_time._start = loop_start_time;
     }

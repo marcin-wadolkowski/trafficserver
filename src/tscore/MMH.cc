@@ -27,9 +27,9 @@
 #include "tscore/ink_platform.h"
 #include "tscore/MMH.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 /* BUG: INKqa11504: need it be to 64 bits...otherwise it overflows */
 uint64_t MMH_x[MMH_X_SIZE + 8] = {
