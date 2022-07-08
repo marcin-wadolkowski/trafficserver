@@ -5,7 +5,7 @@
 #include <map>    // for call_counts purpose
 
 // Namespace for Intel DataStreaming Accelerator
-namespace DSA {
+namespace IDSA {
 	
 	// class for memcpy implementation
     class DSA_memcpy {

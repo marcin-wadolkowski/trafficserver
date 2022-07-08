@@ -64,9 +64,9 @@
 #include "tscpp/util/TextView.h"
 #include "tscore/Random.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+using IDSA::DSA_memcpy;
 
 /*
  FTP - Traffic Server Template

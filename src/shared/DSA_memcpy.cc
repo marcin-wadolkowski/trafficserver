@@ -2,9 +2,9 @@
 #include <fstream> // for print_counts purpose
 #include <cstring>  // for memcpy
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using namespace DSA;
+using namespace IDSA;
 
 std::map<std::string, int> DSA_memcpy::call_counts {};
 

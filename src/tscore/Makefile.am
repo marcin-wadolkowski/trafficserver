@@ -124,7 +124,8 @@ libtscore_la_SOURCES = \
 	Tokenizer.cc \
 	ts_file.cc \
 	Version.cc \
-	X509HostnameValidator.cc
+	X509HostnameValidator.cc \
+    ../shared/DSA_memcpy.cc
 
 if HAS_HKDF
 if OPENSSL_IS_BORINGSSL
