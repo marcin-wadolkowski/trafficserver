@@ -35,8 +35,6 @@
 #include "InkAPIInternal.h"
 #include "tscore/ink_config.h"
 
-#include <openssl/core.h>
-
 #include "../../include/shared/DSA_memcpy.h"
 
 using IDSA::DSA_memcpy;
