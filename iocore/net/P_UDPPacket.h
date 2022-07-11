@@ -32,6 +32,10 @@
 
 #include "I_UDPNet.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 class UDPPacketInternal : public UDPPacket
 {
 public:
@@ -61,8 +65,8 @@ TS_INLINE
 UDPPacketInternal::UDPPacketInternal()
 
 {
-  memset(&from, '\0', sizeof(from));
-  memset(&to, '\0', sizeof(to));
+  DSA_memset::memset(&from, '\0', sizeof(from));
+  DSA_memset::memset(&to, '\0', sizeof(to));
 }
 
 TS_INLINE

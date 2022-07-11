@@ -33,6 +33,11 @@
 #include "P_EventSystem.h"
 #include "I_AIO.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
+
 // for debugging
 // #define AIO_STATS 1
 
@@ -52,7 +57,7 @@ struct AIOCallbackInternal : public AIOCallback {
   int io_complete(int event, void *data);
   AIOCallbackInternal()
   {
-    memset((void *)&(this->aiocb), 0, sizeof(this->aiocb));
+    DSA_memset::memset((void *)&(this->aiocb), 0, sizeof(this->aiocb));
     this->aiocb.aio_fildes = -1;
     SET_HANDLER(&AIOCallbackInternal::io_complete);
   }

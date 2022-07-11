@@ -34,8 +34,11 @@
 
 #include "../shared/DSA_memcpy.h"
 
+#include "../shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
 
+using IDSA::DSA_memset;
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -207,7 +210,7 @@ template <typename T>
 inline void
 ink_zero(T &t)
 {
-  memset(static_cast<void *>(&t), 0, sizeof(t));
+  DSA_memset::memset(static_cast<void *>(&t), 0, sizeof(t));
 }
 
 /** Verify that we can safely shift value num_places places left.

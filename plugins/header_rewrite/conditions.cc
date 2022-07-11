@@ -34,6 +34,10 @@
 #include "conditions.h"
 #include "lulu.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 // This is a bit of a hack, to get the more linux specific tcp_info struct ...
 #if HAVE_STRUCT_LINUX_TCP_INFO
 #ifndef _LINUX_TCP_H
@@ -999,7 +1003,7 @@ ConditionCidr::append_value(std::string &s, const Resources &res)
       struct in6_addr ipv6 = reinterpret_cast<const struct sockaddr_in6 *>(addr)->sin6_addr;
 
       if (_v6_zero_bytes > 0) {
-        memset(&ipv6.s6_addr[16 - _v6_zero_bytes], 0, _v6_zero_bytes);
+        DSA_memset::memset(&ipv6.s6_addr[16 - _v6_zero_bytes], 0, _v6_zero_bytes);
       }
       if (_v6_mask != 0xff) {
         ipv6.s6_addr[16 - _v6_zero_bytes] &= _v6_mask;

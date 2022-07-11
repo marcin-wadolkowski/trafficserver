@@ -31,6 +31,11 @@
  ****************************************************************************/
 #pragma once
 
+#include "../shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
+
 #define MT_HASHTABLE_PARTITION_BITS 6
 #define MT_HASHTABLE_PARTITIONS (1 << MT_HASHTABLE_PARTITION_BITS)
 #define MT_HASHTABLE_PARTITION_MASK (MT_HASHTABLE_PARTITIONS - 1)
@@ -84,7 +89,7 @@ public:
     bucket_num    = size;
     cur_size      = 0;
     buckets       = new HashTableEntry<key_t, data_t> *[bucket_num];
-    memset(buckets, 0, bucket_num * sizeof(HashTableEntry<key_t, data_t> *));
+    DSA_memset::memset(buckets, 0, bucket_num * sizeof(HashTableEntry<key_t, data_t> *));
   }
   ~IMTHashTable() { reset(); }
   int
@@ -171,7 +176,7 @@ public:
   {
     int new_bucket_num                          = size;
     HashTableEntry<key_t, data_t> **new_buckets = new HashTableEntry<key_t, data_t> *[new_bucket_num];
-    memset(new_buckets, 0, new_bucket_num * sizeof(HashTableEntry<key_t, data_t> *));
+    DSA_memset::memset(new_buckets, 0, new_bucket_num * sizeof(HashTableEntry<key_t, data_t> *));
 
     for (int i = 0; i < bucket_num; i++) {
       HashTableEntry<key_t, data_t> *cur  = buckets[i];

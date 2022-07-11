@@ -46,6 +46,10 @@
 #include "P_Cache.h"
 #include "P_SplitDNS.h"
 
+#include "../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 /****************************************************************
  *   Place all template instantiations at the bottom of the file
  ****************************************************************/
@@ -278,7 +282,7 @@ UrlMatcher<Data, MatchResult>::AllocateSpace(int num_entries)
   data_array = new Data[num_entries];
   url_value  = new int[num_entries];
   url_str    = new char *[num_entries];
-  memset(url_str, 0, sizeof(char *) * num_entries);
+  DSA_memset::memset(url_str, 0, sizeof(char *) * num_entries);
   array_len = num_entries;
   num_el    = 0;
 }
@@ -409,12 +413,12 @@ RegexMatcher<Data, MatchResult>::AllocateSpace(int num_entries)
   ink_assert(array_len == -1);
 
   re_array = static_cast<pcre **>(ats_malloc(sizeof(pcre *) * num_entries));
-  memset(re_array, 0, sizeof(pcre *) * num_entries);
+  DSA_memset::memset(re_array, 0, sizeof(pcre *) * num_entries);
 
   data_array = new Data[num_entries];
 
   re_str = new char *[num_entries];
-  memset(re_str, 0, sizeof(char *) * num_entries);
+  DSA_memset::memset(re_str, 0, sizeof(char *) * num_entries);
 
   array_len = num_entries;
   num_el    = 0;

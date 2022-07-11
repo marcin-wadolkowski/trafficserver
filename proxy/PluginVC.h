@@ -39,6 +39,10 @@
 #include "P_Net.h"
 #include "tscore/ink_atomic.h"
 
+#include "../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 class PluginVCCore;
 
 struct PluginVCState {
@@ -274,8 +278,8 @@ private:
 inline PluginVCCore::PluginVCCore() : active_vc(this), passive_vc(this)
 
 {
-  memset(&active_addr_struct, 0, sizeof active_addr_struct);
-  memset(&passive_addr_struct, 0, sizeof passive_addr_struct);
+  DSA_memset::memset(&active_addr_struct, 0, sizeof active_addr_struct);
+  DSA_memset::memset(&passive_addr_struct, 0, sizeof passive_addr_struct);
 
   id = ink_atomic_increment(&nextid, 1);
 }

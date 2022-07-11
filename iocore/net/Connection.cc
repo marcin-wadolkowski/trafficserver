@@ -32,6 +32,10 @@
 
 #include "P_Net.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #ifdef SO_ACCEPTFILTER
 #include <sys/param.h>
 #include <sys/linker.h>
@@ -63,7 +67,7 @@ NetVCOptions::toString(addr_bind_style s)
 
 Connection::Connection() : fd(NO_FD)
 {
-  memset(&addr, 0, sizeof(addr));
+  DSA_memset::memset(&addr, 0, sizeof(addr));
 }
 
 Connection::~Connection()

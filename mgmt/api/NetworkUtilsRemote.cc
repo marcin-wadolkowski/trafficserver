@@ -33,6 +33,10 @@
 #include "MgmtSocket.h"
 #include "MgmtMarshall.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 CallbackTable *remote_event_callbacks;
 
 int main_socket_fd  = -1;
@@ -128,7 +132,7 @@ ts_connect()
     goto ERROR; // ERROR - can't open socket
   }
   // setup Unix domain socket
-  memset(&client_sock, 0, sizeof(sockaddr_un));
+  DSA_memset::memset(&client_sock, 0, sizeof(sockaddr_un));
   client_sock.sun_family = AF_UNIX;
   ink_strlcpy(client_sock.sun_path, main_socket_path, sizeof(client_sock.sun_path));
 #if defined(darwin) || defined(freebsd)
@@ -151,7 +155,7 @@ ts_connect()
     goto ERROR; // ERROR - can't open socket
   }
   // setup Unix domain socket
-  memset(&client_event_sock, 0, sizeof(sockaddr_un));
+  DSA_memset::memset(&client_event_sock, 0, sizeof(sockaddr_un));
   client_event_sock.sun_family = AF_UNIX;
   ink_strlcpy(client_event_sock.sun_path, event_socket_path, sizeof(client_event_sock.sun_path));
 #if defined(darwin) || defined(freebsd)

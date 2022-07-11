@@ -31,7 +31,11 @@
 
 #include "../include/shared/DSA_memcpy.h"
 
+#include "../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 /*
  * Global ProcessManager
@@ -336,7 +340,7 @@ ProcessManager::initLMConnection()
   }
 
   /* Setup Connection to LocalManager */
-  memset(reinterpret_cast<char *>(&serv_addr), 0, sizeof(serv_addr));
+  DSA_memset::memset(reinterpret_cast<char *>(&serv_addr), 0, sizeof(serv_addr));
   serv_addr.sun_family = AF_UNIX;
 
   ink_strlcpy(serv_addr.sun_path, sockpath.c_str(), sizeof(serv_addr.sun_path));

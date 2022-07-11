@@ -33,6 +33,10 @@
 #include "P_Net.h"
 #include "ts/apidefs.h"
 
+#include "../../include/shared/DSA_memmove.h"
+
+using IDSA::DSA_memmove;
+
 ////
 // NetVConnection
 //
@@ -82,7 +86,7 @@ NetVConnection::has_proxy_protocol(char *buffer, int64_t *bytes_r)
     *bytes_r = -EAGAIN;
   } else {
     Debug("ssl", "Moving %" PRId64 " characters remaining in the buffer from %p to %p", *bytes_r, buffer + len, buffer);
-    memmove(buffer, buffer + len, *bytes_r);
+    DSA_memmove::memmove(buffer, buffer + len, *bytes_r);
   }
 
   return true;

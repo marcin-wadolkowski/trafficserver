@@ -38,6 +38,10 @@
 #include "rules.h"
 #include "configs.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 // Global config, if we don't have a remap specific config.
 static BgFetchConfig *gConfig = nullptr;
 
@@ -137,7 +141,7 @@ private:
 // This is necessary, because the TXN is likely to not be available
 // during the time we fetch from origin.
 struct BgFetchData {
-  BgFetchData() { memset(&client_ip, 0, sizeof(client_ip)); }
+  BgFetchData() { DSA_memset::memset(&client_ip, 0, sizeof(client_ip)); }
 
   ~BgFetchData()
   {

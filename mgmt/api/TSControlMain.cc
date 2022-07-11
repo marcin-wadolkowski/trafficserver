@@ -44,6 +44,10 @@
 
 #include <unordered_map>
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #define TIMEOUT_SECS 1 // the num secs for select timeout
 
 static std::unordered_map<int, ClientT *> accepted_con; // a list of all accepted client connections
@@ -696,7 +700,7 @@ handle_event_get_mlt(int fd, void *req, size_t reqlen)
   }
 
   // iterate through list and put into a delimited string list
-  memset(buf, 0, MAX_BUF_SIZE);
+  DSA_memset::memset(buf, 0, MAX_BUF_SIZE);
   while (!queue_is_empty(event_list)) {
     event_name = static_cast<char *>(dequeue(event_list));
     if (event_name) {

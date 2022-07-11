@@ -70,6 +70,10 @@
 #include <openssl/ts.h>
 #endif
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 using namespace std::literals;
 
 // ssl_multicert.config field names:
@@ -1494,7 +1498,7 @@ SSLMultiCertConfigLoader::_setup_dialog(SSL_CTX *ctx, const SSLMultiCertConfigPa
       // validate the exec program
       if (!ssl_private_key_validate_exec(ud._serverDialog)) {
         SSLError("failed to access '%s' pass phrase program: %s", (const char *)ud._serverDialog, strerror(errno));
-        memset(static_cast<void *>(&ud), 0, sizeof(ud));
+        DSA_memset::memset(static_cast<void *>(&ud), 0, sizeof(ud));
         return false;
       }
       passwd_cb = ssl_private_key_passphrase_callback_exec;
@@ -1502,13 +1506,13 @@ SSLMultiCertConfigLoader::_setup_dialog(SSL_CTX *ctx, const SSLMultiCertConfigPa
       passwd_cb = ssl_private_key_passphrase_callback_builtin;
     } else { // unknown config
       SSLError("unknown %s configuration value '%s'", SSL_KEY_DIALOG.data(), (const char *)sslMultCertSettings->dialog);
-      memset(static_cast<void *>(&ud), 0, sizeof(ud));
+      DSA_memset::memset(static_cast<void *>(&ud), 0, sizeof(ud));
       return false;
     }
     SSL_CTX_set_default_passwd_cb(ctx, passwd_cb);
     SSL_CTX_set_default_passwd_cb_userdata(ctx, &ud);
     // Clear any password info lingering in the UD data structure
-    memset(static_cast<void *>(&ud), 0, sizeof(ud));
+    DSA_memset::memset(static_cast<void *>(&ud), 0, sizeof(ud));
   }
   return true;
 }

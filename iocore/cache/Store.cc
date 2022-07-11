@@ -34,6 +34,10 @@
 #include <linux/major.h>
 #endif
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 //
 // Store
 //
@@ -121,7 +125,7 @@ void
 Store::sort()
 {
   Span **vec = static_cast<Span **>(alloca(sizeof(Span *) * n_disks));
-  memset(vec, 0, sizeof(Span *) * n_disks);
+  DSA_memset::memset(vec, 0, sizeof(Span *) * n_disks);
   for (unsigned i = 0; i < n_disks; i++) {
     vec[i]  = disk[i];
     disk[i] = nullptr;
@@ -763,7 +767,7 @@ int
 Store::clear(char *filename, bool clear_dirs)
 {
   char z[STORE_BLOCK_SIZE];
-  memset(z, 0, STORE_BLOCK_SIZE);
+  DSA_memset::memset(z, 0, STORE_BLOCK_SIZE);
   for (unsigned i = 0; i < n_disks; i++) {
     Span *ds = disk[i];
     for (unsigned j = 0; j < disk[i]->paths(); j++) {

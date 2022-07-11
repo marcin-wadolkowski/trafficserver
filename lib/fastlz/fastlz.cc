@@ -27,7 +27,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memmove.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memmove;
 
 /*
  * Always check for bound when decompressing.
@@ -90,7 +94,7 @@ static void
 fastlz_memmove(uint8_t *dest, const uint8_t *src, uint32_t count)
 {
   if ((count > 4) && (dest >= src + count)) {
-    memmove(dest, src, count);
+    DSA_memmove::memmove(dest, src, count);
   } else {
     switch (count) {
     default:

@@ -28,6 +28,10 @@
 #include "tscpp/api/PluginInit.h"
 #include <cstring>
 
+#include "../../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 using namespace atscppapi;
 using std::string;
 
@@ -49,10 +53,10 @@ class GlobalHookPlugin : public GlobalPlugin
 public:
   GlobalHookPlugin()
   {
-    memset(big_buffer_6kb_, 'a', sizeof(big_buffer_6kb_));
+    DSA_memset::memset(big_buffer_6kb_, 'a', sizeof(big_buffer_6kb_));
     big_buffer_6kb_[sizeof(big_buffer_6kb_) - 1] = '\0';
 
-    memset(big_buffer_14kb_, 'a', sizeof(big_buffer_14kb_));
+    DSA_memset::memset(big_buffer_14kb_, 'a', sizeof(big_buffer_14kb_));
     big_buffer_14kb_[sizeof(big_buffer_14kb_) - 1] = '\0';
 
     registerHook(HOOK_READ_REQUEST_HEADERS_POST_REMAP);

@@ -37,6 +37,10 @@
 
 #include <string_view>
 
+#include "../shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 /// WCCP Support.
 namespace wccp
 {
@@ -495,7 +499,7 @@ ServiceGroup::setPort(int idx, uint16_t port)
 inline ServiceGroup &
 ServiceGroup::clearPorts()
 {
-  memset(m_ports, 0, sizeof(m_ports));
+  DSA_memset::memset(m_ports, 0, sizeof(m_ports));
   return *this;
 }
 

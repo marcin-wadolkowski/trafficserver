@@ -32,9 +32,13 @@
 #include "HttpSM.h"
 #include "nexthop_test_stubs.h"
 
-#include "DSA_memcpy.h"
+#include "../../../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+#include "../../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 HttpSM::HttpSM() : Continuation(nullptr), vc_table(this) {}
 void
@@ -124,7 +128,7 @@ build_request(int64_t sm_id, HttpSM *sm, sockaddr_in *ip, const char *os_hostnam
   }
   sm->t_state.request_data.xact_start = time(0);
 
-  memset(_my_txn_conf, 0, sizeof(_my_txn_conf));
+  DSA_memset::memset(_my_txn_conf, 0, sizeof(_my_txn_conf));
   OverridableHttpConfigParams *oride = reinterpret_cast<OverridableHttpConfigParams *>(_my_txn_conf);
   oride->parent_retry_time           = 1;
   oride->parent_fail_threshold       = 1;

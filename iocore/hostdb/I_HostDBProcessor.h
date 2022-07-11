@@ -35,7 +35,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 // Event returned on a lookup
 #define EVENT_HOST_DB_LOOKUP (HOSTDB_EVENT_EVENTS_START + 0)
@@ -148,7 +152,7 @@ struct HostDBInfo : public RefCountObj {
     int iobuffer_index = iobuffer_size_to_index(size, hostdb_max_iobuf_index);
     ink_release_assert(iobuffer_index >= 0);
     void *ptr = ioBufAllocator[iobuffer_index].alloc_void();
-    memset(ptr, 0, size);
+    DSA_memset::memset(ptr, 0, size);
     HostDBInfo *ret      = new (ptr) HostDBInfo();
     ret->_iobuffer_index = iobuffer_index;
     return ret;

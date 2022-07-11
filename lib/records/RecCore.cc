@@ -32,6 +32,10 @@
 #include "P_RecUtils.h"
 #include "tscore/I_Layout.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 // This is needed to manage the size of the librecords record. It can't be static, because it needs to be modified
 // and used (read) from several binaries / modules.
 int max_records_entries = REC_INTERNAL_RECORDS + REC_DEFAULT_API_RECORDS;
@@ -328,7 +332,7 @@ RecRegisterConfigUpdateCb(const char *name, RecConfigUpdateCb update_cb, void *c
        */
 
       RecConfigUpdateCbList *new_callback = static_cast<RecConfigUpdateCbList *>(ats_malloc(sizeof(RecConfigUpdateCbList)));
-      memset(new_callback, 0, sizeof(RecConfigUpdateCbList));
+      DSA_memset::memset(new_callback, 0, sizeof(RecConfigUpdateCbList));
       new_callback->update_cb     = update_cb;
       new_callback->update_cookie = cookie;
 
@@ -740,7 +744,7 @@ RecGetRecordDefaultDataString_Xmalloc(char *name, char **buf, bool lock)
     RecRecord *r = it->second;
 
     *buf = static_cast<char *>(ats_malloc(sizeof(char) * 1024));
-    memset(*buf, 0, 1024);
+    DSA_memset::memset(*buf, 0, 1024);
     err = REC_ERR_OKAY;
 
     switch (r->data_type) {
@@ -934,7 +938,7 @@ RecGetRecord_Xmalloc(const char *name, RecDataT data_type, RecData *data, bool l
     } else {
       // Clear the caller's record just in case it has trash in it.
       // Passing trashy records to RecDataSet will cause confusion.
-      memset(data, 0, sizeof(RecData));
+      DSA_memset::memset(data, 0, sizeof(RecData));
       RecDataSet(data_type, data, &(r->data));
     }
     rec_mutex_release(&(r->lock));

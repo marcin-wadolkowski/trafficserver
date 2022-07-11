@@ -23,6 +23,10 @@
 
 #include "P_Cache.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 void
 CacheDisk::incrErrors(const AIOCallback *io)
 {
@@ -82,7 +86,7 @@ CacheDisk::open(char *s, off_t blocks, off_t askip, int ahw_sector_size, int fil
   num_usable_blocks = (off_t(len * STORE_BLOCK_SIZE) - (start - askip)) >> STORE_BLOCK_SHIFT;
 
   header = static_cast<DiskHeader *>(ats_memalign(ats_pagesize(), header_len));
-  memset(header, 0, header_len);
+  DSA_memset::memset(header, 0, header_len);
 
   // traffic server was asked to clear the cache, i.e., auto clear cache flag is set
   if (clear) {
@@ -167,7 +171,7 @@ CacheDisk::openStart(int event, void * /* data ATS_UNUSED */)
     Warning("could not read disk header for disk %s: declaring disk bad", path);
 
     // the header could have random values by the AIO read error
-    memset(header, 0, header_len);
+    DSA_memset::memset(header, 0, header_len);
 
     incrErrors(&io);
     SET_DISK_BAD(this);

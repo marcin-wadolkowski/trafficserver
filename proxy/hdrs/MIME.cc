@@ -38,7 +38,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 using ts::TextView;
 
@@ -1439,7 +1443,7 @@ mime_hdr_fields_count(MIMEHdrImpl *mh)
 void
 mime_field_init(MIMEField *field)
 {
-  memset(field, 0, sizeof(MIMEField));
+  DSA_memset::memset(field, 0, sizeof(MIMEField));
   field->m_readiness = MIME_FIELD_SLOT_READINESS_DETACHED;
   field->m_wks_idx   = -1;
 }

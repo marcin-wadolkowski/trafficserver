@@ -28,6 +28,10 @@
 #include <arpa/inet.h>
 #include <cstdlib>
 
+#include "../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 using std::string;
 using namespace EsiLib;
 
@@ -53,7 +57,7 @@ HttpDataFetcherImpl::HttpDataFetcherImpl(TSCont contp, sockaddr const *client_ad
   snprintf(_debug_tag, sizeof(_debug_tag), "%s", debug_tag);
   // default client address to use for fetch url
   struct sockaddr_in sin;
-  memset(&sin, 0, sizeof(sin));
+  DSA_memset::memset(&sin, 0, sizeof(sin));
   sin.sin_family      = AF_INET;
   sin.sin_addr.s_addr = inet_addr("127.0.0.1");
 

@@ -44,6 +44,10 @@
 #include "tscore/ink_time.h"
 #include "tscore/ink_inet.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #ifdef HAVE_PCRE_PCRE_H
 #include <pcre/pcre.h>
 #else
@@ -284,8 +288,8 @@ RemapRegex::initialize(const std::string &reg, const std::string &sub, const std
     _subst_len = sub.length();
   }
 
-  memset(_sub_pos, 0, sizeof(_sub_pos));
-  memset(_sub_ix, 0, sizeof(_sub_ix));
+  DSA_memcpy::memset(_sub_pos, 0, sizeof(_sub_pos));
+  DSA_memcpy::memset(_sub_ix, 0, sizeof(_sub_ix));
 
   // Parse options
   std::string::size_type start = opt.find_first_of('@');

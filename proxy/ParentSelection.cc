@@ -34,7 +34,11 @@
 
 #include "../include/shared/DSA_memcpy.h"
 
+#include "../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 #define MAX_SIMPLE_RETRIES 5
 #define MAX_UNAVAILABLE_SERVER_RETRIES 5
@@ -396,7 +400,7 @@ ParentRecord::PreProcessParents(const char *val, const int line_num, char *buf, 
     if ((nm = strchr(token, ':')) != nullptr) {
       size_t length = (nm - token);
       ink_assert(length < sizeof(fqdn));
-      memset(fqdn, 0, sizeof(fqdn));
+      DSA_memset::memset(fqdn, 0, sizeof(fqdn));
       strncpy(fqdn, token, length);
       if (self_detect && machine->is_self(std::string_view(fqdn))) {
         if (self_detect == 1) {

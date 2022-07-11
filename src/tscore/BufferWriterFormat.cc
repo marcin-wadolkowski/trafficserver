@@ -35,6 +35,10 @@
 #include <chrono>
 #include <exception>
 
+#include "../../include/shared/DSA_memmove.h"
+
+using IDSA::DSA_memmove;
+
 using namespace std::literals;
 
 namespace
@@ -251,7 +255,7 @@ namespace bw_fmt
           if (last > limit) {
             last = limit;
           }
-          std::memmove(dst, base, last - dst);
+          DSA_memmove::memmove(dst, base, last - dst);
         }
         dst  = base;
         last = base + delta;
@@ -271,7 +275,7 @@ namespace bw_fmt
           if (last > limit) {
             last = limit;
           }
-          std::memmove(dst, base, last - dst); // move content.
+          DSA_memmove::memmove(dst, base, last - dst); // move content.
         }
         // Left fill.
         dst  = base;

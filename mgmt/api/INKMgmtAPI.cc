@@ -41,6 +41,10 @@
 
 #include "tscore/TextBuffer.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 /***************************************************************************
  * API Memory Management
  ***************************************************************************/
@@ -990,7 +994,7 @@ TSReadFromUrlEx(const char *url, char **header, int *headerSize, char **body, in
     goto END;
   }
 
-  memset(buffer, 0, bufsize); /* empty the buffer */
+  DSA_memset::memset(buffer, 0, bufsize); /* empty the buffer */
   if ((status = readHTTPResponse(hFD, buffer, bufsize, static_cast<uint64_t>(timeout))) != TS_ERR_OKAY) {
     goto END;
   }
@@ -1040,7 +1044,7 @@ TSLookupFromCacheUrl(TSString url, TSString *info)
     goto END;
   }
 
-  memset(response, 0, URL_BUFSIZE);
+  DSA_memset::memset(response, 0, URL_BUFSIZE);
   if ((err = readHTTPResponse(fd, response, URL_BUFSIZE, static_cast<uint64_t>(timeout))) != TS_ERR_OKAY) {
     goto END;
   }
@@ -1082,7 +1086,7 @@ TSLookupFromCacheUrlRegex(TSString url_regex, TSString *list)
     goto END;
   }
 
-  memset(response, 0, URL_BUFSIZE);
+  DSA_memset::memset(response, 0, URL_BUFSIZE);
   if ((err = readHTTPResponse(fd, response, URL_BUFSIZE, static_cast<uint64_t>(timeout))) != TS_ERR_OKAY) {
     goto END;
   }
@@ -1123,7 +1127,7 @@ TSDeleteFromCacheUrl(TSString url, TSString *info)
     goto END;
   }
 
-  memset(response, 0, URL_BUFSIZE);
+  DSA_memset::memset(response, 0, URL_BUFSIZE);
   if ((err = readHTTPResponse(fd, response, URL_BUFSIZE, static_cast<uint64_t>(timeout))) != TS_ERR_OKAY) {
     goto END;
   }
@@ -1165,7 +1169,7 @@ TSDeleteFromCacheUrlRegex(TSString url_regex, TSString *list)
     goto END;
   }
 
-  memset(response, 0, URL_BUFSIZE);
+  DSA_memset::memset(response, 0, URL_BUFSIZE);
   if ((err = readHTTPResponse(fd, response, URL_BUFSIZE, static_cast<uint64_t>(timeout))) != TS_ERR_OKAY) {
     goto END;
   }
@@ -1206,7 +1210,7 @@ TSInvalidateFromCacheUrlRegex(TSString url_regex, TSString *list)
     goto END;
   }
 
-  memset(response, 0, URL_BUFSIZE);
+  DSA_memset::memset(response, 0, URL_BUFSIZE);
   if ((err = readHTTPResponse(fd, response, URL_BUFSIZE, static_cast<uint64_t>(timeout))) != TS_ERR_OKAY) {
     goto END;
   }

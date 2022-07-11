@@ -20,6 +20,10 @@
 #include "swoc/swoc_meta.h"
 #include "swoc/DiscreteRange.h"
 
+#include "../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 using namespace std::literals;
 using namespace swoc::literals;
 
@@ -35,7 +39,7 @@ const Spec::Property Spec::_prop;
 #pragma GCC diagnostic ignored "-Wchar-subscripts"
 
 Spec::Property::Property() {
-  memset(_data, 0, sizeof(_data));
+  DSA_memset::memset(_data, 0, sizeof(_data));
   _data['b'] = TYPE_CHAR | NUMERIC_TYPE_CHAR;
   _data['B'] = TYPE_CHAR | NUMERIC_TYPE_CHAR | UPPER_TYPE_CHAR;
   _data['d'] = TYPE_CHAR | NUMERIC_TYPE_CHAR;

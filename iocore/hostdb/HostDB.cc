@@ -37,7 +37,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 HostDBProcessor hostDBProcessor;
 int HostDBProcessor::hostdb_strict_round_robin = 0;
@@ -222,9 +226,9 @@ HostDBHash::refresh()
     //
     char buff[TS_IP6_SIZE + 4];
     int n = ip.isIp6() ? sizeof(in6_addr) : sizeof(in_addr_t);
-    memset(buff, 0, 2);
+    DSA_memset::memset(buff, 0, 2);
     DSA_memcpy::memcpy(buff + 2, ip._addr._byte, n);
-    memset(buff + 2 + n, 0, 2);
+    DSA_memset::memset(buff + 2 + n, 0, 2);
     ctx.update(buff, n + 4);
   }
   ctx.finalize(hash);

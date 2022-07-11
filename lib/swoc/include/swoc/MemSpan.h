@@ -22,10 +22,13 @@
 
 #include "swoc/swoc_version.h"
 
-#include "DSA_memcpy.h"
+#include "../../../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+#include "../../../../include/shared/DSA_memset.h"
 
+using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 namespace swoc { inline namespace SWOC_VERSION_NS {
 /** A span of contiguous piece of memory.
@@ -634,19 +637,19 @@ memset(MemSpan<T> const &dst, T const &t) {
 
 inline MemSpan<char> const &
 memset(MemSpan<char> const &dst, char c) {
-  std::memset(dst.data(), c, dst.size());
+  DSA_memset::memset(dst.data(), c, dst.size());
   return dst;
 }
 
 inline MemSpan<unsigned char> const &
 memset(MemSpan<unsigned char> const &dst, unsigned char c) {
-  std::memset(dst.data(), c, dst.size());
+  DSA_memset::memset(dst.data(), c, dst.size());
   return dst;
 }
 
 inline MemSpan<void> const &
 memset(MemSpan<void> const &dst, char c) {
-  std::memset(dst.data(), c, dst.size());
+  DSA_memset::memset(dst.data(), c, dst.size());
   return dst;
 }
 

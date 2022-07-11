@@ -66,7 +66,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memmove.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memmove;
 
 /*
  FTP - Traffic Server Template
@@ -2244,7 +2248,7 @@ follow_links(int sock)
       }
       int done = p - r, remaining = l - done;
       if (done) {
-        memmove(r, p, remaining);
+        DSA_memmove::memmove(r, p, remaining);
         fd[sock].response_remaining = remaining;
       }
     } else { // bail

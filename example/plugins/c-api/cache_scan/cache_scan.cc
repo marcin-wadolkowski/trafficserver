@@ -34,9 +34,13 @@
 #include "ts/experimental.h"
 #include "tscore/ink_defs.h"
 
-#include "DSA_memcpy.h"
+#include "../../../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+#include "../../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 #define PLUGIN_NAME "cache_scan"
 
@@ -421,7 +425,7 @@ setup_request(TSCont contp, TSHttpTxn txnp)
     scan_contp = TSContCreate(cache_intercept, TSMutexCreate());
     TSHttpTxnIntercept(scan_contp, txnp);
     cstate = static_cast<cache_scan_state *>(TSmalloc(sizeof(cache_scan_state)));
-    memset(cstate, 0, sizeof(cache_scan_state));
+    DSA_memset::memset(cstate, 0, sizeof(cache_scan_state));
     cstate->http_txnp = txnp;
 
     if (query && query_len > 11) {

@@ -29,7 +29,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 // #define LOOP_CHECK_MODE 1
 #ifdef LOOP_CHECK_MODE
@@ -222,7 +226,7 @@ dir_init_segment(int s, Vol *d)
   d->header->freelist[s] = 0;
   Dir *seg               = d->dir_segment(s);
   int l, b;
-  memset(static_cast<void *>(seg), 0, SIZEOF_DIR * DIR_DEPTH * d->buckets);
+  DSA_memset::memset(static_cast<void *>(seg), 0, SIZEOF_DIR * DIR_DEPTH * d->buckets);
   for (l = 1; l < DIR_DEPTH; l++) {
     for (b = 0; b < d->buckets; b++) {
       Dir *bucket = dir_bucket(b, seg);
@@ -1231,7 +1235,7 @@ Vol::dir_check(bool /* fix ATS_UNUSED */) // TODO: we should eliminate this para
     int seg_buckets_in_use = 0;
 
     ink_zero(chain_tag);
-    memset(chain_mark, -1, sizeof(chain_mark));
+    DSA_memset::memset(chain_mark, -1, sizeof(chain_mark));
 
     for (int b = 0; b < buckets; b++) {
       Dir *root = dir_bucket(b, seg);
@@ -1514,7 +1518,7 @@ EXCLUSIVE_REGRESSION_TEST(Cache_dir)(RegressionTest *t, int /* atype ATS_UNUSED 
   }
 
   Dir dir1;
-  memset(static_cast<void *>(&dir1), 0, sizeof(dir1));
+  DSA_memset::memset(static_cast<void *>(&dir1), 0, sizeof(dir1));
   int s1, b1;
 
   rprintf(t, "corrupt_bucket test\n");

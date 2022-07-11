@@ -38,7 +38,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 socks_conf_struct *g_socks_conf_stuff = nullptr;
 
@@ -128,11 +132,11 @@ SocksEntry::findServer()
   // fallthrough
   case PARENT_DIRECT:
   case PARENT_FAIL:
-    memset(&server_addr, 0, sizeof(server_addr));
+    DSA_memset::memset(&server_addr, 0, sizeof(server_addr));
   }
 #else
   if (nattempts > netProcessor.socks_conf_stuff->connection_attempts)
-    memset(&server_addr, 0, sizeof(server_addr));
+    DSA_memset::memset(&server_addr, 0, sizeof(server_addr));
   else
     ats_ip_copy(&server_addr, &g_socks_conf_stuff->server_addr);
 #endif // SOCKS_WITH_TS

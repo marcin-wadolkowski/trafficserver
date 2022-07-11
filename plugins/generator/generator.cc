@@ -34,6 +34,10 @@
 #include <ctime>
 #include <unistd.h>
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 // Generator plugin
 //
 // The incoming URL must consist of 2 or more path components. The first
@@ -796,7 +800,7 @@ static void
 GeneratorInitialize()
 {
   TxnHook = TSContCreate(GeneratorTxnHook, nullptr);
-  memset(GeneratorData, 'x', sizeof(GeneratorData));
+  DSA_memset::memset(GeneratorData, 'x', sizeof(GeneratorData));
 
   if (TSStatFindName("generator.response_bytes", &StatCountBytes) == TS_ERROR) {
     StatCountBytes = TSStatCreate("generator.response_bytes", TS_RECORDDATATYPE_COUNTER, TS_STAT_NON_PERSISTENT, TS_STAT_SYNC_SUM);

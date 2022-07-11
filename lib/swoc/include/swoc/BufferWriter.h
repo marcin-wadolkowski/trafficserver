@@ -19,9 +19,13 @@
 #include "swoc/TextView.h"
 #include "swoc/MemSpan.h"
 
-#include "DSA_memcpy.h"
+#include "../../../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+#include "../../../../include/shared/DSA_memmove.h"
+
+using IDSA::DSA_memcpy;
+
+using DSA::DSA_memmove;
 
 
 namespace swoc { inline namespace SWOC_VERSION_NS {
@@ -611,7 +615,7 @@ FixedBufferWriter::copy(size_t dst, size_t src, size_t n) -> self_type & {
   auto limit = std::min<size_t>(_capacity, _attempted); // max offset of region possible.
   MemSpan<char> src_span{_buffer + src, std::min(limit, src + n)};
   MemSpan<char> dst_span{_buffer + dst, std::min(limit, dst + n)};
-  std::memmove(dst_span.data(), src_span.data(), std::min(dst_span.size(), src_span.size()));
+  DSA_memmove::memmove(dst_span.data(), src_span.data(), std::min(dst_span.size(), src_span.size()));
   return *this;
 }
 

@@ -76,6 +76,10 @@ class HttpSM;
 #include "tscore/InkErrno.h"
 #include "HttpConnectionCount.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #define UNKNOWN_INTERNAL_ERROR (INK_START_ERRNO - 1)
 
 enum ViaStringIndex_t {
@@ -848,7 +852,7 @@ public:
       via_string[VIA_DETAIL_SERVER_DESCRIPTOR] = VIA_DETAIL_SERVER_DESCRIPTOR_STRING;
       via_string[MAX_VIA_INDICES]              = '\0';
 
-      memset((void *)&host_db_info, 0, sizeof(host_db_info));
+      DSA_memset::memset((void *)&host_db_info, 0, sizeof(host_db_info));
     }
 
     void

@@ -23,6 +23,10 @@
 
 #include "P_Cache.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 struct RamCacheLRUEntry {
   CryptoHash key;
   uint64_t auxkey;
@@ -84,7 +88,7 @@ RamCacheLRU::resize_hashtable()
   DDebug("ram_cache", "resize hashtable %d", anbuckets);
   int64_t s                                      = anbuckets * sizeof(DList(RamCacheLRUEntry, hash_link));
   DList(RamCacheLRUEntry, hash_link) *new_bucket = static_cast<DList(RamCacheLRUEntry, hash_link) *>(ats_malloc(s));
-  memset(static_cast<void *>(new_bucket), 0, s);
+  DSA_memset::memset(static_cast<void *>(new_bucket), 0, s);
   if (bucket) {
     for (int64_t i = 0; i < nbuckets; i++) {
       RamCacheLRUEntry *e = nullptr;
@@ -100,7 +104,7 @@ RamCacheLRU::resize_hashtable()
   int size = bucket_sizes[ibuckets] * sizeof(uint16_t);
   if (cache_config_ram_cache_use_seen_filter) {
     seen = static_cast<uint16_t *>(ats_malloc(size));
-    memset(seen, 0, size);
+    DSA_memset::memset(seen, 0, size);
   }
 }
 

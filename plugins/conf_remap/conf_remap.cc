@@ -26,6 +26,10 @@
 #include <cstdlib>
 #include <string>
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 static const char PLUGIN_NAME[] = "conf_remap";
 
 // This makes the plugin depend on the version of traffic server installed, but that's
@@ -41,7 +45,7 @@ struct RemapConfigs {
     int _data_len; // Used when data is a string
   };
 
-  RemapConfigs() { memset(_items, 0, sizeof(_items)); };
+  RemapConfigs() { DSA_memset::memset(_items, 0, sizeof(_items)); };
   bool parse_file(const char *filename);
   bool parse_inline(const char *arg);
 

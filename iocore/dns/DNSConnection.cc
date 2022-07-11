@@ -32,6 +32,10 @@
 #include "P_DNSConnection.h"
 #include "P_DNSProcessor.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #define SET_TCP_NO_DELAY
 #define SET_NO_LINGER
 #define SET_SO_KEEPALIVE
@@ -50,7 +54,7 @@ DNSConnection::Options const DNSConnection::DEFAULT_OPTIONS;
 DNSConnection::DNSConnection()
   : fd(NO_FD), generator(static_cast<uint32_t>(static_cast<uintptr_t>(time(nullptr)) ^ (uintptr_t)this))
 {
-  memset(&ip, 0, sizeof(ip));
+  DSA_memset::memset(&ip, 0, sizeof(ip));
 }
 
 DNSConnection::~DNSConnection()
@@ -115,7 +119,7 @@ DNSConnection::connect(sockaddr const *addr, Options const &opt)
 
   fd = res;
 
-  memset(&bind_addr, 0, sizeof bind_addr);
+  DSA_memset::memset(&bind_addr, 0, sizeof bind_addr);
   bind_addr.sa.sa_family = af;
 
   if (AF_INET6 == af) {

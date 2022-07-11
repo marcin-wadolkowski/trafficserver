@@ -36,7 +36,12 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
+
 
 #define REQUIRED_COMPRESSION 0.9 // must get to this size or declared incompressible
 #define REQUIRED_SHRINK 0.8      // must get to this size or keep original buffer (with padding)
@@ -178,7 +183,7 @@ RamCacheCLFUS::_resize_hashtable()
   DDebug("ram_cache", "resize hashtable %d", anbuckets);
   int64_t s                                        = anbuckets * sizeof(DList(RamCacheCLFUSEntry, hash_link));
   DList(RamCacheCLFUSEntry, hash_link) *new_bucket = static_cast<DList(RamCacheCLFUSEntry, hash_link) *>(ats_malloc(s));
-  memset(static_cast<void *>(new_bucket), 0, s);
+  DSA_memset::memset(static_cast<void *>(new_bucket), 0, s);
   if (this->_bucket) {
     for (int64_t i = 0; i < this->_nbuckets; i++) {
       RamCacheCLFUSEntry *e = nullptr;
@@ -194,7 +199,7 @@ RamCacheCLFUS::_resize_hashtable()
   if (cache_config_ram_cache_use_seen_filter) {
     int size    = bucket_sizes[this->_ibuckets] * sizeof(uint16_t);
     this->_seen = static_cast<uint16_t *>(ats_malloc(size));
-    memset(this->_seen, 0, size);
+    DSA_memset::memset(this->_seen, 0, size);
   }
 }
 

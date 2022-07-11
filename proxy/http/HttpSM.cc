@@ -61,7 +61,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../..include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 #define DEFAULT_RESPONSE_BUFFER_SIZE_INDEX 6 // 8K
 #define DEFAULT_REQUEST_BUFFER_SIZE_INDEX 6  // 8K
@@ -151,7 +155,7 @@ ClassAllocator<HttpSM> httpSMAllocator("httpSMAllocator");
 
 HttpVCTable::HttpVCTable(HttpSM *mysm)
 {
-  memset(&vc_table, 0, sizeof(vc_table));
+  DSA_memset::memset(&vc_table, 0, sizeof(vc_table));
   sm = mysm;
 }
 

@@ -28,6 +28,10 @@
 
 #include "configs.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 // Parse the command line options. This got a little wonky, since we decided to have different
 // syntax for remap vs global plugin initialization, and the global BG fetch state :-/. Clean up
 // later...
@@ -103,19 +107,19 @@ BgFetchConfig::readConfig(const char *config_file)
   BgFetchRule *cur = nullptr;
   char buffer[8192];
 
-  memset(buffer, 0, sizeof(buffer));
+  DSA_memset::memset(buffer, 0, sizeof(buffer));
   while (TSfgets(file, buffer, sizeof(buffer) - 1) != nullptr) {
     char *eol = nullptr;
 
     // make sure line was not bigger than buffer
     if (nullptr == (eol = strchr(buffer, '\n')) && nullptr == (eol = strstr(buffer, "\r\n"))) {
       TSError("[%s] exclusion line too long, did not get a good line in cfg, skipping, line: %s", PLUGIN_NAME, buffer);
-      memset(buffer, 0, sizeof(buffer));
+      DSA_memset::memset(buffer, 0, sizeof(buffer));
       continue;
     }
     // make sure line has something useful on it
     if (eol - buffer < 2 || buffer[0] == '#') {
-      memset(buffer, 0, sizeof(buffer));
+      DSA_memset::memset(buffer, 0, sizeof(buffer));
       continue;
     }
 
@@ -134,7 +138,7 @@ BgFetchConfig::readConfig(const char *config_file)
           exclude = true;
         } else if (strcmp(cfg_type, "include")) {
           TSError("[%s] invalid specifier %s, skipping config line", PLUGIN_NAME, cfg_type);
-          memset(buffer, 0, sizeof(buffer));
+          DSA_memset::memset(buffer, 0, sizeof(buffer));
           continue;
         }
         cfg_name = strtok_r(nullptr, " ", &savePtr);
@@ -144,7 +148,7 @@ BgFetchConfig::readConfig(const char *config_file)
             if (!strcmp(cfg_name, "Content-Length")) {
               if ((cfg_value[0] != '<') && (cfg_value[0] != '>')) {
                 TSError("[%s] invalid content-len condition %s, skipping config value", PLUGIN_NAME, cfg_value);
-                memset(buffer, 0, sizeof(buffer));
+                DSA_memset::memset(buffer, 0, sizeof(buffer));
                 continue;
               }
             }
@@ -163,7 +167,7 @@ BgFetchConfig::readConfig(const char *config_file)
           }
         }
       }
-      memset(buffer, 0, sizeof(buffer));
+      DSA_memset::memset(buffer, 0, sizeof(buffer));
     }
   }
 

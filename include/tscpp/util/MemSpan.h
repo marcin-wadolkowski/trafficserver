@@ -31,7 +31,11 @@
 
 #include "../../shared/DSA_memcpy.h"
 
+#include "../../shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 
 namespace ts
@@ -531,21 +535,21 @@ memset(MemSpan<T> const &dst, T const &t)
 inline MemSpan<char> const &
 memset(MemSpan<char> const &dst, char c)
 {
-  std::memset(dst.data(), c, dst.size());
+  DSA_memset::memset(dst.data(), c, dst.size());
   return dst;
 }
 
 inline MemSpan<unsigned char> const &
 memset(MemSpan<unsigned char> const &dst, unsigned char c)
 {
-  std::memset(dst.data(), c, dst.size());
+  DSA_memset::memset(dst.data(), c, dst.size());
   return dst;
 }
 
 inline MemSpan<void> const &
 memset(MemSpan<void> const &dst, char c)
 {
-  std::memset(dst.data(), c, dst.size());
+  DSA_memset::memset(dst.data(), c, dst.size());
   return dst;
 }
 

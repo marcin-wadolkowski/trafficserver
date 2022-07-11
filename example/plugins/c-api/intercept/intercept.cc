@@ -30,6 +30,10 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+#include "../../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 // intercept plugin
 //
 // This plugin primarily demonstrates the use of server interceptions to allow a
@@ -290,7 +294,7 @@ InterceptInterceptHook(TSCont contp, TSEvent event, void *edata)
 
     // Set up a connection to our real origin, which will be
     // 127.0.0.1:$PORT.
-    memset(&addr, 0, sizeof(addr));
+    DSA_memset::memset(&addr, 0, sizeof(addr));
     addr.sin.sin_family      = AF_INET;
     addr.sin.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // XXX config option
     addr.sin.sin_port        = htons(PORT);            // XXX config option

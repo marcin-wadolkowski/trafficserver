@@ -28,6 +28,10 @@
 #include "P_RecUtils.h"
 #include "P_RecCore.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 //-------------------------------------------------------------------------
 // RecRecord initializer / Free
 //-------------------------------------------------------------------------
@@ -76,7 +80,7 @@ RecDataZero(RecDataT data_type, RecData *data)
   if ((data_type == RECD_STRING) && (data->rec_string)) {
     ats_free(data->rec_string);
   }
-  memset(data, 0, sizeof(RecData));
+  DSA_memset::memset(data, 0, sizeof(RecData));
 }
 
 void
@@ -197,7 +201,7 @@ RecData
 RecDataAdd(RecDataT type, RecData left, RecData right)
 {
   RecData val;
-  memset(&val, 0, sizeof(val));
+  DSA_memset::memset(&val, 0, sizeof(val));
 
   switch (type) {
   case RECD_INT:
@@ -218,7 +222,7 @@ RecData
 RecDataSub(RecDataT type, RecData left, RecData right)
 {
   RecData val;
-  memset(&val, 0, sizeof(val));
+  DSA_memset::memset(&val, 0, sizeof(val));
 
   switch (type) {
   case RECD_INT:
@@ -239,7 +243,7 @@ RecData
 RecDataMul(RecDataT type, RecData left, RecData right)
 {
   RecData val;
-  memset(&val, 0, sizeof(val));
+  DSA_memset::memset(&val, 0, sizeof(val));
 
   switch (type) {
   case RECD_INT:
@@ -260,7 +264,7 @@ RecData
 RecDataDiv(RecDataT type, RecData left, RecData right)
 {
   RecData val;
-  memset(&val, 0, sizeof(val));
+  DSA_memset::memset(&val, 0, sizeof(val));
 
   switch (type) {
   case RECD_INT:

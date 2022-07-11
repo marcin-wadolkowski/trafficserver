@@ -29,6 +29,10 @@
 #include "tscore/Filenames.h"
 #include "tscore/ts_file.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 extern int gndisks;
 
 /*************************************************************
@@ -165,7 +169,7 @@ CacheHostMatcher::NewEntry(matcher_line *line_info)
 
   if (errNo) {
     // There was a problem so undo the effects this function
-    memset(static_cast<void *>(cur_d), 0, sizeof(CacheHostRecord));
+    DSA_memset::memset(static_cast<void *>(cur_d), 0, sizeof(CacheHostRecord));
     return;
   }
   Debug("cache_hosting", "hostname: %s, host record: %p", match_data, cur_d);
@@ -424,7 +428,7 @@ CacheHostRecord::Init(CacheType typ)
   num_vols = 0;
   type     = typ;
   cp       = static_cast<CacheVol **>(ats_malloc(cp_list_len * sizeof(CacheVol *)));
-  memset(cp, 0, cp_list_len * sizeof(CacheVol *));
+  DSA_memset::memset(cp, 0, cp_list_len * sizeof(CacheVol *));
   num_cachevols    = 0;
   CacheVol *cachep = cp_list.head;
   for (; cachep; cachep = cachep->link.next) {
@@ -505,7 +509,7 @@ CacheHostRecord::Init(matcher_line *line_info, CacheType typ)
       s = val;
       num_cachevols++;
       cp = static_cast<CacheVol **>(ats_malloc(num_cachevols * sizeof(CacheVol *)));
-      memset(cp, 0, num_cachevols * sizeof(CacheVol *));
+      DSA_memset::memset(cp, 0, num_cachevols * sizeof(CacheVol *));
       num_cachevols = 0;
       while (true) {
         char c = *s;
@@ -627,7 +631,7 @@ ConfigVolumes::BuildListFromString(char *config_file_path, char *file_buf)
   char volume_seen[256];
   const char *matcher_name = "[CacheVolition]";
 
-  memset(volume_seen, 0, sizeof(volume_seen));
+  DSA_memset::memset(volume_seen, 0, sizeof(volume_seen));
   num_volumes      = 0;
   num_http_volumes = 0;
 
@@ -1105,8 +1109,8 @@ save_state()
   saved_cp_list_len = cp_list_len;
   memcpy(&saved_config_volumes, &config_volumes, sizeof(ConfigVolumes));
   saved_gnvol = gnvol;
-  memset(static_cast<void *>(&cp_list), 0, sizeof(Queue<CacheVol>));
-  memset(static_cast<void *>(&config_volumes), 0, sizeof(ConfigVolumes));
+  DSA_memset::memset(static_cast<void *>(&cp_list), 0, sizeof(Queue<CacheVol>));
+  DSA_memset::memset(static_cast<void *>(&config_volumes), 0, sizeof(ConfigVolumes));
   gnvol = 0;
 }
 

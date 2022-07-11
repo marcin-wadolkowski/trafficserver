@@ -39,6 +39,10 @@
 #include <string.h>
 #include <assert.h>
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 enum Task_t {
   TASK_NONE = 0,
   TASK_DONE,
@@ -147,11 +151,11 @@ main(int argc, char **argv)
     state_delay_ms = atoi(argv[2]);
   }
 
-  memset(&client, '\0', sizeof(client));
-  memset(&server, '\0', sizeof(server));
+  DSA_memset::memset(&client, '\0', sizeof(client));
+  DSA_memset::memset(&server, '\0', sizeof(server));
 
-  memset(&write_buf, 'B', sizeof(write_buf));
-  memset(&read_buf, '\0', sizeof(read_buf));
+  DSA_memset::memset(&write_buf, 'B', sizeof(write_buf));
+  DSA_memset::memset(&read_buf, '\0', sizeof(read_buf));
 
   client.connection_type = CONNECTION_CLIENT;
   server.connection_type = CONNECTION_SERVER;

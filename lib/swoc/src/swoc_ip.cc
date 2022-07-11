@@ -8,9 +8,13 @@
 #include "swoc/swoc_ip.h"
 #include "swoc/swoc_meta.h"
 
-#include "DSA_memcpy.h"
+#include "../../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+#include "../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 using swoc::TextView;
 using swoc::svtoi;
@@ -73,14 +77,14 @@ IPEndpoint &
 IPEndpoint::assign(IPAddr const &src, in_port_t port) {
   switch (src.family()) {
   case AF_INET: {
-    memset(&sa4, 0, sizeof sa4);
+    DSA_memset::memset(&sa4, 0, sizeof sa4);
     sa4.sin_family      = AF_INET;
     sa4.sin_addr.s_addr = src.ip4().network_order();
     sa4.sin_port        = port;
     Set_Sockaddr_Len(&sa4);
   } break;
   case AF_INET6: {
-    memset(&sa6, 0, sizeof sa6);
+    DSA_memset::memset(&sa6, 0, sizeof sa6);
     sa6.sin6_family = AF_INET6;
     sa6.sin6_addr   = src.ip6().network_order();
     sa6.sin6_port   = port;
@@ -201,7 +205,7 @@ IPEndpoint::family_name(sa_family_t family) {
 
 IPEndpoint &
 IPEndpoint::set_to_any(int family) {
-  memset(this, 0, sizeof(*this));
+  DSA_memset::memset(this, 0, sizeof(*this));
   if (AF_INET == family) {
     sa4.sin_family      = family;
     sa4.sin_addr.s_addr = INADDR_ANY;
@@ -230,7 +234,7 @@ IPEndpoint::is_any() const {
 
 IPEndpoint &
 IPEndpoint::set_to_loopback(int family) {
-  memset(this, 0, sizeof(*this));
+  DSA_memset::memset(this, 0, sizeof(*this));
   if (AF_INET == family) {
     sa.sa_family        = family;
     sa4.sin_addr.s_addr = htonl(INADDR_LOOPBACK);

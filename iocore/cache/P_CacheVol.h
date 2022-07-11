@@ -25,6 +25,10 @@
 
 #include <atomic>
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #define CACHE_BLOCK_SHIFT 9
 #define CACHE_BLOCK_SIZE (1 << CACHE_BLOCK_SHIFT) // 512, smallest sector size
 #define ROUND_TO_STORE_BLOCK(_x) INK_ALIGN((_x), STORE_BLOCK_SIZE)
@@ -271,7 +275,7 @@ struct Vol : public Continuation {
   {
     open_dir.mutex = mutex;
     agg_buffer     = (char *)ats_memalign(ats_pagesize(), AGG_SIZE);
-    memset(agg_buffer, 0, AGG_SIZE);
+    DSA_memset::memset(agg_buffer, 0, AGG_SIZE);
     SET_HANDLER(&Vol::aggWrite);
   }
 

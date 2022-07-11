@@ -23,6 +23,10 @@
 
 #include "QUICPacketProtectionKeyInfo.h"
 
+#include "../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 void
 QUICPacketProtectionKeyInfo::set_context(Context ctx)
 {
@@ -37,17 +41,17 @@ QUICPacketProtectionKeyInfo::drop_keys(QUICKeyPhase phase)
   this->_is_client_key_available[index] = false;
   this->_is_server_key_available[index] = false;
 
-  memset(this->_client_key[index], 0x00, sizeof(this->_client_key[index]));
-  memset(this->_server_key[index], 0x00, sizeof(this->_server_key[index]));
+  DSA_memset::memset(this->_client_key[index], 0x00, sizeof(this->_client_key[index]));
+  DSA_memset::memset(this->_server_key[index], 0x00, sizeof(this->_server_key[index]));
 
-  memset(this->_client_iv[index], 0x00, sizeof(this->_client_iv[index]));
-  memset(this->_server_iv[index], 0x00, sizeof(this->_server_iv[index]));
+  DSA_memset::memset(this->_client_iv[index], 0x00, sizeof(this->_client_iv[index]));
+  DSA_memset::memset(this->_server_iv[index], 0x00, sizeof(this->_server_iv[index]));
 
   this->_client_iv_len[index] = 0;
   this->_server_iv_len[index] = 0;
 
-  memset(this->_client_key_for_hp[index], 0x00, sizeof(this->_client_key_for_hp[index]));
-  memset(this->_server_key_for_hp[index], 0x00, sizeof(this->_server_key_for_hp[index]));
+  DSA_memset::memset(this->_client_key_for_hp[index], 0x00, sizeof(this->_client_key_for_hp[index]));
+  DSA_memset::memset(this->_server_key_for_hp[index], 0x00, sizeof(this->_server_key_for_hp[index]));
 }
 
 const EVP_CIPHER *

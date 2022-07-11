@@ -28,6 +28,10 @@
 
 #include "LocalManager.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 static int use_syslog = 0;
 
 /* mgmt_use_syslog()
@@ -354,7 +358,7 @@ mgmt_getAddrForIntr(char *intrName, sockaddr *addr, int *mtu)
   int len;
 
   // Prevent UMRs
-  memset(addr, 0, sizeof(struct in_addr));
+  DSA_memset::memset(addr, 0, sizeof(struct in_addr));
 
   if ((fakeSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
     mgmt_fatal(errno, "[getAddrForIntr] Unable to create socket\n");
@@ -367,7 +371,7 @@ mgmt_getAddrForIntr(char *intrName, sockaddr *addr, int *mtu)
   len     = 128 * sizeof(struct ifreq); // initial buffer size guess
   for (;;) {
     ifbuf = static_cast<char *>(ats_malloc(len));
-    memset(ifbuf, 0, len); // prevent UMRs
+    DSA_memset::memset(ifbuf, 0, len); // prevent UMRs
     ifc.ifc_len = len;
     ifc.ifc_buf = ifbuf;
     if (ioctl(fakeSocket, SIOCGIFCONF, &ifc) < 0) {

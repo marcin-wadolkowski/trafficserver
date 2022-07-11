@@ -38,7 +38,11 @@
 
 #include "../../../include/shared/DSA_memcpy.h"
 
+#include "../../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 #define modulePrefix "[ReverseProxy]"
 
@@ -88,8 +92,8 @@ clear_xstr_array(char *v[], size_t vsize)
 BUILD_TABLE_INFO::BUILD_TABLE_INFO()
 
 {
-  memset(this->paramv, 0, sizeof(this->paramv));
-  memset(this->argv, 0, sizeof(this->argv));
+  DSA_memset::memset(this->paramv, 0, sizeof(this->paramv));
+  DSA_memset::memset(this->argv, 0, sizeof(this->argv));
 }
 
 BUILD_TABLE_INFO::~BUILD_TABLE_INFO()
@@ -744,8 +748,8 @@ remap_load_plugin(const char **argv, int argc, url_mapping *mp, char *errbuf, in
   int parc         = 0;
   *plugin_found_at = 0;
 
-  memset(pargv, 0, sizeof(pargv));
-  memset(new_argv, 0, sizeof(new_argv));
+  DSA_memset::memset(pargv, 0, sizeof(pargv));
+  DSA_memset::memset(new_argv, 0, sizeof(new_argv));
 
   ink_assert((unsigned)argc < countof(new_argv));
 

@@ -31,6 +31,10 @@
 
 #include "tscore/ink_platform.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #if TS_USE_KQUEUE
 #include <sys/event.h>
 #define INK_EVP_IN 0x001
@@ -124,16 +128,16 @@ private:
 #if TS_USE_EPOLL
     nfds     = 0;
     epoll_fd = epoll_create(POLL_DESCRIPTOR_SIZE);
-    memset(ePoll_Triggered_Events, 0, sizeof(ePoll_Triggered_Events));
-    memset(pfd, 0, sizeof(pfd));
+    DSA_memset::memset(ePoll_Triggered_Events, 0, sizeof(ePoll_Triggered_Events));
+    DSA_memset::memset(pfd, 0, sizeof(pfd));
 #endif
 #if TS_USE_KQUEUE
     kqueue_fd = kqueue();
-    memset(kq_Triggered_Events, 0, sizeof(kq_Triggered_Events));
+    DSA_memset::memset(kq_Triggered_Events, 0, sizeof(kq_Triggered_Events));
 #endif
 #if TS_USE_PORT
     port_fd = port_create();
-    memset(Port_Triggered_Events, 0, sizeof(Port_Triggered_Events));
+    DSA_memset::memset(Port_Triggered_Events, 0, sizeof(Port_Triggered_Events));
 #endif
   }
 };

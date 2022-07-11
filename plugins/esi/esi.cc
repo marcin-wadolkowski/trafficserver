@@ -46,6 +46,11 @@
 #include "serverIntercept.h"
 #include "Stats.h"
 #include "HttpDataFetcherImpl.h"
+
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 using std::string;
 using std::list;
 using namespace EsiLib;
@@ -1589,7 +1594,7 @@ esiPluginInit(int argc, const char *argv[], struct OptionInfo *pOptionInfo)
     gHandlerManager = new HandlerManager(HANDLER_MGR_DEBUG_TAG, &TSDebug, &TSError);
   }
 
-  memset(pOptionInfo, 0, sizeof(struct OptionInfo));
+  DSA_memset::memset(pOptionInfo, 0, sizeof(struct OptionInfo));
 
   if (argc > 1) {
     int c;

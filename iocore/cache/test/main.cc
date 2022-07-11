@@ -27,6 +27,10 @@
 
 #include <unistd.h>
 
+#include "../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #define THREADS 1
 #define DIAGS_LOG_FILE "diags.log"
 
@@ -134,7 +138,7 @@ build_hdrs(HTTPInfo &info, const char *url, const char *content_type)
 
   ink_assert(err == PARSE_RESULT_DONE);
 
-  memset(buf, 0, sizeof(buf));
+  DSA_memset::memset(buf, 0, sizeof(buf));
   p = buf;
 
   if (content_type == nullptr) {

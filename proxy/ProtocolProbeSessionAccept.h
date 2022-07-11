@@ -25,6 +25,10 @@
 
 #include "I_SessionAccept.h"
 
+#include "../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 struct ProtocolProbeSessionAcceptEnums {
   /// Enumeration for related groups of protocols.
   /// There is a child acceptor for each group which
@@ -41,7 +45,7 @@ class ProtocolProbeSessionAccept : public SessionAccept, public ProtocolProbeSes
 public:
   ProtocolProbeSessionAccept() : SessionAccept(nullptr)
   {
-    memset(endpoint, 0, sizeof(endpoint));
+    DSA_memset::memset(endpoint, 0, sizeof(endpoint));
     SET_HANDLER(&ProtocolProbeSessionAccept::mainEvent);
   }
   ~ProtocolProbeSessionAccept() override {}

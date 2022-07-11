@@ -78,7 +78,13 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memmove.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memmove;
+
+
 
 /****************************************************************
  *  IMPORTANT - READ ME
@@ -903,7 +909,7 @@ FileImpl::fread(void *buf, size_t length)
       amount = m_bufpos;
     }
     DSA_memcpy::memcpy(buf, m_buf, amount);
-    memmove(m_buf, &m_buf[amount], m_bufpos - amount);
+    DSA_memmove::memmove(m_buf, &m_buf[amount], m_bufpos - amount);
     m_bufpos -= amount;
     return amount;
   } else {
@@ -978,7 +984,7 @@ FileImpl::fflush()
     }
 
     err = p - m_buf;
-    memmove(m_buf, &m_buf[err], m_bufpos - err);
+    DSA_memmove::memmove(m_buf, &m_buf[err], m_bufpos - err);
     m_bufpos -= err;
   }
 

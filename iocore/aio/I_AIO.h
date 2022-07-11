@@ -34,6 +34,10 @@
 #include "I_EventSystem.h"
 #include "records/I_RecProcess.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 static constexpr ts::ModuleVersion AIO_MODULE_PUBLIC_VERSION(1, 0, ts::ModuleVersion::PUBLIC);
 
 #define AIO_EVENT_DONE (AIO_EVENT_EVENTS_START + 0)
@@ -126,7 +130,7 @@ struct DiskHandler : public Continuation {
   DiskHandler()
   {
     SET_HANDLER(&DiskHandler::startAIOEvent);
-    memset(&ctx, 0, sizeof(ctx));
+    DSA_memset::memset(&ctx, 0, sizeof(ctx));
     int ret = io_setup(MAX_AIO_EVENTS, &ctx);
     if (ret < 0) {
       Debug("aio", "io_setup error: %s (%d)", strerror(-ret), -ret);

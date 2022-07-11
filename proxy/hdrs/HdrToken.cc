@@ -33,6 +33,10 @@
 #include "tscore/Regex.h"
 #include "URL.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 /*
  You SHOULD add to _hdrtoken_commonly_tokenized_strs, with the same ordering
  ** important, ordering matters **
@@ -383,7 +387,7 @@ hdrtoken_hash_init()
   uint32_t i;
   int num_collisions;
 
-  memset(hdrtoken_hash_table, 0, sizeof(hdrtoken_hash_table));
+  DSA_memset::memset(hdrtoken_hash_table, 0, sizeof(hdrtoken_hash_table));
   num_collisions = 0;
 
   for (i = 0; i < static_cast<int> SIZEOF(_hdrtoken_commonly_tokenized_strs); i++) {
@@ -465,7 +469,7 @@ hdrtoken_init()
     for (i = 0; i < static_cast<int> SIZEOF(_hdrtoken_strs); i++) {
       HdrTokenHeapPrefix prefix;
 
-      memset(&prefix, 0, sizeof(HdrTokenHeapPrefix));
+      DSA_memset::memset(&prefix, 0, sizeof(HdrTokenHeapPrefix));
 
       prefix.wks_idx         = i;
       prefix.wks_length      = hdrtoken_str_lengths[i];

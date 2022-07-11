@@ -25,6 +25,10 @@
 #include "P_RecProcess.h"
 #include <string_view>
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 //-------------------------------------------------------------------------
 // raw_stat_get_total
 //-------------------------------------------------------------------------
@@ -227,10 +231,10 @@ RecAllocateRawStatBlock(int num_stats)
 
   // create the raw-stat-block structure
   rsb = static_cast<RecRawStatBlock *>(ats_malloc(sizeof(RecRawStatBlock)));
-  memset(rsb, 0, sizeof(RecRawStatBlock));
+  DSA_memset::memset(rsb, 0, sizeof(RecRawStatBlock));
 
   rsb->global = static_cast<RecRawStat **>(ats_malloc(num_stats * sizeof(RecRawStat *)));
-  memset(rsb->global, 0, num_stats * sizeof(RecRawStat *));
+  DSA_memset::memset(rsb->global, 0, num_stats * sizeof(RecRawStat *));
 
   rsb->num_stats        = 0;
   rsb->max_stats        = num_stats;
@@ -256,7 +260,7 @@ _RecRegisterRawStat(RecRawStatBlock *rsb, RecT rec_type, const char *name, RecDa
 
   RecRecord *r;
   RecData data_default;
-  memset(&data_default, 0, sizeof(RecData));
+  DSA_memset::memset(&data_default, 0, sizeof(RecData));
 
   // register the record
   if ((r = RecRegisterStat(rec_type, name, data_type, data_default, persist_type)) == nullptr) {

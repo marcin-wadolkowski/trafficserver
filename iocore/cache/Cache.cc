@@ -41,7 +41,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 constexpr ts::VersionNumber CACHE_DB_VERSION(CACHE_DB_MAJOR_VERSION, CACHE_DB_MINOR_VERSION);
 
@@ -125,7 +129,7 @@ struct VolInitInfo {
   {
     recover_pos = 0;
     vol_h_f     = static_cast<char *>(ats_memalign(ats_pagesize(), 4 * STORE_BLOCK_SIZE));
-    memset(vol_h_f, 0, 4 * STORE_BLOCK_SIZE);
+    DSA_memset::memset(vol_h_f, 0, 4 * STORE_BLOCK_SIZE);
   }
 
   ~VolInitInfo()
@@ -289,7 +293,7 @@ update_cache_config(const char * /* name ATS_UNUSED */, RecDataT /* data_type AT
 CacheVC::CacheVC()
 {
   size_to_init = sizeof(CacheVC) - (size_t) & ((CacheVC *)nullptr)->vio;
-  memset((void *)&vio, 0, size_to_init);
+  DSA_memset::memset((void *)&vio, 0, size_to_init);
 }
 
 HTTPInfo::FragOffset *
@@ -600,13 +604,13 @@ CacheProcessor::start_internal(int flags)
 
   // Temporaries to carry values between loops
   char **paths = static_cast<char **>(alloca(sizeof(char *) * gndisks));
-  memset(paths, 0, sizeof(char *) * gndisks);
+  DSA_memset::memset(paths, 0, sizeof(char *) * gndisks);
   int *fds = static_cast<int *>(alloca(sizeof(int) * gndisks));
-  memset(fds, 0, sizeof(int) * gndisks);
+  DSA_memset::memset(fds, 0, sizeof(int) * gndisks);
   int *sector_sizes = static_cast<int *>(alloca(sizeof(int) * gndisks));
-  memset(sector_sizes, 0, sizeof(int) * gndisks);
+  DSA_memset::memset(sector_sizes, 0, sizeof(int) * gndisks);
   Span **sds = static_cast<Span **>(alloca(sizeof(Span *) * gndisks));
-  memset(sds, 0, sizeof(Span *) * gndisks);
+  DSA_memset::memset(sds, 0, sizeof(Span *) * gndisks);
 
   gndisks = 0;
   ink_aio_set_callback(new AIO_Callback_handler());
@@ -828,7 +832,7 @@ CacheProcessor::diskInitialized()
   }
 
   gvol = static_cast<Vol **>(ats_malloc(gnvol * sizeof(Vol *)));
-  memset(gvol, 0, gnvol * sizeof(Vol *));
+  DSA_memset::memset(gvol, 0, gnvol * sizeof(Vol *));
   gnvol = 0;
   for (i = 0; i < gndisks; i++) {
     CacheDisk *d = gdisks[i];
@@ -1202,7 +1206,7 @@ void
 vol_clear_init(Vol *d)
 {
   size_t dir_len = d->dirlen();
-  memset(d->raw_dir, 0, dir_len);
+  DSA_memset::memset(d->raw_dir, 0, dir_len);
   vol_init_dir(d);
   d->header->magic          = VOL_MAGIC;
   d->header->version._major = CACHE_DB_MAJOR_VERSION;
@@ -1278,7 +1282,7 @@ Vol::init(char *s, off_t blocks, off_t dir_skip, bool clear)
   evacuate_size = static_cast<int>(len / EVACUATION_BUCKET_SIZE) + 2;
   int evac_len  = evacuate_size * sizeof(DLL<EvacuationBlock>);
   evacuate      = static_cast<DLL<EvacuationBlock> *>(ats_malloc(evac_len));
-  memset(static_cast<void *>(evacuate), 0, evac_len);
+  DSA_memset::memset(static_cast<void *>(evacuate), 0, evac_len);
 
   Debug("cache_init", "Vol %s: allocating %zu directory bytes for a %lld byte volume (%lf%%)", hash_text.get(), dirlen(),
         (long long)this->len, (double)dirlen() / (double)this->len * 100.0);
@@ -1818,8 +1822,8 @@ build_vol_hash_table(CacheHostRecord *cp)
   unsigned int *mapping = static_cast<unsigned int *>(ats_malloc(sizeof(unsigned int) * num_vols));
   Vol **p               = static_cast<Vol **>(ats_malloc(sizeof(Vol *) * num_vols));
 
-  memset(mapping, 0, num_vols * sizeof(unsigned int));
-  memset(p, 0, num_vols * sizeof(Vol *));
+  DSA_memset::memset(mapping, 0, num_vols * sizeof(unsigned int));
+  DSA_memset::memset(p, 0, num_vols * sizeof(Vol *));
   uint64_t total = 0;
   int bad_vols   = 0;
   int map        = 0;
@@ -2544,7 +2548,7 @@ cplist_init()
         new_p->size       = dp[j]->size;
         new_p->scheme     = dp[j]->dpb_queue.head->b->type;
         new_p->disk_vols  = static_cast<DiskVol **>(ats_malloc(gndisks * sizeof(DiskVol *)));
-        memset(new_p->disk_vols, 0, gndisks * sizeof(DiskVol *));
+        DSA_memset::memset(new_p->disk_vols, 0, gndisks * sizeof(DiskVol *));
         new_p->disk_vols[i] = dp[j];
         cp_list.enqueue(new_p);
         cp_list_len++;
@@ -2631,7 +2635,7 @@ cplist_update()
         if (nullptr != new_cp) {
           new_cp->disk_vols = static_cast<decltype(new_cp->disk_vols)>(ats_malloc(gndisks * sizeof(DiskVol *)));
           if (nullptr != new_cp->disk_vols) {
-            memset(new_cp->disk_vols, 0, gndisks * sizeof(DiskVol *));
+            DSA_memset::memset(new_cp->disk_vols, 0, gndisks * sizeof(DiskVol *));
             new_cp->vol_number = config_vol->number;
             new_cp->scheme     = config_vol->scheme;
             config_vol->cachep = new_cp;
@@ -2721,7 +2725,7 @@ cplist_reconfigure()
     cp->vol_number = 0;
     cp->scheme     = CACHE_HTTP_TYPE;
     cp->disk_vols  = static_cast<DiskVol **>(ats_malloc(gndisks * sizeof(DiskVol *)));
-    memset(cp->disk_vols, 0, gndisks * sizeof(DiskVol *));
+    DSA_memset::memset(cp->disk_vols, 0, gndisks * sizeof(DiskVol *));
     cp_list.enqueue(cp);
     cp_list_len++;
     for (int i = 0; i < gndisks; i++) {
@@ -2842,7 +2846,7 @@ cplist_reconfigure()
 
         CacheVol *new_cp  = new CacheVol();
         new_cp->disk_vols = static_cast<DiskVol **>(ats_malloc(gndisks * sizeof(DiskVol *)));
-        memset(new_cp->disk_vols, 0, gndisks * sizeof(DiskVol *));
+        DSA_memset::memset(new_cp->disk_vols, 0, gndisks * sizeof(DiskVol *));
         if (create_volume(config_vol->number, size_in_blocks, config_vol->scheme, new_cp)) {
           ats_free(new_cp->disk_vols);
           new_cp->disk_vols = nullptr;
@@ -2963,7 +2967,7 @@ create_volume(int volume_number, off_t size_in_blocks, int scheme, CacheVol *cp)
   }
 
   int *sp = new int[gndisks];
-  memset(sp, 0, gndisks * sizeof(int));
+  DSA_memset::memset(sp, 0, gndisks * sizeof(int));
 
   int i = curr_vol;
   while (size_in_blocks > 0) {

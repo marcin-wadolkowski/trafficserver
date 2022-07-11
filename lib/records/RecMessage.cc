@@ -35,7 +35,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 static RecMessageRecvCb g_recv_cb = nullptr;
 static void *g_recv_cookie        = nullptr;
@@ -49,7 +53,7 @@ RecMessageAlloc(RecMessageT msg_type, int initial_size)
   RecMessage *msg;
 
   msg = static_cast<RecMessage *>(ats_malloc(sizeof(RecMessageHdr) + initial_size));
-  memset(msg, 0, sizeof(RecMessageHdr) + initial_size);
+  DSA_memset::memset(msg, 0, sizeof(RecMessageHdr) + initial_size);
   msg->msg_type = msg_type;
   msg->o_start  = sizeof(RecMessageHdr);
   msg->o_write  = sizeof(RecMessageHdr);
@@ -121,7 +125,7 @@ RecMessageMarshal_Realloc(RecMessage *msg, const RecRecord *record)
   // The following memset() is pretty CPU intensive, replacing it with something
   // like the below would reduce CPU usage a fair amount. /leif.
   // *((char*)msg + msg->o_write) = 0;
-  memset(reinterpret_cast<char *>(msg) + msg->o_write, 0, msg->o_end - msg->o_write);
+  DSA_memset::memset(reinterpret_cast<char *>(msg) + msg->o_write, 0, msg->o_end - msg->o_write);
   msg->o_write += msg_ele_size;
 
   // store the record

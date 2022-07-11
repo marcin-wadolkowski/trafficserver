@@ -34,6 +34,11 @@
 #include <cstdio>
 #include <strings.h>
 
+#include "../shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
+
 /***********************************************************************
  *                                                                     *
  *                     Str (string/length list cell)                   *
@@ -165,7 +170,7 @@ StrList::clean()
 
 inline StrList::StrList(bool do_copy_when_adding_string)
 {
-  memset(base_heap, 0, sizeof(base_heap));
+  DSA_memset::memset(base_heap, 0, sizeof(base_heap));
   copy_when_adding_string = do_copy_when_adding_string;
   init();
 }

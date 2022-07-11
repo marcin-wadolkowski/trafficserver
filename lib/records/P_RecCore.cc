@@ -36,6 +36,10 @@
 
 #include <fstream>
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 RecModeT g_mode_type = RECM_NULL;
 
 //-------------------------------------------------------------------------
@@ -619,7 +623,7 @@ RecConsumeConfigEntry(RecT rec_type, RecDataT data_type, const char *name, const
 {
   RecData data;
 
-  memset(&data, 0, sizeof(RecData));
+  DSA_memset::memset(&data, 0, sizeof(RecData));
   RecDataSetFromString(data_type, &data, value);
   RecSetRecord(rec_type, name, data_type, &data, nullptr, source, false);
   RecDataZero(data_type, &data);

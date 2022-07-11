@@ -31,6 +31,10 @@
 #include "conditions.h"
 #include "conditions_geo.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 // Debugs
 const char PLUGIN_NAME[]     = "header_rewrite";
 const char PLUGIN_NAME_DBG[] = "dbg_header_rewrite";
@@ -59,8 +63,8 @@ public:
   RulesConfig()
   {
     TSDebug(PLUGIN_NAME_DBG, "RulesConfig CTOR");
-    memset(_rules, 0, sizeof(_rules));
-    memset(_resids, 0, sizeof(_resids));
+    DSA_memset::memset(_rules, 0, sizeof(_rules));
+    DSA_memset::memset(_resids, 0, sizeof(_resids));
 
     _cont = TSContCreate(cont_rewrite_headers, nullptr);
     TSContDataSet(_cont, static_cast<void *>(this));

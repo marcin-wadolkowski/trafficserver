@@ -46,7 +46,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 struct SSLAddressLookupKey {
   explicit SSLAddressLookupKey(const IpEndpoint &ip)
@@ -170,7 +174,7 @@ ticket_block_free(void *ptr)
   if (ptr) {
     ssl_ticket_key_block *key_block_ptr = static_cast<ssl_ticket_key_block *>(ptr);
     unsigned num_ticket_keys            = key_block_ptr->num_keys;
-    memset(ptr, 0, sizeof(ssl_ticket_key_block) + num_ticket_keys * sizeof(ssl_ticket_key_t));
+    DSA_memset::memset(ptr, 0, sizeof(ssl_ticket_key_block) + num_ticket_keys * sizeof(ssl_ticket_key_t));
   }
   ats_free(ptr);
 }
@@ -182,7 +186,7 @@ ticket_block_alloc(unsigned count)
   size_t nbytes = sizeof(ssl_ticket_key_block) + count * sizeof(ssl_ticket_key_t);
 
   ptr = static_cast<ssl_ticket_key_block *>(ats_malloc(nbytes));
-  memset(ptr, 0, nbytes);
+  DSA_memset::memset(ptr, 0, nbytes);
   ptr->num_keys = count;
 
   return ptr;

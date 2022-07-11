@@ -39,7 +39,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 // Objects in the heap must currently be aligned to 8 byte boundaries,
 // so their (address & HDR_PTR_ALIGNMENT_MASK) == 0
@@ -91,7 +95,7 @@ obj_clear_data(HdrHeapObjImpl *obj)
 {
   char *ptr      = (char *)obj;
   int hdr_length = sizeof(HdrHeapObjImpl);
-  memset(ptr + hdr_length, '\0', obj->m_length - hdr_length);
+  DSA_memset::memset(ptr + hdr_length, '\0', obj->m_length - hdr_length);
 }
 
 inline void

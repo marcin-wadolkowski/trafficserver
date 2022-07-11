@@ -29,7 +29,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 struct ShowCache : public ShowCont {
   enum scan_type {
@@ -123,7 +127,7 @@ struct ShowCache : public ShowCont {
       }
       // initialize url array
       show_cache_urlstrs = new char[nstrings + 1][500];
-      memset(show_cache_urlstrs, '\0', (nstrings + 1) * 500 * sizeof(char));
+      DSA_memset::memset(show_cache_urlstrs, '\0', (nstrings + 1) * 500 * sizeof(char));
 
       char *q, *t;
       p = strstr(unescapedQuery, "url=");

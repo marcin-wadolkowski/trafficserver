@@ -28,6 +28,10 @@
 #include "WebMgmtUtils.h"
 #include "tscore/Regex.h"
 
+#include "../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 // bool varSetFromStr(const char*, const char* )
 //
 // Sets the named local manager variable from the value string
@@ -46,7 +50,7 @@ varSetFromStr(const char *varName, const char *value)
   int err              = REC_ERR_FAIL;
   RecData data;
 
-  memset(&data, 0, sizeof(RecData));
+  DSA_memset::memset(&data, 0, sizeof(RecData));
 
   err = RecGetRecordDataType(const_cast<char *>(varName), &varDataType);
   if (err != REC_ERR_OKAY) {
@@ -568,7 +572,7 @@ varStrFromName(const char *varNameConst, char *bufVal, int bufLen)
   RecData data;
   int err = REC_ERR_FAIL;
 
-  memset(&data, 0, sizeof(RecData));
+  DSA_memset::memset(&data, 0, sizeof(RecData));
 
   // Check to see if there is a \ option on the end of variable
   //   \ options indicate that we need special formatting
@@ -698,7 +702,7 @@ MgmtData::setFromName(const char *varName)
 MgmtData::MgmtData()
 {
   type = RECD_NULL;
-  memset(&data, 0, sizeof(RecData));
+  DSA_memset::memset(&data, 0, sizeof(RecData));
 }
 
 MgmtData::~MgmtData()

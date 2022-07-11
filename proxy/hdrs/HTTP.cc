@@ -33,7 +33,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 /***********************************************************************
  *                                                                     *
@@ -289,7 +293,7 @@ http_hdr_create(HdrHeap *heap, HTTPType polarity)
 void
 http_hdr_init(HdrHeap *heap, HTTPHdrImpl *hh, HTTPType polarity)
 {
-  memset(&(hh->u), 0, sizeof(hh->u));
+  DSA_memset::memset(&(hh->u), 0, sizeof(hh->u));
   hh->m_polarity    = polarity;
   hh->m_version     = HTTP_1_0;
   hh->m_fields_impl = mime_hdr_create(heap);
@@ -1940,7 +1944,7 @@ int constexpr HTTPCacheAlt::N_INTEGRAL_FRAG_OFFSETS;
 HTTPCacheAlt::HTTPCacheAlt() : m_request_hdr(), m_response_hdr()
 
 {
-  memset(&m_object_key[0], 0, CRYPTO_HASH_SIZE);
+  DSA_memset::memset(&m_object_key[0], 0, CRYPTO_HASH_SIZE);
   m_object_size[0] = 0;
   m_object_size[1] = 0;
 }

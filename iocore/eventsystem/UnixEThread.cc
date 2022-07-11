@@ -38,7 +38,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 struct AIOCallback;
 
@@ -77,12 +81,12 @@ EThread::set_specific()
 
 EThread::EThread()
 {
-  memset(thread_private, 0, PER_THREAD_DATA);
+  DSA_memset::memset(thread_private, 0, PER_THREAD_DATA);
 }
 
 EThread::EThread(ThreadType att, int anid) : id(anid), tt(att)
 {
-  memset(thread_private, 0, PER_THREAD_DATA);
+  DSA_memset::memset(thread_private, 0, PER_THREAD_DATA);
 #if HAVE_EVENTFD
   evfd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
   if (evfd < 0) {
@@ -111,7 +115,7 @@ EThread::EThread(ThreadType att, int anid) : id(anid), tt(att)
 EThread::EThread(ThreadType att, Event *e) : tt(att), start_event(e)
 {
   ink_assert(att == DEDICATED);
-  memset(thread_private, 0, PER_THREAD_DATA);
+  DSA_memset::memset(thread_private, 0, PER_THREAD_DATA);
 }
 
 // Provide a destructor so that SDK functions which create and destroy

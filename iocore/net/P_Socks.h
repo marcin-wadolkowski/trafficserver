@@ -30,6 +30,10 @@
 #include "tscore/IpMap.h"
 #endif
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 enum {
   // types of events for Socks auth handlers
   SOCKS_AUTH_OPEN,
@@ -66,7 +70,7 @@ struct socks_conf_struct {
 
   {
 #if !defined(SOCKS_WITH_TS)
-    memset(&server_addr, 0, sizeof(server_addr));
+    DSA_memset::memset(&server_addr, 0, sizeof(server_addr));
 #endif
   }
 };
@@ -134,8 +138,8 @@ struct SocksEntry : public Continuation {
 
   SocksEntry()
   {
-    memset(&target_addr, 0, sizeof(target_addr));
-    memset(&server_addr, 0, sizeof(server_addr));
+    DSA_memset::memset(&target_addr, 0, sizeof(target_addr));
+    DSA_memset::memset(&server_addr, 0, sizeof(server_addr));
   }
 };
 

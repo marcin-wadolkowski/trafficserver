@@ -31,7 +31,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 // Forward declarations, used to be in the CoreAPIShared.h include file but
 // that doesn't make any sense since these are both statically declared. /leif
@@ -148,7 +152,7 @@ sendHTTPRequest(int sock, char *req, uint64_t timeout)
   char request[BUFSIZ];
   size_t length = 0;
 
-  memset(request, 0, BUFSIZ);
+  DSA_memset::memset(request, 0, BUFSIZ);
   snprintf(request, BUFSIZ, "GET %s HTTP/1.0\r\n\r\n", req);
   length = strlen(request);
 
@@ -199,7 +203,7 @@ connectDirect(const char *host, int port, uint64_t /* timeout ATS_UNUSED */)
   }
 
   struct sockaddr_in name;
-  memset((void *)&name, 0, sizeof(sockaddr_in));
+  DSA_memset::memset((void *)&name, 0, sizeof(sockaddr_in));
 
   int err;
 
@@ -331,7 +335,7 @@ get_event_name(int id)
 {
   char name[MAX_EVENT_NAME_SIZE];
 
-  memset(name, 0, MAX_EVENT_NAME_SIZE);
+  DSA_memset::memset(name, 0, MAX_EVENT_NAME_SIZE);
   switch (id) {
   case MGMT_ALARM_PROXY_PROCESS_DIED:
     ink_strlcpy(name, "MGMT_ALARM_PROXY_PROCESS_DIED", sizeof(name));

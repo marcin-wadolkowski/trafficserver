@@ -30,6 +30,10 @@
 
 #include "P_AIO.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #if AIO_MODE == AIO_MODE_NATIVE
 #define AIO_PERIOD -HRTIME_MSECONDS(10)
 #else
@@ -160,7 +164,7 @@ ink_aio_init(ts::ModuleVersion v)
   RecRegisterRawStat(aio_rsb, RECT_PROCESS, "proxy.process.cache.KB_write_per_sec", RECD_FLOAT, RECP_PERSISTENT,
                      (int)AIO_STAT_KB_WRITE_PER_SEC, aio_stats_cb);
 #if AIO_MODE != AIO_MODE_NATIVE
-  memset(&aio_reqs, 0, MAX_DISKS_POSSIBLE * sizeof(AIO_Reqs *));
+  DSA_memset::memset(&aio_reqs, 0, MAX_DISKS_POSSIBLE * sizeof(AIO_Reqs *));
   ink_mutex_init(&insert_mutex);
 #endif
   REC_ReadConfigInteger(cache_config_threads_per_disk, "proxy.config.cache.threads_per_disk");

@@ -50,7 +50,12 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
+
 
 namespace
 {
@@ -5667,7 +5672,7 @@ HttpTransact::handle_trace_and_options_requests(State *s, HTTPHdr *incoming_hdr)
       }
 
       // clear the stupid buffer
-      memset(s->internal_msg_buffer, '\0', s->internal_msg_buffer_size);
+      DSA_memset::memset(s->internal_msg_buffer, '\0', s->internal_msg_buffer_size);
 
       int offset = 0;
       int used   = 0;
@@ -5837,7 +5842,7 @@ HttpTransact::initialize_state_variables_from_request(State *s, HTTPHdr *obsolet
 
   s->request_data.hostname_str = s->arena.str_store(host_name, host_len);
   ats_ip_copy(&s->request_data.src_ip, &s->client_info.src_addr);
-  memset(&s->request_data.dest_ip, 0, sizeof(s->request_data.dest_ip));
+  DSA_memset::memset(&s->request_data.dest_ip, 0, sizeof(s->request_data.dest_ip));
   if (vc) {
     s->request_data.incoming_port = vc->get_local_port();
     s->pp_info.version            = vc->get_proxy_protocol_version();

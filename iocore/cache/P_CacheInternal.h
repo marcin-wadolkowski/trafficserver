@@ -29,6 +29,10 @@
 #include "HTTP.h"
 #include "P_CacheHttp.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 struct EvacuationBlock;
 
 // Compilation Options
@@ -617,7 +621,7 @@ free_CacheVC(CacheVC *cont)
 
   ats_free(cont->scan_vol_map);
 
-  memset((char *)&cont->vio, 0, cont->size_to_init);
+  DSA_memset::memset((char *)&cont->vio, 0, cont->size_to_init);
 #ifdef CACHE_STAT_PAGES
   ink_assert(!cont->stat_link.next && !cont->stat_link.prev);
 #endif

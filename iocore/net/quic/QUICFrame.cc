@@ -30,9 +30,13 @@
 #include "QUICDebugNames.h"
 #include "QUICPacket.h"
 
-#include "DSA_memcpy.h"
+#include "../../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+#include "../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 #define LEFT_SPACE(pos) ((size_t)(buf + len - pos))
 #define FRAME_SIZE(pos) (pos - buf)
@@ -1254,7 +1258,7 @@ QUICPaddingFrame::to_io_buffer_block(size_t limit) const
   block->alloc(iobuffer_size_to_index(this->_size, BUFFER_SIZE_INDEX_32K));
   uint8_t *block_start = reinterpret_cast<uint8_t *>(block->start());
 
-  memset(block_start, 0, this->_size);
+  DSA_memset::memset(block_start, 0, this->_size);
   n = this->_size;
 
   block->fill(n);

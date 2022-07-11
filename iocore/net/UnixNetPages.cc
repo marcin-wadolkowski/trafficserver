@@ -26,6 +26,10 @@
 #include "Show.h"
 #include "I_Tasks.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 struct ShowNet;
 using ShowNetEventHandler = int (ShowNet::*)(int, Event *);
 struct ShowNet : public ShowCont {
@@ -198,7 +202,7 @@ struct ShowNet : public ShowCont {
 
   ShowNet(Continuation *c, HTTPHdr *h) : ShowCont(c, h), ithread(0)
   {
-    memset(&addr, 0, sizeof(addr));
+    DSA_memset::memset(&addr, 0, sizeof(addr));
     SET_HANDLER(&ShowNet::showMain);
   }
 };

@@ -33,6 +33,10 @@
 #include "fetch.h"
 #include "headers.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 const char *
 getPrefetchMetricsNames(int metric)
 {
@@ -375,7 +379,7 @@ BgFetch::BgFetch(BgFetchState *state, const PrefetchConfig &config, bool lock)
     _startTime(0)
 {
   _mbuf = TSMBufferCreate();
-  memset(&client_ip, 0, sizeof(client_ip));
+  DSA_memset::memset(&client_ip, 0, sizeof(client_ip));
 }
 
 BgFetch::~BgFetch()

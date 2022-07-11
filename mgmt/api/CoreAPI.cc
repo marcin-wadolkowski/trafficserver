@@ -49,6 +49,10 @@
 #include "tscore/I_Layout.h"
 #include "tscore/ink_cap.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 // global variable
 static CallbackTable *local_event_callbacks;
 
@@ -513,7 +517,7 @@ MgmtRecordGet(const char *rec_name, TSRecordEle *rec_ele)
 
   // initialize the record name
   rec_ele->rec_name = ats_strdup(rec_name);
-  memset(rec_val, 0, MAX_BUF_SIZE);
+  DSA_memset::memset(rec_val, 0, MAX_BUF_SIZE);
 
   // get variable type; returns INVALID if invalid rec_name
   rec_type = varType(rec_name);
@@ -677,7 +681,7 @@ MgmtRecordSetInt(const char *rec_name, MgmtInt int_val, TSActionNeedT *action_ne
   // convert int value to string for validity check
   char str_val[MAX_RECORD_SIZE];
 
-  memset(str_val, 0, MAX_RECORD_SIZE);
+  DSA_memset::memset(str_val, 0, MAX_RECORD_SIZE);
   snprintf(str_val, sizeof(str_val), "%" PRId64 "", int_val);
 
   return MgmtRecordSet(rec_name, str_val, action_need);
@@ -698,7 +702,7 @@ MgmtRecordSetCounter(const char *rec_name, MgmtIntCounter counter_val, TSActionN
   // convert int value to string for validity check
   char str_val[MAX_RECORD_SIZE];
 
-  memset(str_val, 0, MAX_RECORD_SIZE);
+  DSA_memset::memset(str_val, 0, MAX_RECORD_SIZE);
   snprintf(str_val, sizeof(str_val), "%" PRId64 "", counter_val);
 
   return MgmtRecordSet(rec_name, str_val, action_need);
@@ -720,7 +724,7 @@ MgmtRecordSetFloat(const char *rec_name, MgmtFloat float_val, TSActionNeedT *act
   // convert float value to string for validity check
   char str_val[MAX_RECORD_SIZE];
 
-  memset(str_val, 0, MAX_RECORD_SIZE);
+  DSA_memset::memset(str_val, 0, MAX_RECORD_SIZE);
   snprintf(str_val, sizeof(str_val), "%f", float_val);
 
   return MgmtRecordSet(rec_name, str_val, action_need);

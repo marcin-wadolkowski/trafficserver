@@ -65,6 +65,10 @@
 #include "HdrUtils.h"
 #include "Log.h"
 
+#include "../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 TransformProcessor transformProcessor;
 
 /*-------------------------------------------------------------------------
@@ -553,7 +557,7 @@ TransformControl::handle_event(int event, void * /* edata ATS_UNUSED */)
     s           = m_write_buf->end();
     e           = m_write_buf->buf_end();
 
-    memset(s, 'a', e - s);
+    DSA_memset::memset(s, 'a', e - s);
     m_write_buf->fill(e - s);
 
     m_tvc->do_io_write(this, 4 * 1024, m_write_buf->alloc_reader());

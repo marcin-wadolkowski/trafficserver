@@ -25,7 +25,12 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
+
 
 #define UINT_WRAP_LTE(_x, _y) (((_y) - (_x)) < INT_MAX) // exploit overflow
 #define UINT_WRAP_GTE(_x, _y) (((_x) - (_y)) < INT_MAX) // exploit overflow
@@ -1110,7 +1115,7 @@ Lagain:
     int l       = round_to_approx_size(sizeof(Doc));
     agg_buf_pos = l;
     Doc *d      = reinterpret_cast<Doc *>(agg_buffer);
-    memset(static_cast<void *>(d), 0, sizeof(Doc));
+    DSA_memset::memset(static_cast<void *>(d), 0, sizeof(Doc));
     d->magic        = DOC_MAGIC;
     d->len          = l;
     d->sync_serial  = header->sync_serial;

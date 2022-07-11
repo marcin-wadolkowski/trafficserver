@@ -27,6 +27,10 @@
 
 #include "tscore/ink_platform.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #define USE_EDGE_TRIGGER_EPOLL 1
 #define USE_EDGE_TRIGGER_KQUEUE 1
 #define USE_EDGE_TRIGGER_PORT 1
@@ -656,7 +660,7 @@ EventIO::start_common(EventLoop l, int afd, int e)
   event_loop = l;
 #if TS_USE_EPOLL
   struct epoll_event ev;
-  memset(&ev, 0, sizeof(ev));
+  DSA_memset::memset(&ev, 0, sizeof(ev));
   ev.events   = e | EPOLLEXCLUSIVE;
   ev.data.ptr = this;
 #ifndef USE_EDGE_TRIGGER
@@ -693,7 +697,7 @@ EventIO::modify(int e)
   ink_assert(event_loop);
 #if TS_USE_EPOLL && !defined(USE_EDGE_TRIGGER)
   struct epoll_event ev;
-  memset(&ev, 0, sizeof(ev));
+  DSA_memset::memset(&ev, 0, sizeof(ev));
   int new_events = events, old_events = events;
   if (e < 0)
     new_events &= ~(-e);
@@ -821,7 +825,7 @@ EventIO::stop()
     int retval = 0;
 #if TS_USE_EPOLL
     struct epoll_event ev;
-    memset(&ev, 0, sizeof(struct epoll_event));
+    DSA_memset::memset(&ev, 0, sizeof(struct epoll_event));
     ev.events = EPOLLIN | EPOLLOUT | EPOLLET;
     retval    = epoll_ctl(event_loop->epoll_fd, EPOLL_CTL_DEL, fd, &ev);
 #endif

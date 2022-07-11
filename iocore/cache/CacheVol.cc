@@ -23,6 +23,14 @@
 
 #include "P_Cache.h"
 
+#include "../../include/shared/DSA_memmove.h"
+
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memmove;
+
+using IDSA::DSA_memset;
+
 #define SCAN_BUF_SIZE RECOVERY_SIZE
 #define SCAN_WRITER_LOCK_MAX_RETRY 5
 
@@ -129,7 +137,7 @@ make_vol_map(Vol *d)
   size_t map_len     = (vol_len + (SCAN_BUF_SIZE - 1)) / SCAN_BUF_SIZE;
   char *vol_map      = static_cast<char *>(ats_malloc(map_len));
 
-  memset(vol_map, 0, map_len);
+  DSA_memset::memset(vol_map, 0, map_len);
 
   // Scan directories.
   // Copied from dir_entries_used() and modified to fill in the map instead.
@@ -346,7 +354,7 @@ CacheVC::scanObject(int /* event ATS_UNUSED */, Event * /* e ATS_UNUSED */)
       next_object_len > 0) {
     off_t partial_object_len = io.aiocb.aio_nbytes - (reinterpret_cast<char *>(doc) - buf->data());
     // Copy partial object to beginning of the buffer.
-    memmove(buf->data(), reinterpret_cast<char *>(doc), partial_object_len);
+    DSA_memmove::memmove(buf->data(), reinterpret_cast<char *>(doc), partial_object_len);
     io.aiocb.aio_offset += io.aiocb.aio_nbytes;
     io.aiocb.aio_nbytes    = SCAN_BUF_SIZE - partial_object_len;
     io.aiocb.aio_buf       = buf->data() + partial_object_len;

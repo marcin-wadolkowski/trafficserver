@@ -26,6 +26,11 @@
 #include "I_EventSystem.h"
 #include "tscore/PendingAction.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
+
 #define MAX_NAMED 32
 #define DEFAULT_DNS_RETRIES 5
 #define MAX_DNS_RETRIES 9
@@ -314,7 +319,7 @@ DNSHandler::DNSHandler()
     tcpcon[i].handler          = this;
     udpcon[i].handler          = this;
   }
-  memset(&qid_in_flight, 0, sizeof(qid_in_flight));
+  DSA_memset::memset(&qid_in_flight, 0, sizeof(qid_in_flight));
   SET_HANDLER(&DNSHandler::startEvent);
   Debug("net_epoll", "inline DNSHandler::DNSHandler()");
 }
