@@ -30,7 +30,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 #if HAVE_SYS_STAT_H
 #include <sys/stat.h>
@@ -263,8 +267,8 @@ ink_filepath_merge(char *path, int pathsz, const char *rootpath, const char *add
         // Flag that rootpath was entirely replaced.
         //
         keptlen = 0;
-      } else if (pathlen == 0 || (pathlen == 3 && !memcmp(path + pathlen - 3, "../", 3)) ||
-                 (pathlen > 3 && !memcmp(path + pathlen - 4, "/../", 4))) {
+      } else if (pathlen == 0 || (pathlen == 3 && !DSA_memcmp::memcmp(path + pathlen - 3, "../", 3)) ||
+                 (pathlen > 3 && !DSA_memcmp::memcmp(path + pathlen - 4, "/../", 4))) {
         // Path is already backpathed or empty, if the
         // INK_FILEPATH_SECUREROOTTEST.was given die now.
         //

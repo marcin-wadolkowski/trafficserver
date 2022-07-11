@@ -31,7 +31,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDS::DSA_memcmp;
 
 CacheTestSM::CacheTestSM(RegressionTest *t, const char *name) : RegressionSM(t), cache_test_name(name)
 {
@@ -266,7 +270,7 @@ CacheTestSM::check_buffer()
     k.b[0]  = pos / sk;
     char *x = (reinterpret_cast<char *>(&k)) + o;
     buffer_reader->read(&b[0], l);
-    if (::memcmp(b, x, l)) {
+    if (::DSA_memcmp::memcmp(b, x, l)) {
       return 0;
     }
     buffer_reader->consume(l);

@@ -27,9 +27,13 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memmove;
 
 using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 #define SCAN_BUF_SIZE RECOVERY_SIZE
 #define SCAN_WRITER_LOCK_MAX_RETRY 5
@@ -470,7 +474,7 @@ CacheVC::scanOpenWrite(int /* event ATS_UNUSED */, Event * /* e ATS_UNUSED */)
         SET_HANDLER(&CacheVC::scanObject);
         return handleEvent(EVENT_IMMEDIATE, nullptr);
       }
-      if (memcmp(&dir, &d, SIZEOF_DIR)) {
+      if (DSA_memcmp::memcmp(&dir, &d, SIZEOF_DIR)) {
         Debug("cache_scan", "dir entry has changed");
         continue;
       }

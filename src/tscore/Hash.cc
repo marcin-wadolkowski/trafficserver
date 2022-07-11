@@ -22,6 +22,10 @@
 #include "tscore/Hash.h"
 #include <cstring>
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 ATSHashBase::~ATSHashBase() {}
 
 bool
@@ -30,7 +34,7 @@ ATSHash::operator==(const ATSHash &other) const
   if (this->size() != other.size()) {
     return false;
   }
-  if (memcmp(this->get(), other.get(), this->size()) == 0) {
+  if (DSA_memcmp::memcmp(this->get(), other.get(), this->size()) == 0) {
     return true;
   } else {
     return false;

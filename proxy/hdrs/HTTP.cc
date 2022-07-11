@@ -35,9 +35,13 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 /***********************************************************************
  *                                                                     *
@@ -1226,7 +1230,7 @@ validate_hdr_content_length(HdrHeap *heap, HTTPHdrImpl *hh)
       const char *content_length_val_2 = content_length_field->m_next_dup->value_get(&content_length_len_2);
 
       if ((content_length_len != content_length_len_2) ||
-          (memcmp(content_length_val, content_length_val_2, content_length_len) != 0)) {
+          (DSA_memcmp::memcmp(content_length_val, content_length_val_2, content_length_len) != 0)) {
         // Values are different, parse error
         Debug("http", "Content-Length headers don't match, returning parse error");
         return PARSE_RESULT_ERROR;

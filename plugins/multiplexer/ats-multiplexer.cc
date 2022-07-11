@@ -31,6 +31,10 @@
 #include "original-request.h"
 #include "post.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 #ifndef PLUGIN_TAG
 #error Please define a PLUGIN_TAG before including this file.
 #endif
@@ -122,8 +126,8 @@ DoRemap(const Instance &i, TSHttpTxn t)
 
   TSDebug(PLUGIN_TAG, "Method is %s.", std::string(method, length).c_str());
 
-  if (i.skipPostPut && ((length == TS_HTTP_LEN_POST && memcmp(TS_HTTP_METHOD_POST, method, TS_HTTP_LEN_POST) == 0) ||
-                        (length == TS_HTTP_LEN_PUT && memcmp(TS_HTTP_METHOD_PUT, method, TS_HTTP_LEN_PUT) == 0))) {
+  if (i.skipPostPut && ((length == TS_HTTP_LEN_POST && DSA_memcmp::memcmp(TS_HTTP_METHOD_POST, method, TS_HTTP_LEN_POST) == 0) ||
+                        (length == TS_HTTP_LEN_PUT && DSA_memcmp::memcmp(TS_HTTP_METHOD_PUT, method, TS_HTTP_LEN_PUT) == 0))) {
     TSHandleMLocRelease(buffer, TS_NULL_MLOC, location);
   } else {
     {
@@ -143,7 +147,7 @@ DoRemap(const Instance &i, TSHttpTxn t)
     generateRequests(i.origins, buffer, location, requests);
     assert(requests.size() == i.origins.size());
 
-    if (length == TS_HTTP_LEN_POST && memcmp(TS_HTTP_METHOD_POST, method, TS_HTTP_LEN_POST) == 0) {
+    if (length == TS_HTTP_LEN_POST && DSA_memcmp::memcmp(TS_HTTP_METHOD_POST, method, TS_HTTP_LEN_POST) == 0) {
       const TSVConn vconnection = TSTransformCreate(handlePost, t);
       assert(vconnection != nullptr);
       TSContDataSet(vconnection, new PostState(requests));

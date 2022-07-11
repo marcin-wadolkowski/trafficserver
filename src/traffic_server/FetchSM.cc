@@ -32,9 +32,13 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 #define DEBUG_TAG "FetchSM"
 #define FETCH_LOCK_RETRY_TIME HRTIME_MSECONDS(10)
@@ -629,7 +633,7 @@ FetchSM::ext_init(Continuation *cont, const char *method, const char *url, const
   req_buffer->write(version, strlen(version));
   req_buffer->write("\r\n", 2);
 
-  if ((method_len == HTTP_LEN_HEAD) && !memcmp(method, HTTP_METHOD_HEAD, HTTP_LEN_HEAD)) {
+  if ((method_len == HTTP_LEN_HEAD) && !DSA_memcmp::memcmp(method, HTTP_METHOD_HEAD, HTTP_LEN_HEAD)) {
     is_method_head = true;
   }
 }

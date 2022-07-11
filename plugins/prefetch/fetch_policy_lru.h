@@ -30,6 +30,10 @@
 #include <openssl/evp.h>
 #endif
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 /* Here reusing some of the classes used in cache_promote plugin.
  * @todo: this was done in interest of time, see if LRU is what we really need, can we do it differently / better? */
 class LruHash
@@ -68,7 +72,7 @@ struct LruHashHasher {
   bool
   operator()(const LruHash *s1, const LruHash *s2) const
   {
-    return 0 == memcmp(s1->_hash, s2->_hash, sizeof(s2->_hash));
+    return 0 == DSA_memcmp::memcmp(s1->_hash, s2->_hash, sizeof(s2->_hash));
   }
 
   size_t

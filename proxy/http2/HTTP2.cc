@@ -32,7 +32,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 const char *const HTTP2_CONNECTION_PREFACE = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 
@@ -762,7 +766,7 @@ http2_decode_header_blocks(HTTPHdr *hdr, const uint8_t *buf_start, const uint32_
   field = hdr->field_find(MIME_FIELD_TE, MIME_LEN_TE);
   if (field) {
     value = field->value_get(&len);
-    if (!(len == 8 && memcmp(value, "trailers", 8) == 0)) {
+    if (!(len == 8 && DSA_memcmp::memcmp(value, "trailers", 8) == 0)) {
       return Http2ErrorCode::HTTP2_ERROR_PROTOCOL_ERROR;
     }
   }

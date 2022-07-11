@@ -33,6 +33,10 @@
 #include "Http3DataFramer.h"
 #include "HttpSM.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 #define Http3TransDebug(fmt, ...)                                                                                            \
   Debug("http3_trans", "[%s] [%" PRIx32 "] " fmt,                                                                            \
         static_cast<QUICConnection *>(reinterpret_cast<QUICNetVConnection *>(this->_proxy_ssn->get_netvc()))->cids().data(), \
@@ -730,7 +734,7 @@ Http09Transaction::_process_write_vio()
     int64_t http_1_1_version_len = sizeof(http_1_1_version) - 1;
 
     if (reader->is_read_avail_more_than(http_1_1_version_len) &&
-        memcmp(reader->start(), http_1_1_version, http_1_1_version_len) == 0) {
+        DSA_memcmp::memcmp(reader->start(), http_1_1_version, http_1_1_version_len) == 0) {
       // Skip HTTP/1.1 response headers
       IOBufferBlock *headers = reader->get_current_block();
       int64_t headers_size   = headers->read_avail();

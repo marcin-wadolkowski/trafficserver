@@ -34,7 +34,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 
 #define SSL_MAX_SESSION_SIZE 256
@@ -76,7 +80,7 @@ struct SSLSessionID : public TSSslSessionID {
     if (len != other.len)
       return len < other.len;
 
-    return (memcmp(bytes, other.bytes, len) < 0);
+    return (DSA_memcmp::memcmp(bytes, other.bytes, len) < 0);
   }
 
   SSLSessionID &
@@ -96,7 +100,7 @@ struct SSLSessionID : public TSSslSessionID {
       return false;
 
     // memcmp returns 0 on equal
-    return (memcmp(bytes, other.bytes, len) == 0);
+    return (DSA_memcmp::memcmp(bytes, other.bytes, len) == 0);
   }
 
   const char *

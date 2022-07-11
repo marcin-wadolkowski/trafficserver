@@ -36,6 +36,10 @@
 
 #include "tscpp/util/string_view_util.h"
 
+#include "../shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 namespace ts
 {
 class TextView;
@@ -1134,7 +1138,7 @@ TextView::trim_if(F const &pred)
 inline bool
 TextView::isPrefixOf(super_type const &that) const
 {
-  return this->size() <= that.size() && 0 == memcmp(this->data(), that.data(), this->size());
+  return this->size() <= that.size() && 0 == DSA_memcmp::memcmp(this->data(), that.data(), this->size());
 }
 
 inline bool

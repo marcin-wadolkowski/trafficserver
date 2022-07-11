@@ -27,9 +27,13 @@
 #include "tscore/ink_defs.h"
 #include "tscore/ink_memory.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
+
+#include "../../include/shared/DSA_memcmp.h"
 
 using DSA::DSA_memcpy;
+
+using DSA::DSA_memcmp;
 
 #define QPACKDebug(fmt, ...) Debug("qpack", "[%s] " fmt, this->_qc->cids().data(), ##__VA_ARGS__)
 #define QPACKDTDebug(fmt, ...) Debug("qpack", "" fmt, ##__VA_ARGS__)
@@ -1199,9 +1203,9 @@ QPACK::StaticTable::lookup(const char *name, int name_len, const char *value, in
   for (; i < n; ++i) {
     const Header &h = STATIC_HEADER_FIELDS[i];
     if (h.name_len == name_len) {
-      if (memcmp(name, h.name, name_len) == 0) {
+      if (DSA_memcmp::memcmp(name, h.name, name_len) == 0) {
         candidate_index = i;
-        if (value_len == h.value_len && memcmp(value, h.value, value_len) == 0) {
+        if (value_len == h.value_len && DSA_memcmp::memcmp(value, h.value, value_len) == 0) {
           // Exact match
           match_type = QPACK::LookupResult::MatchType::EXACT;
           break;
@@ -1303,9 +1307,9 @@ QPACK::DynamicTable::lookup(const char *name, int name_len, const char *value, i
     if (name_len != 0 && this->_entries[i].name_len == name_len) {
       this->_storage->read(this->_entries[i].offset, &tmp_name, this->_entries[i].name_len, &tmp_value,
                            this->_entries[i].value_len);
-      if (memcmp(name, tmp_name, name_len) == 0) {
+      if (DSA_memcmp::memcmp(name, tmp_name, name_len) == 0) {
         candidate_index = this->_entries[i].index;
-        if (value_len == this->_entries[i].value_len && memcmp(value, tmp_value, value_len) == 0) {
+        if (value_len == this->_entries[i].value_len && DSA_memcmp::memcmp(value, tmp_value, value_len) == 0) {
           // Exact match
           match_type = QPACK::LookupResult::MatchType::EXACT;
           break;

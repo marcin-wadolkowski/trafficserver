@@ -33,7 +33,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 #define PreWarmSMDebug(fmt, ...) Debug("prewarm_sm", "[%p] " fmt, this, ##__VA_ARGS__);
 #define PreWarmSMVDebug(fmt, ...) Debug("v_prewarm_sm", "[%p] " fmt, this, ##__VA_ARGS__);
@@ -982,7 +986,7 @@ void
 PreWarmManager::reconfigure_prewarming_on_threads()
 {
   EventProcessor::ThreadGroupDescriptor *tg = &(eventProcessor.thread_group[0]);
-  ink_release_assert(memcmp(tg->_name.data(), "ET_NET", 6) == 0);
+  ink_release_assert(DSA_memcmp::memcmp(tg->_name.data(), "ET_NET", 6) == 0);
 
   Debug("prewarm", "reconfigure prewarming");
 

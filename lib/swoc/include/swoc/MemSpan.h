@@ -26,9 +26,13 @@
 
 #include "../../../../include/shared/DSA_memset.h"
 
+#include "../../../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 namespace swoc { inline namespace SWOC_VERSION_NS {
 /** A span of contiguous piece of memory.
@@ -585,7 +589,7 @@ memcmp(MemSpan<T> const &lhs, MemSpan<T> const &rhs) {
   }
   // else the counts are equal therefore @a n and @a zret are already correct.
 
-  int r = std::memcmp(lhs.data(), rhs.data(), n);
+  int r = DSA_memcmp::memcmp(lhs.data(), rhs.data(), n);
   if (0 != r) { // If we got a not-equal, override the size based result.
     zret = r;
   }
@@ -701,7 +705,7 @@ MemSpan<T>::is_same(self_type const &that) const {
 template <typename T>
 bool
 MemSpan<T>::operator==(self_type const &that) const {
-  return _count == that._count && (_ptr == that._ptr || 0 == memcmp(_ptr, that._ptr, this->size()));
+  return _count == that._count && (_ptr == that._ptr || 0 == DSA_memcmp::memcmp(_ptr, that._ptr, this->size()));
 }
 
 template <typename T>
@@ -891,7 +895,7 @@ MemSpan<void>::is_same(self_type const &that) const {
 
 inline bool
 MemSpan<void>::operator==(self_type const &that) const {
-  return _size == that._size && (_ptr == that._ptr || 0 == memcmp(_ptr, that._ptr, _size));
+  return _size == that._size && (_ptr == that._ptr || 0 == DSA_memcmp::memcmp(_ptr, that._ptr, _size));
 }
 
 inline bool

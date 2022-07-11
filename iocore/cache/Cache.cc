@@ -43,9 +43,13 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 constexpr ts::VersionNumber CACHE_DB_VERSION(CACHE_DB_MAJOR_VERSION, CACHE_DB_MINOR_VERSION);
 
@@ -2224,7 +2228,7 @@ CacheVC::handleReadDone(int event, Event *e)
       char *x = xx;
       for (int q = 0; q < 3; q++)
         x = strchr(x + 1, '/');
-      ink_assert(!memcmp(doc->data(), x, ib - (x - xx)));
+      ink_assert(!DSA_memcmp::memcmp(doc->data(), x, ib - (x - xx)));
     }
 #endif
 

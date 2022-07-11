@@ -24,6 +24,10 @@
 #include "Http2CommonSession.h"
 #include "HttpDebugNames.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 #define REMEMBER(e, r)                          \
   {                                             \
     this->remember(MakeSourceLocation(), e, r); \
@@ -193,7 +197,7 @@ Http2CommonSession::state_read_connection_preface(int event, void *edata)
     nbytes = copy_from_buffer_reader(buf, this->_read_buffer_reader, sizeof(buf));
     ink_release_assert(nbytes == HTTP2_CONNECTION_PREFACE_LEN);
 
-    if (memcmp(HTTP2_CONNECTION_PREFACE, buf, nbytes) != 0) {
+    if (DSA_memcmp::memcmp(HTTP2_CONNECTION_PREFACE, buf, nbytes) != 0) {
       Http2SsnDebug("invalid connection preface");
       this->get_proxy_session()->do_io_close();
       return 0;

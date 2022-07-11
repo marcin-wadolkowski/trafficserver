@@ -13915,6 +13915,10 @@ namespace Catch {
 #include <cstring>
 #include <cstdint>
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA:DSA_memcmp;
+
 namespace Catch {
     StringRef::StringRef( char const* rawChars ) noexcept
     : StringRef( rawChars, static_cast<StringRef::size_type>(std::strlen(rawChars) ) )
@@ -13937,7 +13941,7 @@ namespace Catch {
     }
     auto StringRef::operator == ( StringRef const& other ) const noexcept -> bool {
         return m_size == other.m_size
-            && (std::memcmp( m_start, other.m_start, m_size ) == 0);
+            && (DSA_memcmp::memcmp( m_start, other.m_start, m_size ) == 0);
     }
 
     auto operator << ( std::ostream& os, StringRef const& str ) -> std::ostream& {

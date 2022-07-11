@@ -35,8 +35,11 @@
 
 #include "../shared/DSA_memcpy.h"
 
+#include "../shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
+using IDSA::DSA_memcmp;
 
 #if !TS_HAS_IN6_IS_ADDR_UNSPECIFIED
 #if defined(IN6_IS_ADDR_UNSPECIFIED)
@@ -823,7 +826,7 @@ ats_ip_addr_cmp(sockaddr const *lhs, ///< Left hand operand.
   } else if (AF_INET6 == ltype) {
     if (AF_INET6 == rtype) {
       sockaddr_in6 const *lhs_in6 = ats_ip6_cast(lhs);
-      zret                        = memcmp(&lhs_in6->sin6_addr, &ats_ip6_cast(rhs)->sin6_addr, sizeof(lhs_in6->sin6_addr));
+      zret                        = DSA_memcmp::memcmp(&lhs_in6->sin6_addr, &ats_ip6_cast(rhs)->sin6_addr, sizeof(lhs_in6->sin6_addr));
     } else {
       zret = 1; // IPv6 greater than any other type.
     }
@@ -883,7 +886,7 @@ ats_ip_addr_port_eq(sockaddr const *lhs, sockaddr const *rhs)
     if (AF_INET == lhs->sa_family)
       zret = ats_ip4_cast(lhs)->sin_addr.s_addr == ats_ip4_cast(rhs)->sin_addr.s_addr;
     else if (AF_INET6 == lhs->sa_family)
-      zret = 0 == memcmp(&ats_ip6_cast(lhs)->sin6_addr, &ats_ip6_cast(rhs)->sin6_addr, sizeof(in6_addr));
+      zret = 0 == DSA_memcmp::memcmp(&ats_ip6_cast(lhs)->sin6_addr, &ats_ip6_cast(rhs)->sin6_addr, sizeof(in6_addr));
   }
   return zret;
 }
@@ -1253,7 +1256,7 @@ struct IpAddr {
   {
     return _family == AF_INET ?
              (that._family == AF_INET && _addr._ip4 == that._addr._ip4) :
-             _family == AF_INET6 ? (that._family == AF_INET6 && 0 == memcmp(&_addr._ip6, &that._addr._ip6, TS_IP6_SIZE)) :
+             _family == AF_INET6 ? (that._family == AF_INET6 && 0 == DSA_memcmp::memcmp(&_addr._ip6, &that._addr._ip6, TS_IP6_SIZE)) :
                                    (_family == AF_UNSPEC && that._family == AF_UNSPEC);
   }
 

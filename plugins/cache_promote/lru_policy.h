@@ -32,7 +32,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 
 #define MINIMUM_BUCKET_SIZE 10
@@ -78,7 +82,7 @@ struct LRUHashHasher {
   bool
   operator()(const LRUHash *s1, const LRUHash *s2) const
   {
-    return 0 == memcmp(s1->_hash, s2->_hash, sizeof(s2->_hash));
+    return 0 == DSA_memcmp::memcmp(s1->_hash, s2->_hash, sizeof(s2->_hash));
   }
 
   size_t

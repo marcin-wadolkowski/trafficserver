@@ -29,7 +29,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 // For currently defined protocol strings, see
 // http://technotes.googlecode.com/git/nextprotoneg.html. The OpenSSL
@@ -106,7 +110,7 @@ SSLNextProtocolSet::findEndpoint(const unsigned char *proto, unsigned len) const
 {
   for (const NextProtocolEndpoint *ep = this->endpoints.head; ep != nullptr; ep = this->endpoints.next(ep)) {
     size_t sz = strlen(ep->protocol);
-    if (sz == len && memcmp(ep->protocol, proto, len) == 0) {
+    if (sz == len && DSA_memcmp::memcmp(ep->protocol, proto, len) == 0) {
       return ep->endpoint;
     }
   }

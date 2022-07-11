@@ -49,7 +49,11 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 using std::string;
 using std::list;
@@ -1281,10 +1285,10 @@ isTxnTransformable(TSHttpTxn txnp, bool is_cache_txn, bool *intercept_header, bo
     return false;
   }
 
-  if (method_len >= TS_HTTP_LEN_HEAD && memcmp(method, TS_HTTP_METHOD_HEAD, TS_HTTP_LEN_HEAD) == 0) {
+  if (method_len >= TS_HTTP_LEN_HEAD && DSA_memcmp::memcmp(method, TS_HTTP_METHOD_HEAD, TS_HTTP_LEN_HEAD) == 0) {
     *head_only = true;
-  } else if (!(((method_len >= TS_HTTP_LEN_POST && memcmp(method, TS_HTTP_METHOD_POST, TS_HTTP_LEN_POST) == 0)) ||
-               ((method_len >= TS_HTTP_LEN_GET && memcmp(method, TS_HTTP_METHOD_GET, TS_HTTP_LEN_GET) == 0)))) {
+  } else if (!(((method_len >= TS_HTTP_LEN_POST && DSA_memcmp::memcmp(method, TS_HTTP_METHOD_POST, TS_HTTP_LEN_POST) == 0)) ||
+               ((method_len >= TS_HTTP_LEN_GET && DSA_memcmp::memcmp(method, TS_HTTP_METHOD_GET, TS_HTTP_LEN_GET) == 0)))) {
     TSDebug(DEBUG_TAG, "[%s] method %.*s will be ignored", __FUNCTION__, method_len, method);
     TSHandleMLocRelease(bufp, TS_NULL_MLOC, hdr_loc);
     return false;

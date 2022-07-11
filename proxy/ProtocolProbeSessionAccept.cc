@@ -29,6 +29,10 @@
 #include "I_NetVConnection.h"
 #include "http/HttpConfig.h"
 
+#include "../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 static bool
 proto_is_http2(IOBufferReader *reader)
 {
@@ -45,7 +49,7 @@ proto_is_http2(IOBufferReader *reader)
   }
 
   ink_assert(nbytes <= (int64_t)HTTP2_CONNECTION_PREFACE_LEN);
-  return memcmp(HTTP2_CONNECTION_PREFACE, buf, nbytes) == 0;
+  return DSA_memcmp::memcmp(HTTP2_CONNECTION_PREFACE, buf, nbytes) == 0;
 }
 
 struct ProtocolProbeTrampoline : public Continuation, public ProtocolProbeSessionAcceptEnums {

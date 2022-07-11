@@ -26,6 +26,10 @@
 #include "tscpp/util/LocalBuffer.h"
 #include "tscpp/util/TextView.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 namespace
 {
 // [RFC 7541] 4.1. Calculating Table Size
@@ -232,8 +236,8 @@ namespace HpackStaticTable
       std::string_view value = STATIC_TABLE[index].value;
 
       // Check whether name (and value) are matched
-      if (memcmp(header.name, name) == 0) {
-        if (memcmp(header.value, value) == 0) {
+      if (DSA_memcmp::memcmp(header.name, name) == 0) {
+        if (DSA_memcmp::memcmp(header.value, value) == 0) {
           result.index      = index;
           result.index_type = HpackIndex::STATIC;
           result.match_type = HpackMatch::EXACT;
@@ -405,7 +409,7 @@ HpackDynamicTable::lookup(const HpackHeaderField &header) const
     // TODO: replace `strcasecmp` with `memcmp`
     // Check whether name (and value) are matched
     if (strcasecmp(header.name, name) == 0) {
-      if (memcmp(header.value, value) == 0) {
+      if (DSA_memcmp::memcmp(header.value, value) == 0) {
         result.index      = index;
         result.index_type = HpackIndex::DYNAMIC;
         result.match_type = HpackMatch::EXACT;
@@ -924,7 +928,7 @@ hpack_encode_header_block(HpackIndexingTable &indexing_table, uint8_t *out_buf, 
     // - Authorization header obviously should not be indexed
     // - Short Cookie header should not be indexed because of low entropy
     HpackField field_type;
-    if ((value.size() < 20 && memcmp(name, HPACK_HDR_FIELD_COOKIE) == 0) || memcmp(name, HPACK_HDR_FIELD_AUTHORIZATION) == 0) {
+    if ((value.size() < 20 && DSA_memcmp::memcmp(name, HPACK_HDR_FIELD_COOKIE) == 0) || DSA_memcmp::memcmp(name, HPACK_HDR_FIELD_AUTHORIZATION) == 0) {
       field_type = HpackField::NEVERINDEX_LITERAL;
     } else {
       field_type = HpackField::INDEXED_LITERAL;

@@ -28,7 +28,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 #define SRV_COST (RRFIXEDSZ + 0)
 #define SRV_WEIGHT (RRFIXEDSZ + 2)
@@ -1067,7 +1071,7 @@ get_entry(DNSHandler *h, char *qname, int qtype)
         if (!strcmp(qname, e->qname)) {
           return e;
         }
-      } else if (0 == memcmp(qname, e->qname, e->qname_len)) {
+      } else if (0 == DSA_memcmp::memcmp(qname, e->qname, e->qname_len)) {
         return e;
       }
     }

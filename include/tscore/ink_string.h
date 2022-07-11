@@ -41,6 +41,10 @@
 #include "tscore/ParseRules.h"
 #include "tscore/ink_apidefs.h"
 
+#include "../shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 /*===========================================================================*
 
                             Function Prototypes
@@ -392,5 +396,5 @@ IsNoCasePrefixOf(std::string_view const &lhs, std::string_view const &rhs)
 inline bool
 IsPrefixOf(std::string_view const &lhs, std::string_view const &rhs)
 {
-  return lhs.size() <= rhs.size() && 0 == memcmp(lhs.data(), rhs.data(), lhs.size());
+  return lhs.size() <= rhs.size() && 0 == DSA_memcmp::memcmp(lhs.data(), rhs.data(), lhs.size());
 }

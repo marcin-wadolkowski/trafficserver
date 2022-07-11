@@ -32,6 +32,10 @@
 
 #include "tscore/ink_apidefs.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 class Http2HeaderTable;
 
 enum HTTPStatus {
@@ -1490,7 +1494,7 @@ inline bool
 HTTPInfo::compare_object_key(const CryptoHash *hash)
 {
   int32_t const *pi = reinterpret_cast<int32_t const *>(hash);
-  return memcmp(pi, m_alt->m_object_key, CRYPTO_HASH_SIZE) == 0;
+  return DSA_memcmp::memcmp(pi, m_alt->m_object_key, CRYPTO_HASH_SIZE) == 0;
 }
 
 inline int64_t

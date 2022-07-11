@@ -44,6 +44,10 @@
 
 #include <vector>
 
+#include "../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 /** Used for printing IP address.
     @code
     uint32_t addr; // IP address.
@@ -527,7 +531,7 @@ PrefixMod::check(HttpRequestData *req) const
 {
   int path_len;
   const char *path = req->hdr->url_get()->path_get(&path_len);
-  bool zret        = path_len >= static_cast<int>(text.size()) && 0 == memcmp(path, text.data(), text.size());
+  bool zret        = path_len >= static_cast<int>(text.size()) && 0 == DSA_memcmp::memcmp(path, text.data(), text.size());
   /*
     Debug("cache_control", "Prefix check: URL=%0.*s Mod=%0.*s Z=%s",
       path_len, path, text.size(), text.data(),

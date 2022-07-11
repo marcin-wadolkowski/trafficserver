@@ -47,6 +47,10 @@
 #include "tscore/ink_inet.h"
 #include "tscore/BufferWriter.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 namespace ts
 {
 namespace detail
@@ -56,7 +60,7 @@ namespace detail
   inline int
   cmp(sockaddr_in6 const &lhs, sockaddr_in6 const &rhs)
   {
-    return memcmp(lhs.sin6_addr.s6_addr, rhs.sin6_addr.s6_addr, TS_IP6_SIZE);
+    return DSA_memcmp::memcmp(lhs.sin6_addr.s6_addr, rhs.sin6_addr.s6_addr, TS_IP6_SIZE);
   }
 
   /// Less than.

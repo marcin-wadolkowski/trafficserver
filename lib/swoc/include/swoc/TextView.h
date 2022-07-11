@@ -22,6 +22,10 @@
 #include "swoc/swoc_version.h"
 #include "tscpp/util/string_view_util.h"
 
+#include "../../../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 namespace swoc { inline namespace SWOC_VERSION_NS {
 
 class TextView;
@@ -1477,7 +1481,7 @@ TextView::substr(size_type pos, size_type count) const noexcept {
 
 inline bool
 TextView::starts_with(std::string_view const &prefix) const noexcept {
-  return this->size() >= prefix.size() && 0 == ::memcmp(this->data(), prefix.data(), prefix.size());
+  return this->size() >= prefix.size() && 0 == DSA_memcmp::memcmp(this->data(), prefix.data(), prefix.size());
 }
 
 inline bool
@@ -1505,7 +1509,7 @@ TextView::starts_with_nocase(std::string_view const &prefix) const noexcept {
 
 inline bool
 TextView::ends_with(std::string_view const &suffix) const noexcept {
-  return this->size() >= suffix.size() && 0 == ::memcmp(this->data_end() - suffix.size(), suffix.data(), suffix.size());
+  return this->size() >= suffix.size() && 0 == DSA_memcmp::memcmp(this->data_end() - suffix.size(), suffix.data(), suffix.size());
 }
 
 inline bool

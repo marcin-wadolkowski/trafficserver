@@ -70,11 +70,15 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memmove;
 
-using DSA::DSA_memset;
+using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 /*
  FTP - Traffic Server Template
@@ -2276,7 +2280,7 @@ verify_content(int sock, char *buf, int done)
         char *url_end = nullptr, *url_start = nullptr;
         get_path_from_req(fd[sock].base_url, &url_start, &url_end);
         if (url_end - url_start < done) {
-          if (memcmp(url_start, buf, url_end - url_start)) {
+          if (DSA_memcmp::memcmp(url_start, buf, url_end - url_start)) {
             return 0;
           }
         }
@@ -2299,7 +2303,7 @@ verify_content(int sock, char *buf, int done)
     if (done > left) {
       done = left;
     }
-    if (memcmp(buf, d + (fd[sock].response_length - left), done)) {
+    if (DSA_memcmp::memcmp(buf, d + (fd[sock].response_length - left), done)) {
       return 0;
     }
   }

@@ -44,9 +44,13 @@
 
 #define PLUGIN_NAME "remap"
 
-#include "DSA_memcpy.h"
+#include "../../../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+#include "../../../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 class remap_entry
 {
@@ -293,7 +297,7 @@ TSRemapDoRemap(void *ih, TSHttpTxn rh, TSRemapRequestInfo *rri)
   temp2 = TSUrlPathGet(rri->requestBufp, rri->requestUrl, &len2);
   port  = TSUrlPortGet(rri->requestBufp, rri->requestUrl);
 
-  if (len == 10 && !memcmp("flickr.com", temp, 10) && port == 80 && len2 >= 3 && !memcmp("47/", temp2, 3)) {
+  if (len == 10 && !DSA_memcmp::memcmp("flickr.com", temp, 10) && port == 80 && len2 >= 3 && !DSA_memcmp::memcmp("47/", temp2, 3)) {
     char new_path[8192];
 
     // Ugly, but so is the rest of this "example"

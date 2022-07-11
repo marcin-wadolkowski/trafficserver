@@ -29,6 +29,10 @@
 
 #include "tscore/ink_memory.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 using equal_fn = bool (*)(const unsigned char *, size_t, const unsigned char *, size_t);
 
 /* Return a ptr to a valid wildcard or NULL if not found
@@ -122,7 +126,7 @@ equal_case(const unsigned char *pattern, size_t pattern_len, const unsigned char
   if (pattern_len != subject_len) {
     return false;
   }
-  return (memcmp(pattern, subject, pattern_len) == 0);
+  return (DSA_memcmp::memcmp(pattern, subject, pattern_len) == 0);
 }
 
 /*

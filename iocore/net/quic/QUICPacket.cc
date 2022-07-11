@@ -32,9 +32,13 @@
 #include "QUICDebugNames.h"
 #include "QUICRetryIntegrityTag.h"
 
-#include "DSA_memcpy.h"
+#include "../../../include/shared/DSA_memcpy.h"
+
+#include "../../../include/shared/DSA_memcmp.h"
 
 using DSA::DSA_memcpy;
+
+using DSA::DSA_memcmp;
 
 using namespace std::literals;
 static constexpr uint64_t aead_tag_len             = 16;
@@ -1853,5 +1857,5 @@ QUICRetryPacketR::has_valid_tag(const QUICConnectionId &odcid) const
   uint8_t tag_computed[QUICRetryIntegrityTag::LEN];
   QUICRetryIntegrityTag::compute(tag_computed, this->version(), odcid, this->_header_block, this->_payload_block_without_tag);
 
-  return memcmp(this->_integrity_tag, tag_computed, QUICRetryIntegrityTag::LEN) == 0;
+  return DSA_memcmp::memcmp(this->_integrity_tag, tag_computed, QUICRetryIntegrityTag::LEN) == 0;
 }

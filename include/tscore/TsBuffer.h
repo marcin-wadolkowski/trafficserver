@@ -32,6 +32,10 @@
 #include <memory.h>
 #include <string_view>
 
+#include "../shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 /// Apache Traffic Server commons.
 namespace ts
 {
@@ -395,7 +399,7 @@ ConstBuffer::operator!=(Buffer const &that) const
 inline bool
 ConstBuffer::operator==(self const &that) const
 {
-  return _size == that._size && 0 == memcmp(_ptr, that._ptr, _size);
+  return _size == that._size && 0 == DSA_memcmp::memcmp(_ptr, that._ptr, _size);
 }
 inline ConstBuffer &
 ConstBuffer::operator=(Buffer const &that)
@@ -407,7 +411,7 @@ ConstBuffer::operator=(Buffer const &that)
 inline bool
 ConstBuffer::operator==(Buffer const &that) const
 {
-  return _size == that._size && 0 == memcmp(_ptr, that._ptr, _size);
+  return _size == that._size && 0 == DSA_memcmp::memcmp(_ptr, that._ptr, _size);
 }
 inline bool
 ConstBuffer::operator!() const

@@ -25,6 +25,10 @@
 #include "QUICPathValidator.h"
 #include "QUICPacket.h"
 
+#include "../../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 #define QUICDebug(fmt, ...) Debug("quic_path", "[%s] " fmt, this->_cinfo.cids().data(), ##__VA_ARGS__)
 
 bool
@@ -117,7 +121,7 @@ bool
 QUICPathValidator::ValidationJob::validate_response(const uint8_t *data)
 {
   for (int i = 0; i < 3; ++i) {
-    if (memcmp(this->_outgoing_challenge + (QUICPathChallengeFrame::DATA_LEN * i), data, QUICPathChallengeFrame::DATA_LEN) == 0) {
+    if (DSA_memcmp::memcmp(this->_outgoing_challenge + (QUICPathChallengeFrame::DATA_LEN * i), data, QUICPathChallengeFrame::DATA_LEN) == 0) {
       this->_state                  = ValidationState::VALIDATED;
       this->_has_outgoing_challenge = 0;
       return true;

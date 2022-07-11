@@ -31,9 +31,13 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
 using DSA::DSA_memset;
+
+using DSA::DSA_memcmp;
 
 namespace wccp
 {
@@ -64,7 +68,7 @@ ServiceGroup::operator==(self const &that) const
     // Port check is technically too strict -- should ignore
     // ports beyond the terminating null port. Oh well.
     return m_svc_id == that.m_svc_id && m_protocol == that.m_protocol && m_flags == that.m_flags && m_priority == that.m_priority &&
-           0 == memcmp(m_ports, that.m_ports, sizeof(m_ports));
+           0 == DSA_memcmp::memcmp(m_ports, that.m_ports, sizeof(m_ports));
   }
 }
 // ------------------------------------------------------
@@ -515,7 +519,7 @@ SecurityComp::validate(MsgBuffer const &msg) const
     MD5_Update(&ctx, msg.getBase(), msg.getCount());
     MD5_Final(org, &ctx);
     // check hash.
-    zret = 0 == memcmp(org, save, sizeof(save));
+    zret = 0 == DSA_memcmp::memcmp(org, save, sizeof(save));
     // restore original data.
     DSA_memcpy::memcpy(org, save, sizeof(save));
   }

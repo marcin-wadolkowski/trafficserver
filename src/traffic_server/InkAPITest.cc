@@ -55,9 +55,13 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 // This used to be in InkAPITestTool.cc, which we'd just #include here... But that seemed silly.
 #define SDBG_TAG "SockServer"
@@ -2235,7 +2239,7 @@ REGRESSION_TEST(SDK_API_TSfopen)(RegressionTest *test, int /* atype ATS_UNUSED *
   }
 
   // compare input_buffer and cmp_buffer buffers
-  if (memcmp(input_buffer, cmp_buffer, read_amount) != 0) {
+  if (DSA_memcmp::memcmp(input_buffer, cmp_buffer, read_amount) != 0) {
     SDK_RPRINT(test, "TSfread", "TestCase2", TC_FAIL, "reading error");
 
     // no need to continue, return
@@ -8965,7 +8969,7 @@ REGRESSION_TEST(SDK_API_ENCODING)(RegressionTest *test, int /* atype ATS_UNUSED 
     SDK_RPRINT(test, "TSStringPercentDecode", "TestCase3", TC_FAIL, "Failed on %s", url3);
     success = false;
   } else {
-    if (memcmp(buf + buf_len - 1, &canary, 1)) { // Overwrite
+    if (DSA_memcmp::memcmp(buf + buf_len - 1, &canary, 1)) { // Overwrite
       SDK_RPRINT(test, "TSStringPercentDecode", "TestCase3", TC_FAIL, "Failed on %s overwrites buffer", url3);
       success = false;
     } else if (length != strlen(url3_clipped) || strcmp(buf, url3_clipped)) {

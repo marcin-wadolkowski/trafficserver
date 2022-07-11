@@ -41,9 +41,13 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 /* --------------------------------------------------------------
    this file is built using "ParentSelection.cc as a template.
@@ -254,7 +258,7 @@ SplitDNS::findServer(RequestData *rdata, SplitDNSResult *result)
         pMatch++;
       }
 
-      int res = memcmp(pH, pMatch, pxHL.match.size());
+      int res = DSA_memcmp::memcmp(pH, pMatch, pxHL.match.size());
 
       if ((0 != res && '!' == cNot) || (0 == res && '!' != cNot)) {
         data_ptr = static_cast<SplitDNSRecord *>(pxHL.opaque_data);

@@ -36,7 +36,11 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 // Generator plugin
 //
@@ -454,9 +458,9 @@ GeneratorParseRequest(GeneratorRequest *grq)
       switch (count) {
       case 0:
         // First path component is "cache" or "nocache".
-        if (memcmp(path, "cache", 5) == 0) {
+        if (DSA_memcmp::memcmp(path, "cache", 5) == 0) {
           grq->flags |= GeneratorRequest::CACHEABLE;
-        } else if (memcmp(path, "nocache", 7) == 0) {
+        } else if (DSA_memcmp::memcmp(path, "nocache", 7) == 0) {
           grq->flags &= ~GeneratorRequest::CACHEABLE;
         } else {
           VDEBUG("first component is %.*s, expecting 'cache' or 'nocache'", (int)nbytes, path);
@@ -741,7 +745,7 @@ CheckCacheable(TSHttpTxn txnp, TSMLoc url, TSMBuffer bufp)
   int pathsz       = 0;
   const char *path = TSUrlPathGet(bufp, url, &pathsz);
 
-  if (path && (pathsz >= 8) && (0 == memcmp(path, "nocache/", 8))) {
+  if (path && (pathsz >= 8) && (0 == DSA_memcmp::memcmp(path, "nocache/", 8))) {
     // It's not cacheable, so, turn off the cache. This avoids major serialization and performance issues.
     VDEBUG("turning off the cache, uncacheable");
     TSHttpTxnConfigIntSet(txnp, TS_CONFIG_HTTP_CACHE_HTTP, 0);

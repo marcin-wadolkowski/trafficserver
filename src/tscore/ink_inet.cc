@@ -35,7 +35,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 IpAddr const IpAddr::INVALID;
 
@@ -502,7 +506,7 @@ operator==(IpAddr const &lhs, sockaddr const *rhs)
     if (AF_INET == lhs._family) {
       zret = lhs._addr._ip4 == ats_ip4_addr_cast(rhs);
     } else if (AF_INET6 == lhs._family) {
-      zret = 0 == memcmp(&lhs._addr._ip6, &ats_ip6_addr_cast(rhs), sizeof(in6_addr));
+      zret = 0 == DSA_memcmp::memcmp(&lhs._addr._ip6, &ats_ip6_addr_cast(rhs), sizeof(in6_addr));
     } else { // map all non-IP to the same thing.
       zret = true;
     }
@@ -552,7 +556,7 @@ IpAddr::cmp(self const &that) const
     }
   } else if (AF_INET6 == ltype) {
     if (AF_INET6 == rtype) {
-      zret = memcmp(&_addr._ip6, &that._addr._ip6, TS_IP6_SIZE);
+      zret = DSA_memcmp::memcmp(&_addr._ip6, &that._addr._ip6, TS_IP6_SIZE);
     } else {
       zret = 1; // IPv6 greater than any other type.
     }

@@ -35,6 +35,10 @@
 #include "headers.h"
 #include "evaluate.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 static const char *
 getEventName(TSEvent event)
 {
@@ -705,7 +709,7 @@ TSRemapDoRemap(void *instance, TSHttpTxn txnp, TSRemapRequestInfo *rri)
     int methodLen        = 0;
     const char *method   = TSHttpHdrMethodGet(rri->requestBufp, rri->requestHdrp, &methodLen);
     const String &header = config.getApiHeader();
-    if (nullptr != method && methodLen == TS_HTTP_LEN_GET && 0 == memcmp(TS_HTTP_METHOD_GET, method, TS_HTTP_LEN_GET)) {
+    if (nullptr != method && methodLen == TS_HTTP_LEN_GET && 0 == DSA_memcmp::memcmp(TS_HTTP_METHOD_GET, method, TS_HTTP_LEN_GET)) {
       bool front     = config.isFront();
       bool firstPass = false;
       if (headerExist(rri->requestBufp, rri->requestHdrp, header.c_str(), header.length())) {

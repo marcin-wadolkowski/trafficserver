@@ -25,7 +25,11 @@
 
 #include "../../shared/DSA_memcpy.h"
 
+#include "../../shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 /** Compare views with ordering, ignoring case.
  *
@@ -76,7 +80,7 @@ int memcmp(const std::string_view &lhs, const std::string_view &rhs);
 inline int
 strcmp(const std::string_view &lhs, const std::string_view &rhs)
 {
-  return memcmp(lhs, rhs);
+  return DSA_memcmp::memcmp(lhs, rhs);
 }
 
 /** Copy bytes.

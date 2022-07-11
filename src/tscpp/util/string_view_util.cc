@@ -21,6 +21,10 @@
 */
 #include "tscpp/util/string_view_util.h"
 
+#include "../../../include/shared/DSA_memcmp.h"
+
+using IDSA::DSA_memcmp;
+
 int
 memcmp(std::string_view const &lhs, std::string_view const &rhs)
 {
@@ -37,7 +41,7 @@ memcmp(std::string_view const &lhs, std::string_view const &rhs)
     return 0;
   }
 
-  int r = ::memcmp(lhs.data(), rhs.data(), n);
+  int r = DSA_memcmp::memcmp(lhs.data(), rhs.data(), n);
   return r ? r : zret;
 }
 

@@ -42,8 +42,11 @@
 
 #include "../../../include/shared/DSA_memcpy.h"
 
+#include "../../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
+using IDSA::DSA_memcmp;
 
 using QUICPacketNumber = uint64_t;
 using QUICVersion      = uint32_t;
@@ -251,7 +254,7 @@ public:
     if (this->_len != x._len) {
       return false;
     }
-    return memcmp(this->_id, x._id, this->_len) == 0;
+    return DSA_memcmp::memcmp(this->_id, x._id, this->_len) == 0;
   }
 
   bool
@@ -260,7 +263,7 @@ public:
     if (this->_len != x._len) {
       return true;
     }
-    return memcmp(this->_id, x._id, this->_len) != 0;
+    return DSA_memcmp::memcmp(this->_id, x._id, this->_len) != 0;
   }
 
   /*
@@ -296,13 +299,13 @@ public:
   bool
   operator==(const QUICStatelessResetToken &x) const
   {
-    return memcmp(this->_token, x._token, QUICStatelessResetToken::LEN) == 0;
+    return DSA_memcmp::memcmp(this->_token, x._token, QUICStatelessResetToken::LEN) == 0;
   }
 
   bool
   operator!=(const QUICStatelessResetToken &x) const
   {
-    return memcmp(this->_token, x._token, QUICStatelessResetToken::LEN) != 0;
+    return DSA_memcmp::memcmp(this->_token, x._token, QUICStatelessResetToken::LEN) != 0;
   }
 
   const uint8_t *
@@ -371,7 +374,7 @@ public:
     if (this->_token_len != x._token_len) {
       return false;
     }
-    return memcmp(this->_token, x._token, this->_token_len) == 0;
+    return DSA_memcmp::memcmp(this->_token, x._token, this->_token_len) == 0;
   }
 
   bool is_valid(const IpEndpoint &src) const;
@@ -392,7 +395,7 @@ public:
     if (this->_token_len != x._token_len) {
       return false;
     }
-    return memcmp(this->_token, x._token, this->_token_len) == 0;
+    return DSA_memcmp::memcmp(this->_token, x._token, this->_token_len) == 0;
   }
 
   bool is_valid(const IpEndpoint &src) const;

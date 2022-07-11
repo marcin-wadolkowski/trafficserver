@@ -27,10 +27,13 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memset;
 
+using IDSA::DSA_memcmp;
 
 #define UINT_WRAP_LTE(_x, _y) (((_y) - (_x)) < INT_MAX) // exploit overflow
 #define UINT_WRAP_GTE(_x, _y) (((_x) - (_y)) < INT_MAX) // exploit overflow
@@ -902,7 +905,7 @@ agg_copy(char *p, CacheVC *vc)
         char *x = xx;
         for (int q = 0; q < 3; q++)
           x = strchr(x + 1, '/');
-        ink_assert(!memcmp(doc->hdr(), x, ib - (x - xx)));
+        ink_assert(!DSA_memcmp::memcmp(doc->hdr(), x, ib - (x - xx)));
       }
 #endif
     }

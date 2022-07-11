@@ -37,7 +37,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memcmp;
 
 // Remove this when drop OpenSSL 1.0.2 support
 #ifndef evp_md_func
@@ -265,7 +269,7 @@ TLSSessionResumptionSupport::_getSessionInformation(ssl_ticket_key_block *keyblo
 #endif
 {
   for (unsigned i = 0; i < keyblock->num_keys; ++i) {
-    if (memcmp(keyname, keyblock->keys[i].key_name, sizeof(keyblock->keys[i].key_name)) == 0) {
+    if (DSA_memcmp::memcmp(keyname, keyblock->keys[i].key_name, sizeof(keyblock->keys[i].key_name)) == 0) {
       if (EVP_DecryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), nullptr, keyblock->keys[i].aes_key, iv) != 1) {
         return -2;
       }

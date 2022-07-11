@@ -52,9 +52,13 @@
 
 #include "../../include/shared/DSA_memset.h"
 
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 
 namespace
@@ -310,7 +314,7 @@ inline static bool
 is_localhost(const char *name, int len)
 {
   static const char local[] = "127.0.0.1";
-  return (len == (sizeof(local) - 1)) && (memcmp(name, local, len) == 0);
+  return (len == (sizeof(local) - 1)) && (DSA_memcmp::memcmp(name, local, len) == 0);
 }
 
 bool
@@ -731,7 +735,7 @@ do_cookies_prevent_caching(int cookies_conf, HTTPHdr *request, HTTPHdr *response
   content_type = response->value_get(MIME_FIELD_CONTENT_TYPE, MIME_LEN_CONTENT_TYPE, &str_len);
 
   if (static_cast<CookiesConfig>(cookies_conf) == COOKIES_CACHE_IMAGES) {
-    if (content_type && str_len >= 5 && memcmp(content_type, "image", 5) == 0) {
+    if (content_type && str_len >= 5 && DSA_memcmp::memcmp(content_type, "image", 5) == 0) {
       // Images can be cached
       return false;
     }
@@ -741,7 +745,7 @@ do_cookies_prevent_caching(int cookies_conf, HTTPHdr *request, HTTPHdr *response
   // Note: if the configuration is bad, we consider
   // COOKIES_CACHE_ALL_BUT_TEXT to be the default
 
-  if (content_type && str_len >= 4 && memcmp(content_type, "text", 4) == 0) { // content type  - "text"
+  if (content_type && str_len >= 4 && DSA_memcmp::memcmp(content_type, "text", 4) == 0) { // content type  - "text"
     // Text objects cannot be cached unless the option is
     // COOKIES_CACHE_ALL_BUT_TEXT_EXT.
     // Furthermore, if there is a Set-Cookie header, then
