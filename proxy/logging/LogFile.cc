@@ -57,7 +57,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 
 /*-------------------------------------------------------------------------
@@ -704,8 +708,8 @@ LogFile::writeln(char *data, int len, int fd, const char *path)
 
   if (len > 0 && data && fd >= 0) {
     struct iovec wvec[2];
-    memset(&wvec, 0, sizeof(iovec));
-    memset(&wvec[1], 0, sizeof(iovec));
+    DSA_memset::memset(&wvec, 0, sizeof(iovec));
+    DSA_memset::memset(&wvec[1], 0, sizeof(iovec));
     int bytes_this_write, vcnt = 1;
 
 #if defined(solaris)

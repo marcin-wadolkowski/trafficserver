@@ -35,7 +35,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 // TODO: The code here seems a bit klunky, and could probably be improved a bit.
 
@@ -74,7 +78,7 @@ ats_base64_encode(const unsigned char *inBuffer, size_t inBufferSize, char *outB
       *length = (obuf - outBuffer);
     }
   } else {
-    memset(in_tail, 0, sizeof(in_tail));
+    DSA_memset::memset(in_tail, 0, sizeof(in_tail));
     DSA_memcpy::memcpy(in_tail, inBuffer, inBufferSize);
 
     *(obuf)     = _codes[(in_tail[0] >> 2) & 077];

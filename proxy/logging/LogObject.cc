@@ -43,7 +43,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 static bool
 should_roll_on_time(Log::RollingEnabledValues roll)
@@ -584,7 +588,7 @@ LogObject::log(LogAccess *lad, std::string_view text_entry)
   } else if (!text_entry.empty()) {
     char *dst = &(*buffer)[offset];
     DSA_memcpy::memcpy(dst, text_entry.data(), text_entry.size());
-    memset(dst + text_entry.size(), 0, bytes_needed - text_entry.size());
+    DSA_memset::memset(dst + text_entry.size(), 0, bytes_needed - text_entry.size());
   }
 
   buffer->checkin_write(offset);

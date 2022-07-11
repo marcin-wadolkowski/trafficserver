@@ -26,9 +26,13 @@
 #include "tscore/ink_string.h"
 #include "tscore/ink_defs.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 // ------------------------------------------------------
 namespace wccp
@@ -87,7 +91,7 @@ Impl::open(uint addr)
 
   if (INADDR_ANY != addr)
     m_addr = addr; // overridden.
-  memset(&saddr, 0, sizeof(saddr));
+  DSA_memset::memset(&saddr, 0, sizeof(saddr));
   in_addr.sin_family      = AF_INET;
   in_addr.sin_port        = htons(DEFAULT_PORT);
   in_addr.sin_addr.s_addr = m_addr;
@@ -146,7 +150,7 @@ Impl::useMD5Security(std::string_view const key)
   m_use_security_opt = true;
   m_security_opt     = SECURITY_MD5;
   m_use_security_key = true;
-  memset(m_security_key, 0, SecurityComp::KEY_SIZE);
+  DSA_memset::memset(m_security_key, 0, SecurityComp::KEY_SIZE);
   // Great. Have to cast or we get a link error.
   DSA_memcpy::memcpy(m_security_key, key.data(), std::min(key.size(), static_cast<size_t>(SecurityComp::KEY_SIZE)));
 }
@@ -612,7 +616,7 @@ CacheImpl::housekeeping()
   msg_buffer.set(msg_data, BUFFER_SIZE);
 
   // Set up everything except the IP address.
-  memset(&dst_addr, 0, sizeof(dst_addr));
+  DSA_memset::memset(&dst_addr, 0, sizeof(dst_addr));
   dst_addr.sin_family = AF_INET;
   dst_addr.sin_port   = htons(DEFAULT_PORT);
 
@@ -1060,7 +1064,7 @@ RouterImpl::xmitISeeYou()
   static size_t const BUFFER_SIZE = 4096;
   char *data                      = static_cast<char *>(alloca(BUFFER_SIZE));
 
-  memset(&dst_addr, 0, sizeof(dst_addr));
+  DSA_memset_memset(&dst_addr, 0, sizeof(dst_addr));
   dst_addr.sin_family = AF_INET;
   dst_addr.sin_port   = htons(DEFAULT_PORT);
   buffer.set(data, BUFFER_SIZE);

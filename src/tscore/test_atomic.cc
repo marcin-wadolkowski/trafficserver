@@ -31,6 +31,10 @@
 #include "tscore/ink_queue.h"
 #include "tscore/ink_thread.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #ifndef LONG_ATOMICLIST_TEST
 
 #define MAX_ALIST_TEST 10
@@ -179,7 +183,7 @@ main(int /* argc ATS_UNUSED */, const char * /* argv ATS_UNUSED */[])
     int ali;
     srand(time(nullptr));
     printf("sizeof(al_test) = %d\n", static_cast<int>(sizeof(al_test)));
-    memset(&al_test[0][0], 0, sizeof(al_test));
+    DSA_memset::memset(&al_test[0][0], 0, sizeof(al_test));
     for (ali = 0; ali < MAX_ALIST_TEST; ali++) {
       ink_atomiclist_init(&al[ali], "foo", 0);
     }

@@ -39,7 +39,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 // char* readIntoBuffer(const char* file_path, const char* module_name,
 //                          int* read_size_ptr)
@@ -450,7 +454,7 @@ parseConfigLine(char *line, matcher_line *p_line, const matcher_tags *tags)
   matcher_type type = MATCH_NONE;
 
   // Zero out the parsed line structure
-  memset(p_line, 0, sizeof(matcher_line));
+  DSA_memset::memset(p_line, 0, sizeof(matcher_line));
 
   if (*s == '\0') {
     return nullptr;

@@ -27,9 +27,13 @@
 #include "tscore/ink_memory.h"
 #include "tscore/ink_string.h"
 
-#include "DSA_memcpy.h"
+#include "../../include/shared/DSA_memcpy.h"
 
-using DSA::DSA_memcpy;
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memcpy;
+
+using DSA::DSA_memset;
 
 namespace wccp
 {
@@ -40,7 +44,7 @@ ServiceGroup::setSvcType(ServiceGroup::Type t)
 {
   if (STANDARD == t) {
     // For standard service, everything past ID must be zero.
-    memset(&m_priority, 0, sizeof(*this) - (reinterpret_cast<char *>(&m_priority) - reinterpret_cast<char *>(this)));
+    DSA_memset::memset(&m_priority, 0, sizeof(*this) - (reinterpret_cast<char *>(&m_priority) - reinterpret_cast<char *>(this)));
   }
   m_svc_type = t; // store actual type.
   return *this;
@@ -80,7 +84,7 @@ CacheHashIdElt::setBucket(int idx, bool state)
 CacheHashIdElt &
 CacheHashIdElt::setBuckets(bool state)
 {
-  memset(m_buckets, state ? 0xFF : 0, sizeof(m_buckets));
+  DSA_memset::memset(m_buckets, state ? 0xFF : 0, sizeof(m_buckets));
   return *this;
 }
 
@@ -99,7 +103,7 @@ CacheIdBox::require(size_t n)
     m_base = static_cast<CacheIdElt *>(ats_malloc(n));
     m_cap  = n;
   }
-  memset(m_base, 0, m_cap);
+  DSA_memset::memset(m_base, 0, m_cap);
   m_size = 0;
   return *this;
 }
@@ -323,7 +327,7 @@ HashAssignElt::round_robin_assign()
   uint32_t v_caches = this->getCount();
   Bucket *buckets   = this->getBucketBase();
   if (1 == v_caches)
-    memset(buckets, 0, sizeof(Bucket) * N_BUCKETS);
+    DSA_memset::memset(buckets, 0, sizeof(Bucket) * N_BUCKETS);
   else { // Assign round robin.
     size_t x = 0;
     for (Bucket *spot = buckets, *limit = spot + N_BUCKETS; spot < limit; ++spot) {
@@ -471,7 +475,7 @@ SecurityComp::fill(MsgBuffer &buffer, Option opt)
 
   if (SECURITY_NONE != opt) {
     RawMD5::HashData &data = access_field(&RawMD5::m_data, m_base);
-    memset(data, 0, sizeof(data));
+    DSA_memset::memset(data, 0, sizeof(data));
   }
 
   buffer.use(comp_size);
@@ -504,7 +508,7 @@ SecurityComp::validate(MsgBuffer const &msg) const
     // save the original hash aside.
     DSA_memcpy::memcpy(save, org, sizeof(save));
     // zero out the component hash area to compute the hash.
-    memset(org, 0, sizeof(org));
+    DSA_memset::memset(org, 0, sizeof(org));
     // Compute hash in to hash area.
     MD5_Init(&ctx);
     MD5_Update(&ctx, key, KEY_SIZE);
@@ -1580,7 +1584,7 @@ detail::Assignment::fill(cache::GroupData &group, uint32_t addr)
   cache::CacheBag::iterator cspot, cbegin = group.m_caches.begin(), cend = group.m_caches.end();
 
   size_t nr[n_caches];       // validity check counts.
-  memset(nr, 0, sizeof(nr)); // Set counts to zero.
+  DSA_memset::memset(nr, 0, sizeof(nr)); // Set counts to zero.
 
   // Guess at size of serialization buffer. For the router list and
   // the hash assignment, we can compute reasonable upper bounds and so

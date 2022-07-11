@@ -80,11 +80,13 @@
 
 #include "../../include/shared/DSA_memmove.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memmove;
 
-
+using IDSA::DSA_memset;
 
 /****************************************************************
  *  IMPORTANT - READ ME
@@ -10418,7 +10420,7 @@ TSHttpTxnResponseActionGet(TSHttpTxn txnp, TSResponseAction *action)
   HttpSM *sm             = reinterpret_cast<HttpSM *>(txnp);
   HttpTransact::State *s = &(sm->t_state);
   if (!s->response_action.handled) {
-    memset(action, 0, sizeof(TSResponseAction)); // because {0} gives a C++ warning. Ugh.
+    DSA_memset::memset(action, 0, sizeof(TSResponseAction)); // because {0} gives a C++ warning. Ugh.
   } else {
     *action = s->response_action.action;
   }

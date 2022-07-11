@@ -58,6 +58,10 @@
 #include <unordered_set>
 #include <string_view>
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 #ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE 600
 #endif
@@ -555,7 +559,7 @@ private:
       if (free && l->url) {
         ats_free(const_cast<char *>(l->url));
       }
-      memset(&(*l), 0, sizeof(UrlStats));
+      DSA_memset::memset(&(*l), 0, sizeof(UrlStats));
     }
   }
 
@@ -724,7 +728,7 @@ struct ExitStatus {
   ExitLevel level = EXIT_OK;
   char notice[1024];
 
-  ExitStatus() { memset(notice, 0, sizeof(notice)); }
+  ExitStatus() { DSA_memset::memset(notice, 0, sizeof(notice)); }
   void
   set(ExitLevel l, const char *n = nullptr)
   {
@@ -1209,7 +1213,7 @@ find_or_create_stats(const char *key)
     o_iter = origins.find(key);
     if (origins.end() == o_iter) {
       o_stats = static_cast<OriginStats *>(ats_malloc(sizeof(OriginStats)));
-      memset(o_stats, 0, sizeof(OriginStats));
+      DSA_memset::memset(o_stats, 0, sizeof(OriginStats));
       init_elapsed(o_stats);
       o_server = ats_strdup(key);
       if (o_server) {
@@ -2444,7 +2448,7 @@ main(int /* argc ATS_UNUSED */, const char *argv[])
   // Before accessing file system initialize Layout engine
   Layout::create();
 
-  memset(&totals, 0, sizeof(totals));
+  DSA_memset::memset(&totals, 0, sizeof(totals));
   init_elapsed(&totals);
 
   origin_set   = new OriginSet;

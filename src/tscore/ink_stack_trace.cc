@@ -39,6 +39,10 @@
 #include <execinfo.h> /* for backtrace_symbols, etc. */
 #include <csignal>
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 void
 ink_stack_trace_dump()
 {
@@ -59,7 +63,7 @@ ink_stack_trace_dump()
   alarm(10);
 
   void *stack[INK_STACK_TRACE_MAX_LEVELS + 1];
-  memset(stack, 0, sizeof(stack));
+  DSA_memset::memset(stack, 0, sizeof(stack));
   if ((btl = backtrace(stack, INK_STACK_TRACE_MAX_LEVELS)) > 2) {
     // dump the backtrace to stderr
     backtrace_symbols_fd(stack + 2, btl - 2, STDERR_FILENO);

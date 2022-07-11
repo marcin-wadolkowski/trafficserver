@@ -53,7 +53,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 // This used to be in InkAPITestTool.cc, which we'd just #include here... But that seemed silly.
 #define SDBG_TAG "SockServer"
@@ -2073,7 +2077,7 @@ REGRESSION_TEST(SDK_API_TSfopen)(RegressionTest *test, int /* atype ATS_UNUSED *
   }
   SDK_RPRINT(test, "TSfopen", "TestCase2", TC_PASS, "ok");
 
-  memset(input_buffer, '\0', BUFSIZ);
+  DSA_memset::memset(input_buffer, '\0', BUFSIZ);
 
   // source_read_file and input_file_full_path are the same file
   if (stat(input_file_full_path, &stat_buffer_input) != 0) {
@@ -3788,7 +3792,7 @@ REGRESSION_TEST(SDK_API_TSUrl)(RegressionTest *test, int /* atype ATS_UNUSED */,
 
   size_t len          = url_expected_length + 1;
   url_expected_string = static_cast<char *>(TSmalloc(len * sizeof(char)));
-  memset(url_expected_string, 0, url_expected_length + 1);
+  DSA_memset::memset(url_expected_string, 0, url_expected_length + 1);
   snprintf(url_expected_string, len, "%s://%s%s%s%s%s%s%s/%s%s%s%s%s%s%s", scheme, ((user == nullptr) ? "" : user),
            ((password == nullptr) ? "" : ":"), ((password == nullptr) ? "" : password),
            (((user == nullptr) && (password == nullptr)) ? "" : "@"), host, ":", port_char, ((path == nullptr) ? "" : path),
@@ -4621,7 +4625,7 @@ REGRESSION_TEST(SDK_API_TSHttpHdr)(RegressionTest *test, int /* atype ATS_UNUSED
         TSIOBufferBlock iobufblock;
         int64_t bytes_read;
 
-        memset(actual_iobuf, 0, (actual_length + 1) * sizeof(char));
+        DSA_memset::memset(actual_iobuf, 0, (actual_length + 1) * sizeof(char));
         bytes_read = 0;
 
         iobufblock = TSIOBufferReaderStart(iobufreader);
@@ -5352,7 +5356,7 @@ REGRESSION_TEST(SDK_API_TSMimeHdrField)(RegressionTest *test, int /* atype ATS_U
         char *expected_value;
         size_t len     = strlen(field5Value1) + strlen(field5Value1Append) + 1;
         expected_value = static_cast<char *>(TSmalloc(len));
-        memset(expected_value, 0, len);
+        DSA_memset::memset(expected_value, 0, len);
         ink_strlcpy(expected_value, field5Value1, len);
         ink_strlcat(expected_value, field5Value1Append, len);
         if ((strncmp(fieldValueAppendGet, expected_value, lengthFieldValueAppended) == 0) &&

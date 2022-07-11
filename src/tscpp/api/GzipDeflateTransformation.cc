@@ -28,6 +28,10 @@
 #include "tscpp/api/GzipDeflateTransformation.h"
 #include "logging_internal.h"
 
+#include "../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 using namespace atscppapi::transformations;
 using std::vector;
 
@@ -50,7 +54,7 @@ struct atscppapi::transformations::GzipDeflateTransformationState : noncopyable 
   GzipDeflateTransformationState(TransformationPlugin::Type type)
     : z_stream_initialized_(false), transformation_type_(type), bytes_produced_(0)
   {
-    memset(&z_stream_, 0, sizeof(z_stream_));
+    DSA_memset::memset(&z_stream_, 0, sizeof(z_stream_));
     int err = deflateInit2(&z_stream_, Z_DEFAULT_COMPRESSION, Z_DEFLATED, WINDOW_BITS, GZIP_MEM_LEVEL, Z_DEFAULT_STRATEGY);
 
     if (Z_OK != err) {

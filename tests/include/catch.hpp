@@ -5721,6 +5721,10 @@ namespace Catch {
 #include <memory>
 #include <ostream>
 
+#include "../../include/shared/DSA_memset.h"
+
+using DSA::DSA_memset;
+
 namespace Catch {
     void prepareExpandedExpression(AssertionResult& result);
 
@@ -5965,7 +5969,7 @@ namespace Catch {
     char const* getLineOfChars() {
         static char line[CATCH_CONFIG_CONSOLE_WIDTH] = {0};
         if( !*line ) {
-            std::memset( line, C, CATCH_CONFIG_CONSOLE_WIDTH-1 );
+            DSA_memset::memset( line, C, CATCH_CONFIG_CONSOLE_WIDTH-1 );
             line[CATCH_CONFIG_CONSOLE_WIDTH-1] = 0;
         }
         return line;

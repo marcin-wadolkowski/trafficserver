@@ -32,6 +32,10 @@
 #include <map>
 #include <string_view>
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 namespace YAML
 {
 class Node;
@@ -3268,7 +3272,7 @@ MsgBuffer::use(size_t n)
 inline MsgBuffer &
 MsgBuffer::zero()
 {
-  memset(_ptr, 0, _size);
+  DSA_memset::memset(_ptr, 0, _size);
   _count = 0;
   return *this;
 }

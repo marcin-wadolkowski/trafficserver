@@ -28,7 +28,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 /****************************************************************************
  *
@@ -50,7 +54,7 @@ Tokenizer::Tokenizer(const char *StrOfDelimiters)
     DSA_memcpy::memcpy(strOfDelimit, StrOfDelimiters, length);
   }
 
-  memset(&start_node, 0, sizeof(tok_node));
+  DSA_memset::memset(&start_node, 0, sizeof(tok_node));
 
   numValidTokens = 0;
   maxTokens      = UINT_MAX;
@@ -271,7 +275,7 @@ Tokenizer::addToken(char *startAddr, int length)
   if (add_index >= TOK_NODE_ELEMENTS) {
     if (add_node->next == nullptr) {
       add_node->next = static_cast<tok_node *>(ats_malloc(sizeof(tok_node)));
-      memset(add_node->next, 0, sizeof(tok_node));
+      DSA_memset::memset(add_node->next, 0, sizeof(tok_node));
     }
     add_node  = add_node->next;
     add_index = 0;
@@ -370,7 +374,7 @@ Tokenizer::ReUse()
         ats_free(i);
       }
     }
-    memset(cur_node->el, 0, sizeof(char *) * TOK_NODE_ELEMENTS);
+    DSA_memset::memset(cur_node->el, 0, sizeof(char *) * TOK_NODE_ELEMENTS);
     cur_node = cur_node->next;
   }
 

@@ -84,7 +84,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 #define SPRINTF(x) (sprintf x)
 
@@ -113,7 +117,7 @@ ink_res_mkquery(ink_res_state statp, int op,               /*!< opcode of query 
   if ((buf == nullptr) || (buflen < HFIXEDSZ)) {
     return (-1);
   }
-  memset(buf, 0, HFIXEDSZ);
+  DSA_memset::memset(buf, 0, HFIXEDSZ);
   hp         = reinterpret_cast<HEADER *>(buf);
   hp->id     = htons(++statp->id);
   hp->opcode = op;

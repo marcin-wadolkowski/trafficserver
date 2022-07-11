@@ -30,6 +30,10 @@
 #include "Http3Transaction.h"
 #include "P_QUICNetVConnection.h"
 
+#include "../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 // OpenSSL protocol-lists format (vector of 8-bit length-prefixed, byte strings)
 // https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_alpn_protos.html
 // Should be integrate with IP_PROTO_TAG_HTTP_QUIC in ts/ink_inet.h ?
@@ -54,7 +58,7 @@ QUICClient::start(int, void *)
 
   struct addrinfo hints;
 
-  memset(&hints, 0, sizeof(struct addrinfo));
+  DSA_memset::memset(&hints, 0, sizeof(struct addrinfo));
   hints.ai_family   = AF_UNSPEC;
   hints.ai_socktype = SOCK_DGRAM;
   hints.ai_flags    = 0;

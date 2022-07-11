@@ -30,7 +30,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 #define DEBUG_TAG "FetchSM"
 #define FETCH_LOCK_RETRY_TIME HRTIME_MSECONDS(10)
@@ -614,8 +618,8 @@ FetchSM::ext_init(Continuation *cont, const char *method, const char *url, const
   // These options are not used when enable
   // stream IO.
   //
-  memset(&callback_options, 0, sizeof(callback_options));
-  memset(&callback_events, 0, sizeof(callback_events));
+  DSA_memset::memset(&callback_options, 0, sizeof(callback_options));
+  DSA_memset::memset(&callback_events, 0, sizeof(callback_events));
 
   int method_len = strlen(method);
   req_buffer->write(method, method_len);

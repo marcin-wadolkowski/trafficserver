@@ -68,9 +68,13 @@
 
 #include "../../include/shared/DSA_memmove.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
 
 using IDSA::DSA_memmove;
+
+using DSA::DSA_memset;
 
 /*
  FTP - Traffic Server Template
@@ -727,7 +731,7 @@ make_response_header(int sock, char *url_start, char *url_end, int *url_len, cha
   if (!ftp) {
     if (fd[sock].range) {
       char buff[1024];
-      memset(buff, 0, 1024);
+      DSA_memset::memset(buff, 0, 1024);
       if (fd[sock].range_end > fd[sock].range_start) {
         snprintf(buff, 1024, "Content-Range: bytes %lu-%lu/%d", fd[sock].range_start, fd[sock].range_end, fd[sock].total_length);
       } else {
@@ -2358,7 +2362,7 @@ read_response(int sock)
 
   if (fd[sock].req_pos >= 0) {
     if (!fd[sock].req_pos) {
-      memset(fd[sock].req_header, 0, HEADER_SIZE);
+      DSA_memset::memset(fd[sock].req_header, 0, HEADER_SIZE);
     }
     do {
       int l = HEADER_SIZE - fd[sock].req_pos - 1;
@@ -2837,7 +2841,7 @@ make_client(unsigned int addr, int port)
 
   /* Give the socket a name. */
   struct sockaddr_in name;
-  memset(&name, 0, sizeof(sockaddr_in));
+  DSA_memset::memset(&name, 0, sizeof(sockaddr_in));
   name.sin_family      = AF_INET;
   name.sin_port        = htons(port);
   name.sin_addr.s_addr = addr;
@@ -3163,7 +3167,7 @@ make_bfc_client(unsigned int addr, int port)
 {
   int sock = -1;
   char rbuf[1024];
-  memset(rbuf, 0, 1024);
+  DSA_memset::memset(rbuf, 0, 1024);
 
   if (bandwidth_test && bandwidth_test_to_go-- <= 0) {
     return;
@@ -3291,7 +3295,7 @@ struct UrlHashTable {
   void
   zero()
   {
-    memset(bytes, 0, numbytes);
+    DSA_memset::memset(bytes, 0, numbytes);
   }
 
   void alloc(unsigned int want);
@@ -3540,7 +3544,7 @@ make_url_client(const char *url, const char *base_url, bool seen, bool unthrottl
   char eheaders[16384];
   *eheaders    = 0;
   int nheaders = extra_headers;
-  memset(&eheaders, 0, 16384);
+  DSA_memset::memset(&eheaders, 0, 16384);
   if (nheaders > 0) {
     char *eh = eheaders;
     if (!vary_user_agent) {
@@ -3637,7 +3641,7 @@ main(int argc __attribute__((unused)), const char *argv[])
   setvbuf(stdout, (char *)nullptr, _IOLBF, 0);
 
   fd = (FD *)malloc(MAXFDS * sizeof(FD));
-  memset(static_cast<void *>(fd), 0, MAXFDS * sizeof(FD));
+  DSA_memset::memset(static_cast<void *>(fd), 0, MAXFDS * sizeof(FD));
   process_args(&appVersionInfo, argument_descriptions, n_argument_descriptions, argv);
 
   if (!drand_seed) {

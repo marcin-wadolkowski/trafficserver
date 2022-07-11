@@ -29,6 +29,10 @@
 #include "tscpp/api/GzipInflateTransformation.h"
 #include "logging_internal.h"
 
+#include "../../../include/shared/DSA_memset.h"
+
+using IDSA::DSA_memset;
+
 using namespace atscppapi::transformations;
 using std::vector;
 
@@ -50,7 +54,7 @@ struct atscppapi::transformations::GzipInflateTransformationState : noncopyable 
   GzipInflateTransformationState(TransformationPlugin::Type type)
     : z_stream_initialized_(false), bytes_produced_(0), transformation_type_(type)
   {
-    memset(&z_stream_, 0, sizeof(z_stream_));
+    DSA_memset::memset(&z_stream_, 0, sizeof(z_stream_));
 
     int err = inflateInit2(&z_stream_, WINDOW_BITS);
     if (Z_OK != err) {

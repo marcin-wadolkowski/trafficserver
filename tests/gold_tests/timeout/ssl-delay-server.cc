@@ -40,6 +40,10 @@
 #include <sys/select.h>
 #include <cerrno>
 
+#include "../../include/shared/DSA_memset.h"
+
+using DSA::DSA_memset;
+
 char req_buf[10000];
 char post_buf[1000];
 
@@ -163,7 +167,7 @@ main(int argc, char *argv[])
   int listenfd = socket(AF_INET, SOCK_STREAM, 0);
   struct sockaddr_in serv_addr;
 
-  memset(&serv_addr, '0', sizeof(serv_addr));
+  DSA_memset::memset(&serv_addr, '0', sizeof(serv_addr));
 
   serv_addr.sin_family      = AF_INET;
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);

@@ -119,7 +119,19 @@ extern "C" int plock(int);
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memmove.h"
+
+#include "../../include/shared/DSA_memset.h"
+
+#include "../../include/shared/DSA_memcmp.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memmove;
+
+using IDSA::DSA_memset;
+
+using IDSA::DSA_memcmp;
 
 //
 // Global Data
@@ -424,7 +436,7 @@ class MemoryLimit : public Continuation
 public:
   MemoryLimit() : Continuation(new_ProxyMutex())
   {
-    memset(&_usage, 0, sizeof(_usage));
+    DSA_memset::memset(&_usage, 0, sizeof(_usage));
     SET_HANDLER(&MemoryLimit::periodic);
     RecRegisterStatInt(RECT_PROCESS, "proxy.process.traffic_server.memory.rss", static_cast<RecInt>(0), RECP_NON_PERSISTENT);
   }
@@ -2235,7 +2247,10 @@ main(int /* argc ATS_UNUSED */, const char **argv)
   sprintf(date_and_time, "%04d%02d%02d_%02d%02d%02d", 
 	      t.tm_year+1900, t.tm_mon+1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
 		  
-  DSA_memcpy::print_counts("/var/log/ats_dsa_"+std::string(date_and_time)+".csv");
+  DSA_memcpy::print_counts("/var/log/ats_dsa_memcpy_"+std::string(date_and_time)+".csv");
+  DSA_memmove::print_counts("/var/log/ats_dsa_memmove_"+std::string(date_and_time)+".csv");
+  DSA_memset::print_counts("/var/log/ats_dsa_memset_"+std::string(date_and_time)+".csv");
+  DSA_memcmp::print_counts("/var/log/ats_dsa_memcmp_"+std::string(date_and_time)+".csv");
 
   delete main_thread;
 }

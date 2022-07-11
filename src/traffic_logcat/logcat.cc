@@ -46,8 +46,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
 
+using IDSA::DSA_memset;
 
 // logcat-specific command-line flags
 static int squid_flag              = 0;
@@ -129,7 +132,7 @@ process_file(int in_fd, int out_fd)
     // read the next buffer from file descriptor
     //
     Debug("logcat", "Reading buffer ...");
-    memset(buffer, 0, sizeof(buffer));
+    DSA_memset::memset(buffer, 0, sizeof(buffer));
 
     // read the first 8 bytes of the header, which will give us the
     // cookie and the version number.

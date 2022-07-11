@@ -27,7 +27,11 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
+#include "../../include/shared/DSA_memset.h"
+
 using IDSA::DSA_memcpy;
+
+using IDSA::DSA_memset;
 
 using namespace std;
 using namespace ts;
@@ -596,7 +600,7 @@ Stripe::dir_init_segment(int s)
   this->freelist[s]  = 0;
   CacheDirEntry *seg = this->dir_segment(s);
   int l, b;
-  memset(seg, 0, SIZEOF_DIR * DIR_DEPTH * this->_buckets);
+  DSA_memset::memset(seg, 0, SIZEOF_DIR * DIR_DEPTH * this->_buckets);
   for (l = 1; l < DIR_DEPTH; l++) {
     for (b = 0; b < this->_buckets; b++) {
       CacheDirEntry *bucket = dir_bucket(b, seg);
@@ -755,7 +759,7 @@ Stripe::dir_check()
     int seg_buckets_in_use = 0;
 
     ink_zero(chain_tag);
-    memset(chain_mark, -1, sizeof(chain_mark));
+    DSA_memset::memset(chain_mark, -1, sizeof(chain_mark));
     for (int b = 0; b < _buckets; b++) {
       CacheDirEntry *root = dir_bucket(b, seg);
       int h               = 0;
