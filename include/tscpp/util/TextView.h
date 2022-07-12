@@ -36,7 +36,7 @@
 
 #include "tscpp/util/string_view_util.h"
 
-#include "../shared/DSA_memcmp.h"
+#include "../../shared/DSA_memcmp.h"
 
 using IDSA::DSA_memcmp;
 

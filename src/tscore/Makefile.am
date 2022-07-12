@@ -125,7 +125,10 @@ libtscore_la_SOURCES = \
 	ts_file.cc \
 	Version.cc \
 	X509HostnameValidator.cc \
-    ../shared/DSA_memcpy.cc
+        ../shared/DSA_memcpy.cc \
+        ../shared/DSA_memmove.cc \
+        ../shared/DSA_memset.cc \
+        ../shared/DSA_memcmp.cc
 
 if HAS_HKDF
 if OPENSSL_IS_BORINGSSL

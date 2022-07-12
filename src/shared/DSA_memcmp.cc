@@ -14,7 +14,7 @@ int DSA_memcmp::memcmp(const void *lhs, const void *rhs, size_t count,
                         std::string fun, std::string file, int line) {
 							
     // adds only when n > 1kB
-    if (n >= 1024) {	
+    if (count >= 1024) {	
 		call_counts[file+"_"+std::to_string(line)+"_"+fun+","+std::to_string(count)]++;
 	}
     return ::memcmp(lhs, rhs, count);

@@ -5723,7 +5723,7 @@ namespace Catch {
 
 #include "../../include/shared/DSA_memset.h"
 
-using DSA::DSA_memset;
+using IDSA::DSA_memset;
 
 namespace Catch {
     void prepareExpandedExpression(AssertionResult& result);
@@ -13917,7 +13917,7 @@ namespace Catch {
 
 #include "../../include/shared/DSA_memcmp.h"
 
-using IDSA:DSA_memcmp;
+using IDSA::DSA_memcmp;
 
 namespace Catch {
     StringRef::StringRef( char const* rawChars ) noexcept

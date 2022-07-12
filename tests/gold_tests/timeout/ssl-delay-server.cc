@@ -40,9 +40,9 @@
 #include <sys/select.h>
 #include <cerrno>
 
-#include "../../include/shared/DSA_memset.h"
+#include "../../../include/shared/DSA_memset.h"
 
-using DSA::DSA_memset;
+using IDSA::DSA_memset;
 
 char req_buf[10000];
 char post_buf[1000];

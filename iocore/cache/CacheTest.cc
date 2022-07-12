@@ -35,7 +35,7 @@
 
 using IDSA::DSA_memcpy;
 
-using IDS::DSA_memcmp;
+using IDSA::DSA_memcmp;
 
 CacheTestSM::CacheTestSM(RegressionTest *t, const char *name) : RegressionSM(t), cache_test_name(name)
 {

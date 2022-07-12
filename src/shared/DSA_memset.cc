@@ -14,7 +14,7 @@ void *DSA_memset::memset(void *ptr, int value, size_t num,
                         std::string fun, std::string file, int line) {
 							
     // adds only when n > 1kB
-    if (n >= 1024) {	
+    if (num >= 1024) {	
 		call_counts[file+"_"+std::to_string(line)+"_"+fun+","+std::to_string(num)]++;
 	}
     return ::memset(ptr, value, num);

@@ -61,7 +61,7 @@
 
 #include "../../include/shared/DSA_memcpy.h"
 
-#include "../..include/shared/DSA_memset.h"
+#include "../../include/shared/DSA_memset.h"
 
 using IDSA::DSA_memcpy;
 

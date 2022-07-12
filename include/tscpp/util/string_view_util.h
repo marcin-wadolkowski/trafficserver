@@ -80,7 +80,7 @@ int memcmp(const std::string_view &lhs, const std::string_view &rhs);
 inline int
 strcmp(const std::string_view &lhs, const std::string_view &rhs)
 {
-  return DSA_memcmp::memcmp(lhs, rhs);
+  return memcmp(lhs, rhs);
 }
 
 /** Copy bytes.

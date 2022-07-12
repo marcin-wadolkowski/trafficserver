@@ -15,5 +15,5 @@
 #  limitations under the License.
 
 noinst_PROGRAMS += gold_tests/timeout/ssl-delay-server
-gold_tests_timeout_ssl_delay_server_SOURCES = gold_tests/timeout/ssl-delay-server.cc
+gold_tests_timeout_ssl_delay_server_SOURCES = gold_tests/timeout/ssl-delay-server.cc ../src/shared/DSA_memset.cc
 gold_tests_timeout_ssl_delay_server_LDADD = -lssl -lcrypto
