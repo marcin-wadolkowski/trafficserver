@@ -23,6 +23,10 @@
 
 #include "P_Cache.h"
 
+#if TS_USE_DSA
+#include "../../include/shared/IDSA.h"
+#endif
+
 #define UINT_WRAP_LTE(_x, _y) (((_y) - (_x)) < INT_MAX) // exploit overflow
 #define UINT_WRAP_GTE(_x, _y) (((_x) - (_y)) < INT_MAX) // exploit overflow
 #define UINT_WRAP_LT(_x, _y) (((_x) - (_y)) >= INT_MAX) // exploit overflow
@@ -258,6 +262,37 @@ CacheVC::handleWrite(int event, Event * /* e ATS_UNUSED */)
   return EVENT_CONT;
 }
 
+#if TS_USE_DSA
+static char *
+iobufferblock_memcpy(char *p, int len, IOBufferBlock *ab, int offset)
+{
+  void *original_p = p;
+  IOBufferBlock *b = ab;
+  while (b && len >= 0) {
+    char *start   = b->_start;
+    char *end     = b->_end;
+    int max_bytes = end - start;
+    max_bytes -= offset;
+    if (max_bytes <= 0) {
+      offset = -max_bytes;
+      b      = b->next.get();
+      continue;
+    }
+    int bytes = len;
+    if (bytes >= max_bytes) {
+      bytes = max_bytes;
+    }
+    IDSA::DSA_Devices_Container::getInstance().
+      prepare_to_memcpy(p, start + offset, bytes, original_p);
+    p += bytes;
+    len -= bytes;
+    b      = b->next.get();
+    offset = 0;
+  }
+  IDSA::DSA_Devices_Container::getInstance().do_remaining_memcpy(original_p);
+  return p;
+}
+#else
 static char *
 iobufferblock_memcpy(char *p, int len, IOBufferBlock *ab, int offset)
 {
@@ -284,6 +319,7 @@ iobufferblock_memcpy(char *p, int len, IOBufferBlock *ab, int offset)
   }
   return p;
 }
+#endif
 
 EvacuationBlock *
 Vol::force_evacuate_head(Dir *evac_dir, int pinned)

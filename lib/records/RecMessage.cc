@@ -33,6 +33,10 @@
 #include "tscore/I_Layout.h"
 #include "tscpp/util/MemSpan.h"
 
+#if TS_USE_DSA
+#include "../../include/shared/IDSA.h"
+#endif
+
 static RecMessageRecvCb g_recv_cb = nullptr;
 static void *g_recv_cookie        = nullptr;
 
@@ -117,7 +121,12 @@ RecMessageMarshal_Realloc(RecMessage *msg, const RecRecord *record)
   // The following memset() is pretty CPU intensive, replacing it with something
   // like the below would reduce CPU usage a fair amount. /leif.
   // *((char*)msg + msg->o_write) = 0;
+#if TS_USE_DSA
+  IDSA::DSA_Devices_Container::getInstance().
+    memfill(reinterpret_cast<char *>(msg) + msg->o_write, nullptr, msg->o_end - msg->o_write);
+#else
   memset(reinterpret_cast<char *>(msg) + msg->o_write, 0, msg->o_end - msg->o_write);
+#endif
   msg->o_write += msg_ele_size;
 
   // store the record

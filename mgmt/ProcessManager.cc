@@ -29,6 +29,10 @@
 #include "MgmtSocket.h"
 #include "tscore/I_Layout.h"
 
+#if TS_USE_DSA
+#include "../include/shared/IDSA.h"
+#endif
+
 /*
  * Global ProcessManager
  */
@@ -263,7 +267,11 @@ ProcessManager::signalManager(int msg_id, std::string_view text)
   auto body    = reinterpret_cast<char *>(mh + 1); // start of the message body.
   mh->msg_id   = msg_id;
   mh->data_len = text.size() + 1;
+#if TS_USE_DSA
+  IDSA::DSA_Devices_Container::getInstance().memcpy(body, text.data(), text.size());
+#else
   memcpy(body, text.data(), text.size());
+#endif
   body[text.size()] = '\0';
 
   this->signalManager(mh);

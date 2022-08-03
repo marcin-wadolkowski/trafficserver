@@ -36,6 +36,10 @@
 
 #include <typeinfo>
 
+#if TS_USE_DSA
+#include "../../include/shared/IDSA.h"
+#endif
+
 struct AIOCallback;
 
 #define NO_HEARTBEAT -1
@@ -73,12 +77,22 @@ EThread::set_specific()
 
 EThread::EThread()
 {
+#if TS_USE_DSA
+  IDSA::DSA_Devices_Container::getInstance().
+    memfill(thread_private, nullptr, PER_THREAD_DATA);
+#else
   memset(thread_private, 0, PER_THREAD_DATA);
+#endif
 }
 
 EThread::EThread(ThreadType att, int anid) : id(anid), tt(att)
 {
+#if TS_USE_DSA
+  IDSA::DSA_Devices_Container::getInstance().
+    memfill(thread_private, nullptr, PER_THREAD_DATA);
+#else
   memset(thread_private, 0, PER_THREAD_DATA);
+#endif
 #if HAVE_EVENTFD
   evfd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
   if (evfd < 0) {
@@ -107,7 +121,12 @@ EThread::EThread(ThreadType att, int anid) : id(anid), tt(att)
 EThread::EThread(ThreadType att, Event *e) : tt(att), start_event(e)
 {
   ink_assert(att == DEDICATED);
+#if TS_USE_DSA
+  IDSA::DSA_Devices_Container::getInstance().
+    memfill(thread_private, nullptr, PER_THREAD_DATA);
+#else
   memset(thread_private, 0, PER_THREAD_DATA);
+#endif
 }
 
 // Provide a destructor so that SDK functions which create and destroy

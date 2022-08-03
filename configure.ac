@@ -1684,6 +1684,15 @@ AS_IF([test "x$enable_linux_native_aio" = "xyes"], [
 AC_MSG_RESULT([$enable_linux_native_aio])
 TS_ARG_ENABLE_VAR([use], [linux_native_aio])
 
+AC_MSG_CHECKING([enable DSA])
+AC_ARG_ENABLE([DSA],
+  [AS_HELP_STRING([--enable-DSA], [DSA support @<:@default=no@:>@])],
+  [enable_DSA="${enableval}"],
+  [enable_DSA=no]
+)
+AC_MSG_RESULT([$enable_DSA])
+TS_ARG_ENABLE_VAR([use], [DSA])
+
 # Check for hwloc library.
 # If we don't find it, disable checking for header.
 use_hwloc=0
