@@ -1,6 +1,6 @@
 #if TS_USE_DSA
 
-#include "IDSA.h"
+#include "../../include/shared/IDSA.h"
 
 #include <vector>
 #include <linux/idxd.h>

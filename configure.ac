@@ -1692,6 +1692,7 @@ AC_ARG_ENABLE([DSA],
 )
 AC_MSG_RESULT([$enable_DSA])
 TS_ARG_ENABLE_VAR([use], [DSA])
+AM_CONDITIONAL([ENABLE_DSA], [test x$enable_DSA = xyes])
 
 # Check for hwloc library.
 # If we don't find it, disable checking for header.
