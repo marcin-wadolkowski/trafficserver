@@ -118,7 +118,7 @@ extern "C" int plock(int);
 #endif
 
 #if TS_USE_DSA
-#include "../../include/shared/IDSA.h"
+#include "shared/IDSA.h"
 #endif
 
 //

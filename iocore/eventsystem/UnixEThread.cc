@@ -37,7 +37,7 @@
 #include <typeinfo>
 
 #if TS_USE_DSA
-#include "../../include/shared/IDSA.h"
+#include "shared/IDSA.h"
 #endif
 
 struct AIOCallback;

@@ -24,7 +24,7 @@
 #include "P_Cache.h"
 
 #if TS_USE_DSA
-#include "../../include/shared/IDSA.h"
+#include "shared/IDSA.h"
 #endif
 
 #define UINT_WRAP_LTE(_x, _y) (((_y) - (_x)) < INT_MAX) // exploit overflow

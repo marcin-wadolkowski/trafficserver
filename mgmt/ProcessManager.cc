@@ -30,7 +30,7 @@
 #include "tscore/I_Layout.h"
 
 #if TS_USE_DSA
-#include "../include/shared/IDSA.h"
+#include "shared/IDSA.h"
 #endif
 
 /*

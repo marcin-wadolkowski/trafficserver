@@ -34,7 +34,7 @@
 #include "tscpp/util/MemSpan.h"
 
 #if TS_USE_DSA
-#include "../../include/shared/IDSA.h"
+#include "shared/IDSA.h"
 #endif
 
 static RecMessageRecvCb g_recv_cb = nullptr;

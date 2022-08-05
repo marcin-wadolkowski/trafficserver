@@ -42,9 +42,12 @@ namespace IDSA {
     // It also contains methods which select Device by numa node.
     class DSA_Devices_Container {
         public:
-            enum class STATUS { OK, INVALID_NUMA_NODES, INVALID_ACCFG_CTX, MEMCPY_FAILED, MEMFILL_FAILED, ALREADY_INITIALIZED }; 
+            enum class STATUS { OK, INVALID_NUMA_NODES, INVALID_ACCFG_CTX, MEMCPY_FAILED, MEMFILL_FAILED, ALREADY_INITIALIZED, UNINITIALIZED }; 
 
         private:
+            DSA_Devices_Container(DSA_Devices_Container const&) = delete;
+	    void operator=(DSA_Devices_Container const&) = delete;
+
             static constexpr int MAX_NO_OF_DEVICES = 16;
             static constexpr int MAX_NO_OF_NUMA_NODES = 16;
 
@@ -56,16 +59,12 @@ namespace IDSA {
             int dev_idx; // will be set to number of devices
             bool is_initialized; // prevents from initialize more than one time
             STATUS current_status;
-            STATUS initialize_status;
+	    STATUS initialize_status = STATUS::UNINITIALIZED; 
             std::map<void *, std::tuple<const void *, std::size_t, void *>> memcpy_task_map; // map which is used by grouping small memory blocks into one bigger
             
         public:
             static DSA_Devices_Container& getInstance(); // gets instance of singleton
-
-            DSA_Devices_Container(DSA_Devices_Container const&); // is deleted (singleton)
-            void operator=(DSA_Devices_Container const&); // is deleted (singleton)
-    
-            STATUS initialize();
+	    STATUS initialize();
             void *memfill_on_DSA( void *dest, const void *src, std::size_t size ); // gets dest numa node and perform memfill on DSA with this numa node
             void *memcpy_on_DSA( void *dest, const void *src, std::size_t size ); // gets dest numa node and perform memcpy on DSA with this numa node
             void prepare_to_memcpy( void *dest, const void *src, std::size_t size, void *original_dest ); // writes to memcpy_task_map small blocks of memory

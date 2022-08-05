@@ -51,3 +51,14 @@ traffic_ctl_traffic_ctl_LDADD = \
 	$(top_builddir)/src/tscore/libtscore.la \
 	$(top_builddir)/src/tscpp/util/libtscpputil.la \
 	@HWLOC_LIBS@
+
+traffic_ctl_traffic_ctl_LDFLAGS =
+
+if ENABLE_DSA
+traffic_ctl_traffic_ctl_SOURCES += \
+	shared/IDSA.cc
+traffic_ctl_traffic_ctl_LDFLAGS += \
+	-laccel-config \
+	-lnuma
+endif
+

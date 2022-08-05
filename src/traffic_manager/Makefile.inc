@@ -59,3 +59,12 @@ traffic_manager_traffic_manager_LDADD += \
 	wccp/libwccp.a \
 	@OPENSSL_LIBS@
 endif
+
+if ENABLE_DSA
+traffic_manager_traffic_manager_SOURCES += \
+	shared/IDSA.cc
+traffic_manager_traffic_manager_LDFLAGS += \
+	-laccel-config \
+	-lnuma
+endif
+

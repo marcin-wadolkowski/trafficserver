@@ -1,6 +1,7 @@
+#include "tscore/ink_config.h"
 #if TS_USE_DSA
 
-#include "../../include/shared/IDSA.h"
+#include "shared/IDSA.h"
 
 #include <vector>
 #include <linux/idxd.h>
@@ -209,17 +210,13 @@ namespace IDSA {
 
     DSA_Devices_Container::DSA_Devices_Container() {
     }
-    
+
     // DSA_Devices_Container is a singleton and this method should be used to get instance
     DSA_Devices_Container& DSA_Devices_Container::getInstance() {
         static DSA_Devices_Container instance;
         return instance;
     }
 
-    // DSA_Devices_Container is a singleton
-    DSA_Devices_Container::DSA_Devices_Container(DSA_Devices_Container const&) = delete;
-    void DSA_Devices_Container::operator=(DSA_Devices_Container const&) = delete;
-    
     DSA_Devices_Container::STATUS DSA_Devices_Container::initialize() {
         // prevents from initialization more than once
         if (!is_initialized) {
@@ -240,7 +237,7 @@ namespace IDSA {
         initialize_status = STATUS::OK;
         
         int got_nodes = 0;
-        long long free_node_sizes;
+        long int free_node_sizes;
         int max_node = numa_max_node();
         numnodes = numa_num_configured_nodes();
         for (int a = 0; a <= max_node; a++) {
