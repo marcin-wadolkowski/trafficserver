@@ -237,11 +237,11 @@ namespace IDSA {
         initialize_status = STATUS::OK;
         
         int got_nodes = 0;
-        long int free_node_sizes;
+        long long free_node_sizes;
         int max_node = numa_max_node();
         numnodes = numa_num_configured_nodes();
         for (int a = 0; a <= max_node; a++) {
-            if (numa_node_size(a, &free_node_sizes) > 0) {
+            if (numa_node_size64(a, &free_node_sizes) > 0) {
                 got_nodes++;
             }
         }
