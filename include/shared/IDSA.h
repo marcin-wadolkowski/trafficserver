@@ -6,6 +6,7 @@
 #include <map>
 #include <tuple>
 #include <accel-config/libaccel_config.h>
+#include <mutex>
 
 namespace IDSA {
     
@@ -25,6 +26,7 @@ namespace IDSA {
             static const unsigned long dflags; // descriptor flags (starting with IDXD_ prefix)
             static const unsigned long msec_timeout; // timeout for task in work queue
         
+			std::mutex m;
         public:
             Device(struct accfg_device *dev); // takes internal device object
             ~Device();

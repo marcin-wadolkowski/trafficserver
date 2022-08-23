@@ -10,11 +10,8 @@
 #include <cstring>
 #include <numa.h>
 #include <numaif.h>
-#include <cstdio>
-#include <mutex>
 
 namespace IDSA {
-    std::mutex m;
 	
     // used in common method, performs task on work queue
     static inline void movdir64b(volatile void *portal, void *desc)
@@ -83,9 +80,6 @@ namespace IDSA {
                 break;
             }
             fds[wq_idx] = open(path, O_RDWR);
-			if (fds[wq_idx] < 0) {
-				fprintf(stderr, "open error\n");
-			}
             wq_regs[wq_idx] = mmap(NULL, 0x1000, PROT_WRITE,
                     MAP_SHARED | MAP_POPULATE, fds[wq_idx], 0);
             if (wq_regs[wq_idx] == MAP_FAILED) {
@@ -129,7 +123,6 @@ namespace IDSA {
 
     // common function for memfill and memcpy on DSA
     void *Device::common( void *dest, const void *src, std::size_t size, int opcode ) {
-		const std::lock_guard<std::mutex> lock(m);
 		
         uint64_t src_addr = (uint64_t)src;
         uint64_t dst_addr = (uint64_t)dest;
@@ -145,12 +138,12 @@ namespace IDSA {
         if (hw == nullptr) {
             return nullptr;
         }
+		
+		std::memset(comp, 0, sizeof(struct dsa_completion_record));
+        std::memset(hw, 0, sizeof(struct dsa_hw_desc));
         
         do {
-        
-            //std::memset(comp, 0, sizeof(struct dsa_completion_record));
-            //std::memset(hw, 0, sizeof(struct dsa_hw_desc));
-            
+
             hw->flags = dflags;
             hw->opcode = opcode;
             if (opcode == DSA_OPCODE_MEMMOVE)
@@ -164,8 +157,9 @@ namespace IDSA {
             comp->status = 0;
     
             // performs task on work queue
+			m.lock();
             movdir64b(wq_regs[task_counter%wq_idx], hw);
-            task_counter++;
+			m.unlock();
     
             // waiting for completion
             unsigned long timeout = (msec_timeout * 1000000UL) * 3;
@@ -211,6 +205,7 @@ namespace IDSA {
         
         free(hw);
         free(comp);
+		task_counter++;
 
         return dest;
     }
