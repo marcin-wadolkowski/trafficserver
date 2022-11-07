@@ -104,3 +104,11 @@ traffic_server_traffic_server_LDADD += \
   $(top_builddir)/iocore/net/quic/libquic.a \
   $(top_builddir)/iocore/eventsystem/libinkevent.a
 endif
+
+if ENABLE_DSA
+traffic_server_traffic_server_SOURCES += \
+	shared/IDSA.cc
+traffic_server_traffic_server_LDFLAGS += \
+	-laccel-config \
+	-lnuma
+endif

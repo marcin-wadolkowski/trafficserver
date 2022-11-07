@@ -1714,6 +1714,15 @@ AS_IF([test "x$enable_linux_io_uring" = "xyes"], [
 AC_MSG_RESULT([$enable_linux_io_uring])
 TS_ARG_ENABLE_VAR([use], [linux_io_uring])
 
+AC_MSG_CHECKING([enable DSA])
+AC_ARG_ENABLE([DSA],
+  [AS_HELP_STRING([--enable-DSA], [DSA support @<:@default=no@:>@])],
+  [enable_DSA="${enableval}"],
+  [enable_DSA=no]
+)
+AC_MSG_RESULT([$enable_DSA])
+TS_ARG_ENABLE_VAR([use], [DSA])
+AM_CONDITIONAL([ENABLE_DSA], [test x$enable_DSA = xyes])
 
 # Check for hwloc library.
 # If we don't find it, disable checking for header.

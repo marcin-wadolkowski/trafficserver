@@ -25,6 +25,8 @@
 
 #include <atomic>
 
+#include "tscore/ink_config.h"
+
 #define CACHE_BLOCK_SHIFT 9
 #define CACHE_BLOCK_SIZE (1 << CACHE_BLOCK_SHIFT) // 512, smallest sector size
 #define ROUND_TO_STORE_BLOCK(_x) INK_ALIGN((_x), STORE_BLOCK_SIZE)
@@ -36,7 +38,13 @@
 #define VOL_MAGIC 0xF1D0F00D
 #define START_BLOCKS 16 // 8k, STORE_BLOCK_SIZE
 #define START_POS ((off_t)START_BLOCKS * CACHE_BLOCK_SIZE)
+
+#if TS_USE_DSA
+#define AGG_SIZE (16 * 1024 * 1024)    // 16MB
+#else
 #define AGG_SIZE (4 * 1024 * 1024)     // 4MB
+#endif
+
 #define AGG_HIGH_WATER (AGG_SIZE / 2)  // 2MB
 #define EVACUATION_SIZE (2 * AGG_SIZE) // 8MB
 #define MAX_VOL_SIZE ((off_t)512 * 1024 * 1024 * 1024 * 1024)

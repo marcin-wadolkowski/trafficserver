@@ -46,6 +46,8 @@
 #include "tscore/ink_assert.h"
 #include "tscore/ink_resource.h"
 
+#include "tscore/ink_config.h"
+
 struct MIOBufferAccessor;
 
 class MIOBuffer;
@@ -86,7 +88,16 @@ enum AllocType {
 #define BUFFER_SIZE_INDEX_512K 12
 #define BUFFER_SIZE_INDEX_1M 13
 #define BUFFER_SIZE_INDEX_2M 14
+
+#if TS_USE_DSA
+#define BUFFER_SIZE_INDEX_4M 15
+#define BUFFER_SIZE_INDEX_8M 16
+#define BUFFER_SIZE_INDEX_16M 17
+#define MAX_BUFFER_SIZE_INDEX 17
+#else
 #define MAX_BUFFER_SIZE_INDEX 14
+#endif
+
 #define DEFAULT_BUFFER_SIZES (MAX_BUFFER_SIZE_INDEX + 1)
 
 #define BUFFER_SIZE_FOR_INDEX(_i) (DEFAULT_BUFFER_BASE_SIZE * (1 << (_i)))

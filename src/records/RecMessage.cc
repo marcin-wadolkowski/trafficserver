@@ -117,7 +117,10 @@ RecMessageMarshal_Realloc(RecMessage *msg, const RecRecord *record)
   // The following memset() is pretty CPU intensive, replacing it with something
   // like the below would reduce CPU usage a fair amount. /leif.
   // *((char*)msg + msg->o_write) = 0;
-  memset(reinterpret_cast<char *>(msg) + msg->o_write, 0, msg->o_end - msg->o_write);
+  char *p_end = reinterpret_cast<char *>(msg) + msg->o_end - 1;
+  if (*p_end != 0) {
+    memset(reinterpret_cast<char *>(msg) + msg->o_write, 0, msg->o_end - msg->o_write);
+  }
   msg->o_write += msg_ele_size;
 
   // store the record

@@ -46,3 +46,11 @@ traffic_crashlog_traffic_crashlog_LDADD = \
 	$(top_builddir)/src/tscore/libtscore.la \
 	$(top_builddir)/src/tscpp/util/libtscpputil.la \
 	@HWLOC_LIBS@
+
+if ENABLE_DSA
+traffic_crashlog_traffic_crashlog_SOURCES += \
+	shared/IDSA.cc
+traffic_crashlog_traffic_crashlog_LDFLAGS += \
+	-laccel-config \
+	-lnuma
+endif

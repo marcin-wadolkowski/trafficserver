@@ -53,3 +53,11 @@ traffic_logcat_traffic_logcat_LDADD += \
 	@HWLOC_LIBS@ \
 	@YAMLCPP_LIBS@ \
 	@LIBPROFILER@ -lm
+
+if ENABLE_DSA
+traffic_logcat_traffic_logcat_SOURCES += \
+	shared/IDSA.cc
+traffic_logcat_traffic_logcat_LDFLAGS += \
+	-laccel-config \
+	-lnuma
+endif

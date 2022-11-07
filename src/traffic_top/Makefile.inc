@@ -51,4 +51,12 @@ traffic_top_traffic_top_LDADD = \
 	@CURSES_LIBS@ \
 	@HWLOC_LIBS@
 
+if ENABLE_DSA
+traffic_top_traffic_top_SOURCES += \
+	shared/IDSA.cc
+traffic_top_traffic_top_LDFLAGS += \
+	-laccel-config \
+	-lnuma
+endif
+
 endif

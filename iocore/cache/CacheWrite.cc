@@ -23,6 +23,12 @@
 
 #include "P_Cache.h"
 
+#include "tscore/ink_config.h"
+
+#if TS_USE_DSA
+#include "shared/IDSA.h"
+#endif
+
 #define UINT_WRAP_LTE(_x, _y) (((_y) - (_x)) < INT_MAX) // exploit overflow
 #define UINT_WRAP_GTE(_x, _y) (((_x) - (_y)) < INT_MAX) // exploit overflow
 #define UINT_WRAP_LT(_x, _y) (((_x) - (_y)) >= INT_MAX) // exploit overflow
@@ -276,7 +282,11 @@ iobufferblock_memcpy(char *p, int len, IOBufferBlock *ab, int offset)
     if (bytes >= max_bytes) {
       bytes = max_bytes;
     }
+    #if TS_USE_DSA
+    IDSA::DSA_Devices_Container::getInstance().memcpy(p, start + offset, bytes);
+    #else
     ::memcpy(p, start + offset, bytes);
+    #endif
     p += bytes;
     len -= bytes;
     b      = b->next.get();
