@@ -1782,26 +1782,26 @@ main(int /* argc ATS_UNUSED */, const char **argv)
   // Still needed despite the set_std{err,out}_output() calls later since there are
   // fprintf's before those calls
   bind_outputs(bind_stdout, bind_stderr);
-  
-  #if TS_USE_DSA
+
+#if TS_USE_DSA
   IDSA::DSA_Devices_Container::STATUS s = IDSA::DSA_Devices_Container::getInstance().initialize();
   if (s != IDSA::DSA_Devices_Container::STATUS::OK) {
-    switch(s) {
-      case IDSA::DSA_Devices_Container::STATUS::INVALID_NUMA_NODES:
-        Error("DSA initialize failed: INVALID_NUMA_NODES");
-        break;
-      case IDSA::DSA_Devices_Container::STATUS::INVALID_ACCFG_CTX:
-        Error("DSA initialize failed: INVALID_ACCFG_CTX");
-        break;
-      case IDSA::DSA_Devices_Container::STATUS::ALREADY_INITIALIZED:
-        Error("DSA initialize failed: ALREADY_INITIALIZED");
-        break;
-      default:
-        break;
+    switch (s) {
+    case IDSA::DSA_Devices_Container::STATUS::INVALID_NUMA_NODES:
+      Error("DSA initialize failed: INVALID_NUMA_NODES");
+      break;
+    case IDSA::DSA_Devices_Container::STATUS::INVALID_ACCFG_CTX:
+      Error("DSA initialize failed: INVALID_ACCFG_CTX");
+      break;
+    case IDSA::DSA_Devices_Container::STATUS::ALREADY_INITIALIZED:
+      Error("DSA initialize failed: ALREADY_INITIALIZED");
+      break;
+    default:
+      break;
     }
     return -1;
   }
-  #endif
+#endif
 
   // Local process manager
   initialize_process_manager();

@@ -282,11 +282,11 @@ iobufferblock_memcpy(char *p, int len, IOBufferBlock *ab, int offset)
     if (bytes >= max_bytes) {
       bytes = max_bytes;
     }
-    #if TS_USE_DSA
+#if TS_USE_DSA
     IDSA::DSA_Devices_Container::getInstance().memcpy(p, start + offset, bytes);
-    #else
+#else
     ::memcpy(p, start + offset, bytes);
-    #endif
+#endif
     p += bytes;
     len -= bytes;
     b      = b->next.get();
