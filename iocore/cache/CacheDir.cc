@@ -51,6 +51,12 @@
     CACHE_INCREMENT_DYN_STAT(cache_directory_collision_count_stat); \
   } while (0);
 
+#include "tscore/ink_config.h"
+
+#if TS_USE_DSA
+#include "shared/IDSA.h"
+#endif
+
 // Globals
 
 ClassAllocator<OpenDirEntry> openDirEntryAllocator("openDirEntry");
@@ -1012,7 +1018,11 @@ sync_cache_dir_on_shutdown()
     d->footer->sync_serial = d->header->sync_serial;
 
     CHECK_DIR(d);
+#if TS_USE_DSA
+    IDSA::DSA_Devices_Container::getInstance().memcpy(buf, d->raw_dir, dirlen);
+#else
     memcpy(buf, d->raw_dir, dirlen);
+#endif
     size_t B    = d->header->sync_serial & 1;
     off_t start = d->skip + (B ? dirlen : 0);
     B           = pwrite(d->fd, buf, dirlen, start);
@@ -1138,7 +1148,11 @@ Lrestart:
       vol->header->sync_serial++;
       vol->footer->sync_serial = vol->header->sync_serial;
       CHECK_DIR(d);
+#if TS_USE_DSA
+      IDSA::DSA_Devices_Container::getInstance().memcpy(buf, vol->raw_dir, dirlen);
+#else
       memcpy(buf, vol->raw_dir, dirlen);
+#endif
       vol->dir_sync_in_progress = true;
     }
     size_t B    = vol->header->sync_serial & 1;

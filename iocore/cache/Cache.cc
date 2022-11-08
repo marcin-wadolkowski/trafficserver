@@ -39,6 +39,12 @@
 
 #include <atomic>
 
+#include "tscore/ink_config.h"
+
+#if TS_USE_DSA
+#include "shared/IDSA.h"
+#endif
+
 constexpr ts::VersionNumber CACHE_DB_VERSION(CACHE_DB_MAJOR_VERSION, CACHE_DB_MINOR_VERSION);
 
 // Compilation Options
@@ -2300,7 +2306,11 @@ CacheVC::handleRead(int /* event ATS_UNUSED */, Event * /* e ATS_UNUSED */)
     ink_assert((agg_offset + io.aiocb.aio_nbytes) <= (unsigned)vol->agg_buf_pos);
     char *doc = buf->data();
     char *agg = vol->agg_buffer + agg_offset;
+#if TS_USE_DSA
+    IDSA::DSA_Devices_Container::getInstance().memcpy(doc, agg, io.aiocb.aio_nbytes);
+#else
     memcpy(doc, agg, io.aiocb.aio_nbytes);
+#endif
     io.aio_result = io.aiocb.aio_nbytes;
     SET_HANDLER(&CacheVC::handleReadDone);
     return EVENT_RETURN;

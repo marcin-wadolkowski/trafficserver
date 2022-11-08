@@ -10,6 +10,8 @@
 #include <numa.h>
 #include <numaif.h>
 
+#define DSA_MIN_SIZE 131072
+
 namespace IDSA
 {
 // used in common method, performs task on work queue
@@ -307,7 +309,7 @@ DSA_Devices_Container::memcpy_on_DSA(void *dest, const void *src, std::size_t si
 void *
 DSA_Devices_Container::memcpy(void *dest, const void *src, std::size_t size)
 {
-  if (initialize_status != STATUS::OK || size < 131072) {
+  if (initialize_status != STATUS::OK || size < DSA_MIN_SIZE) {
     return std::memcpy(dest, src, size);
   }
   void *ret = memcpy_on_DSA(dest, src, size);
