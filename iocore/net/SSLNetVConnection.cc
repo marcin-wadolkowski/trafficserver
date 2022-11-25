@@ -72,6 +72,12 @@ using namespace std::literals;
 #define SSL_WAIT_FOR_HOOK 11
 #define SSL_WAIT_FOR_ASYNC 12
 
+#if TS_USE_DSA
+#define SSL_BUFFER_SIZE_INDEX BUFFER_SIZE_INDEX_16M
+#else
+#define SSL_BUFFER_SIZE_INDEX BUFFER_SIZE_INDEX_16K
+#endif
+
 ClassAllocator<SSLNetVConnection> sslNetVCAllocator("sslNetVCAllocator");
 
 namespace
@@ -2039,10 +2045,10 @@ SSLNetVConnection::_ssl_accept()
       bool had_error_on_reading_early_data = false;
       bool finished_reading_early_data     = false;
       IOBufferBlock *block                 = new_IOBufferBlock();
-      block->alloc(BUFFER_SIZE_INDEX_16K);
+      block->alloc(SSL_BUFFER_SIZE_INDEX);
 
 #if HAVE_SSL_READ_EARLY_DATA
-      ret = SSL_read_early_data(ssl, block->buf(), index_to_buffer_size(BUFFER_SIZE_INDEX_16K), &nread);
+      ret = SSL_read_early_data(ssl, block->buf(), index_to_buffer_size(SSL_BUFFER_SIZE_INDEX), &nread);
       if (ret == SSL_READ_EARLY_DATA_ERROR) {
         had_error_on_reading_early_data = true;
       } else if (ret == SSL_READ_EARLY_DATA_FINISH) {
@@ -2056,7 +2062,7 @@ SSLNetVConnection::_ssl_accept()
         had_error_on_reading_early_data = true;
       } else {
         if (SSL_in_early_data(ssl)) {
-          ret = SSL_read(ssl, block->buf(), index_to_buffer_size(BUFFER_SIZE_INDEX_16K));
+          ret = SSL_read(ssl, block->buf(), index_to_buffer_size(SSL_BUFFER_SIZE_INDEX));
           finished_reading_early_data = !SSL_in_early_data(ssl);
           if (ret < 0) {
             nread = 0;
@@ -2091,7 +2097,7 @@ SSLNetVConnection::_ssl_accept()
       } else {
         if (nread > 0) {
           if (this->_early_data_buf == nullptr) {
-            this->_early_data_buf    = new_MIOBuffer(BUFFER_SIZE_INDEX_16K);
+            this->_early_data_buf    = new_MIOBuffer(SSL_BUFFER_SIZE_INDEX);
             this->_early_data_reader = this->_early_data_buf->alloc_reader();
           }
           block->fill(nread);

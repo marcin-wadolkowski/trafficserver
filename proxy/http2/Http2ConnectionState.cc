@@ -35,6 +35,8 @@
 #include <sstream>
 #include <numeric>
 
+#include "tscore/ink_config.h"
+
 #define REMEMBER(e, r)                                     \
   {                                                        \
     if (this->session) {                                   \
@@ -49,17 +51,23 @@
   SsnDebug(session->get_proxy_session(), "http2_con", "[%" PRId64 "] [%u] " fmt, session->get_connection_id(), stream_id, \
            ##__VA_ARGS__);
 
+#if TS_USE_DSA
+#define HTTP2_BUFFER_SIZE_INDEX BUFFER_SIZE_INDEX_16M
+#else
+#define HTTP2_BUFFER_SIZE_INDEX BUFFER_SIZE_INDEX_16K
+#endif
+
 static const int buffer_size_index[HTTP2_FRAME_TYPE_MAX] = {
-  BUFFER_SIZE_INDEX_16K, // HTTP2_FRAME_TYPE_DATA
-  BUFFER_SIZE_INDEX_16K, // HTTP2_FRAME_TYPE_HEADERS
-  -1,                    // HTTP2_FRAME_TYPE_PRIORITY
-  -1,                    // HTTP2_FRAME_TYPE_RST_STREAM
-  -1,                    // HTTP2_FRAME_TYPE_SETTINGS
-  BUFFER_SIZE_INDEX_16K, // HTTP2_FRAME_TYPE_PUSH_PROMISE
-  -1,                    // HTTP2_FRAME_TYPE_PING
-  -1,                    // HTTP2_FRAME_TYPE_GOAWAY
-  -1,                    // HTTP2_FRAME_TYPE_WINDOW_UPDATE
-  BUFFER_SIZE_INDEX_16K, // HTTP2_FRAME_TYPE_CONTINUATION
+  HTTP2_BUFFER_SIZE_INDEX, // HTTP2_FRAME_TYPE_DATA
+  HTTP2_BUFFER_SIZE_INDEX, // HTTP2_FRAME_TYPE_HEADERS
+  -1,                      // HTTP2_FRAME_TYPE_PRIORITY
+  -1,                      // HTTP2_FRAME_TYPE_RST_STREAM
+  -1,                      // HTTP2_FRAME_TYPE_SETTINGS
+  HTTP2_BUFFER_SIZE_INDEX, // HTTP2_FRAME_TYPE_PUSH_PROMISE
+  -1,                      // HTTP2_FRAME_TYPE_PING
+  -1,                      // HTTP2_FRAME_TYPE_GOAWAY
+  -1,                      // HTTP2_FRAME_TYPE_WINDOW_UPDATE
+  HTTP2_BUFFER_SIZE_INDEX, // HTTP2_FRAME_TYPE_CONTINUATION
 };
 
 inline static unsigned

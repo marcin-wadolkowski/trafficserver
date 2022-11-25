@@ -28,6 +28,12 @@
 #include "tscore/ink_defs.h"
 #include "P_EventSystem.h"
 
+#include "tscore/ink_config.h"
+
+#if TS_USE_DSA
+#include "shared/IDSA.h"
+#endif
+
 //
 // General Buffer Allocator
 //
@@ -74,7 +80,11 @@ MIOBuffer::write(const void *abuf, int64_t alen)
     int64_t f = _writer->write_avail();
     f         = f < len ? f : len;
     if (f > 0) {
+#if TS_USE_DSA
+      IDSA::DSA_Devices_Container::getInstance().memcpy(_writer->end(), buf, f);
+#else
       ::memcpy(_writer->end(), buf, f);
+#endif
       _writer->fill(f);
       buf += f;
       len -= f;
