@@ -8,7 +8,6 @@
 #include <sys/mman.h>
 #include <cstring>
 #include <numa.h>
-#include <numaif.h>
 
 #define DSA_MIN_SIZE 131072
 
@@ -24,38 +23,6 @@ movdir64b(volatile void *portal, void *desc)
                : "a"(portal), "d"(desc));
 }
 
-// used in common method, for calculating timeout
-static inline int
-umwait(unsigned long timeout, unsigned int state)
-{
-  uint8_t r;
-  uint32_t timeout_low  = (uint32_t)timeout;
-  uint32_t timeout_high = (uint32_t)(timeout >> 32);
-
-  asm volatile(".byte 0xf2, 0x48, 0x0f, 0xae, 0xf1\t\n"
-               "setc %0\t\n"
-               : "=r"(r)
-               : "c"(state), "a"(timeout_low), "d"(timeout_high));
-  return r;
-}
-
-// used in common method, for calculating timeout
-static inline unsigned long
-rdtsc(void)
-{
-  uint32_t a, d;
-
-  asm volatile("rdtsc" : "=a"(a), "=d"(d));
-  return ((uint64_t)d << 32) | (uint64_t)a;
-}
-
-// used in common method, for calculating timeout
-static inline void
-umonitor(void *addr)
-{
-  asm volatile(".byte 0xf3, 0x48, 0x0f, 0xae, 0xf0" : : "a"(addr));
-}
-
 // used in common method, for clearing status to allow next iterations after block on fault
 static inline void
 resolve_page_fault(uint64_t addr, uint8_t status)
@@ -67,8 +34,7 @@ resolve_page_fault(uint64_t addr, uint8_t status)
     *addr_u8 = ~(*addr_u8);
 }
 
-const unsigned long Device::dflags       = IDXD_OP_FLAG_CRAV | IDXD_OP_FLAG_RCR; // descriptor flags
-const unsigned long Device::msec_timeout = 100;                                  // timeout of operation on DSA work queue in ms
+const unsigned long Device::dflags = IDXD_OP_FLAG_CRAV | IDXD_OP_FLAG_RCR; // descriptor flags
 
 Device::Device(struct accfg_device *dev)
 {
@@ -158,29 +124,11 @@ Device::memcpy(void *dest, const void *src, std::size_t size)
     comp->status        = 0;
 
     // performs task on work queue
-    m.lock();
     movdir64b(wq_regs[task_counter % wq_idx], hw);
-    m.unlock();
 
-    // waiting for completion
-    unsigned long timeout = (msec_timeout * 1000000UL) * 3;
-    int r                 = 1;
-    unsigned long t       = 0;
-
-    timeout += rdtsc();
-    while (comp->status == 0) {
-      if (!r) {
-        t = rdtsc();
-        if (t >= timeout) {
-          break;
-        }
-      }
-
-      umonitor((uint8_t *)comp);
-      if (comp->status != 0)
-        break;
-      r = umwait(timeout, 0);
-    }
+    // waiting for operation complete
+    while (comp->status == 0)
+      ;
 
     // if status == page fault
     if ((comp->status & DSA_COMP_STATUS_MASK) == (DSA_COMP_STATUS_MASK & DSA_COMP_PAGE_FAULT_NOBOF)) {
@@ -189,9 +137,6 @@ Device::memcpy(void *dest, const void *src, std::size_t size)
       src_addr += comp->bytes_completed;
       dst_addr += comp->bytes_completed;
       resolve_page_fault(comp->fault_addr, comp->status);
-
-      // do memset 0 on CPU - this is the fastest way to get rid of page faults
-      std::memset((void *)dst_addr, 0, size);
     } else {
       // if success then get out from infinite loop
       break;
@@ -276,17 +221,16 @@ DSA_Devices_Container::initialize()
   return STATUS::OK;
 }
 
+static int dest_numa_node = 0;
+
 // gets dest numa node and perform memcpy on DSA with this numa node
 void *
 DSA_Devices_Container::memcpy_on_DSA(void *dest, const void *src, std::size_t size)
 {
   current_status = STATUS::OK;
 
-  int status[1];
-  status[0] = -1;
-  // get numa node of memory pointed by dest
-  move_pages(0, 1, &dest, NULL, status, 0);
-  int dest_numa_node = status[0];
+  dest_numa_node++;
+  dest_numa_node %= dev_idx;
 
   if (devices_by_numa_node[dest_numa_node] == nullptr) {
     if (devices[0] == nullptr || devices[0]->is_initialize_error()) {
