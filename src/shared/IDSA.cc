@@ -8,6 +8,7 @@
 #include <sys/mman.h>
 #include <cstring>
 #include <numa.h>
+#include <xmmintrin.h>
 
 #define DSA_MIN_SIZE 131072
 
@@ -23,18 +24,7 @@ movdir64b(volatile void *portal, void *desc)
                : "a"(portal), "d"(desc));
 }
 
-// used in common method, for clearing status to allow next iterations after block on fault
-static inline void
-resolve_page_fault(uint64_t addr, uint8_t status)
-{
-  uint8_t *addr_u8 = (uint8_t *)addr;
-  *addr_u8         = ~(*addr_u8);
-
-  if (!(status & 0x80))
-    *addr_u8 = ~(*addr_u8);
-}
-
-const unsigned long Device::dflags = IDXD_OP_FLAG_CRAV | IDXD_OP_FLAG_RCR; // descriptor flags
+const unsigned long Device::dflags = IDXD_OP_FLAG_CRAV | IDXD_OP_FLAG_RCR | IDXD_OP_FLAG_CC; // descriptor flags
 
 Device::Device(struct accfg_device *dev)
 {
@@ -127,16 +117,21 @@ Device::memcpy(void *dest, const void *src, std::size_t size)
     movdir64b(wq_regs[task_counter % wq_idx], hw);
 
     // waiting for operation complete
-    while (comp->status == 0)
-      ;
+    while (comp->status == 0) {
+      _mm_pause();
+    }
 
     // if status == page fault
     if ((comp->status & DSA_COMP_STATUS_MASK) == (DSA_COMP_STATUS_MASK & DSA_COMP_PAGE_FAULT_NOBOF)) {
+      // resolve page fault
+      int wr = (comp->status) & DSA_COMP_STATUS_WRITE;
+      volatile char *t;
+      t       = (char *)(comp->fault_addr);
+      wr ? *t = *t : *t;
       // adjust addresses and size
       size -= comp->bytes_completed;
       src_addr += comp->bytes_completed;
       dst_addr += comp->bytes_completed;
-      resolve_page_fault(comp->fault_addr, comp->status);
     } else {
       // if success then get out from infinite loop
       break;
