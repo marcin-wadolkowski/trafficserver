@@ -8,6 +8,7 @@
 #include <sys/mman.h>
 #include <cstring>
 #include <numa.h>
+#include <numaif.h>
 #include <xmmintrin.h>
 
 #define DSA_MIN_SIZE 131072
@@ -103,6 +104,12 @@ Device::memcpy(void *dest, const void *src, std::size_t size)
   std::memset(comp, 0, sizeof(struct dsa_completion_record));
   std::memset(hw, 0, sizeof(struct dsa_hw_desc));
 
+  if (!m.try_lock()) {
+    free(hw);
+    free(comp);
+    return std::memcpy(dest, src, size);
+  }
+
   do {
     hw->flags           = dflags;
     hw->opcode          = DSA_OPCODE_MEMMOVE;
@@ -139,9 +146,11 @@ Device::memcpy(void *dest, const void *src, std::size_t size)
 
   } while (true);
 
+  task_counter++;
+  m.unlock();
+
   free(hw);
   free(comp);
-  task_counter++;
 
   return dest;
 }
@@ -216,16 +225,25 @@ DSA_Devices_Container::initialize()
   return STATUS::OK;
 }
 
-static int dest_numa_node = 0;
-
 // gets dest numa node and perform memcpy on DSA with this numa node
 void *
 DSA_Devices_Container::memcpy_on_DSA(void *dest, const void *src, std::size_t size)
 {
   current_status = STATUS::OK;
 
-  dest_numa_node++;
-  dest_numa_node %= dev_idx;
+  int status[1];
+  status[0] = -1;
+  // get numa node of memory pointed by dest
+  move_pages(0, 1, &dest, NULL, status, 0);
+  int dest_numa_node = status[0];
+  // get numa node of memory pointed by src
+  void *non_const_src = (void *)src;
+  move_pages(0, 1, &non_const_src, NULL, status, 0);
+  int src_numa_node = status[0];
+
+  if (src_numa_node != dest_numa_node) {
+    return std::memcpy(dest, src, size);
+  }
 
   if (devices_by_numa_node[dest_numa_node] == nullptr) {
     if (devices[0] == nullptr || devices[0]->is_initialize_error()) {
